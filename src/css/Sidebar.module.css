@@ -1,0 +1,35 @@
+#btn {
+  background-color: #262929;
+  color: white;
+
+  display: none;
+}
+#btn:hover {
+  background-color: #262929;
+  color: white;
+  cursor: pointer;
+}
+.buttonWrapper {
+  width: 72px;
+  height: 72px;
+  display: none;
+
+  justify-content: center;
+  align-items: center;
+}
+@media only screen and (max-width: 768px) {
+  #btn {
+    display: block;
+  }
+  .buttonWrapper {
+    display: flex;
+  }
+}
+@media only screen and (min-width: 768px) {
+  #btn {
+    display: none;
+  }
+  .buttonWrapper {
+    display: none;
+  }
+}

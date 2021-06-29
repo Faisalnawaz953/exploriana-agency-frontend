@@ -1,0 +1,31 @@
+.parent {
+  background: #ffffff;
+  box-shadow: 0px 5.46866px 27.3433px rgba(0, 0, 0, 0.05);
+  border-radius: 8px;
+}
+
+.start {
+  font-style: normal;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 23px;
+
+  /* identical to box height, or 145% */
+  letter-spacing: 0.6px;
+  color: #2b2b2b;
+}
+.headText {
+  color: #2d2d2d;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 23px;
+}
+.text {
+  color: #429fba;
+  font-style: normal;
+  font-weight: 600;
+  font-size: 16px;
+  line-height: 23px;
+  cursor: pointer;
+}
