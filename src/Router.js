@@ -49,13 +49,12 @@ const TrainerInfo = lazy(() =>
 const Auth = lazy(() => import("./pages/auth/Auth"));
 
 const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
-  return auth === null ? (
-    <div>loading...</div>
-  ) : (
+  return (
     <Route
       {...rest}
       render={(props) => {
         const token = localStorage.getItem("token");
+        console.log("token",token);
         return (
           <>
             {/* {console.log("authth", auth)} */}
@@ -65,7 +64,7 @@ const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
                   <Component {...props} />
                 </Suspense>
               </AuthLayout>
-            ) : auth ? (
+            ) : token  ? (
               <Layout {...props}>
                 <Suspense fallback={<Spinner />}>
                   <Component {...props} />

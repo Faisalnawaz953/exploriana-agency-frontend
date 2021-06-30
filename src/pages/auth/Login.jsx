@@ -10,7 +10,7 @@ import * as yup from "yup";
 import { useAlert } from "react-alert";
 import ApiLoader from "../../components/ui-elements/ApiLoader";
 import get from "lodash/get";
-import { auth } from "../../dataServices/Services";
+import { authService } from "../../dataServices/Services";
 import { connect } from "react-redux";
 import { getUserAuth } from "../../redux/selectors";
 
@@ -21,7 +21,7 @@ const loginSchema = yup.object().shape({
     .required("Email is required"),
 });
 
-const Login = ({ auth }) => {
+const Login = () => {
   const history = useHistory();
   const alert = useAlert();
   const [loading, setLoading] = React.useState(false);
@@ -30,7 +30,7 @@ const Login = ({ auth }) => {
   const onSubmit = async (values) => {
     setLoading(true);
     const email = values.email;
-    const res = await auth(email);
+    const res = await authService(email);
     console.log(res);
 
     const resCode = get(res, "status");
