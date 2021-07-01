@@ -594,6 +594,10 @@ function ResponsiveDrawer(props) {
       <div
         className="mt-5 d-flex align-items-center ml-3 text-light mb-4 "
         style={{ cursor: "pointer" }}
+        onClick={() => {
+          localStorage.clear();
+          history.push("/login");
+        }}
       >
         <ExitToAppRoundedIcon fontSize="14px" />{" "}
         <div className={classes.logoutText}>Log out</div>

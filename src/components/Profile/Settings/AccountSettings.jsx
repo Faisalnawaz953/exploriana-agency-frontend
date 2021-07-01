@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col, FormGroup, Label, Form } from "reactstrap";
 import ProfilePic from "../../../assets/images/Ellipse 122.png";
 import Input from "../../ui-elements/Input";
@@ -13,6 +14,7 @@ import { Formik } from "formik";
 import { useAlert } from "react-alert";
 import * as yup from "yup";
 import { uploadImage, updateProfile } from "../../../dataServices/Services";
+import RadioButton from "../../ui-elements/RadioButton";
 
 const useStyles = makeStyles((theme) => ({
   headText: {
@@ -36,13 +38,14 @@ const schema = yup.object().shape({
   about: yup.string().required(),
   email: yup.string().email().required(),
   coverImageUrl: yup.string().required(),
-  weightUnit: yup.string().required(),
-  heightUnit: yup.string().required(),
 });
 
 const AccountSettings = () => {
   const classes = useStyles();
   const alert = useAlert();
+  const [image, setImage] = React.useState();
+  const [weightUnit, setWeightUnit] = React.useState("KG");
+  const [heightUnit, setHeightUnit] = React.useState("CM");
   const option = [
     { key: "option-1", value: "Male" },
     { key: "option-2", value: "Female" },
@@ -69,7 +72,7 @@ const AccountSettings = () => {
           <Row>
             <Col md={{ size: 12 }}>
               <div className={classes.headText}>Edit Profile</div>
-              <EditImage src={ProfilePic} />
+              <EditImage path={image} setPath={setImage} />
             </Col>
           </Row>
         </Form>
@@ -188,8 +191,40 @@ const AccountSettings = () => {
                 <Col md={{ size: 8, offset: 2 }}>
                   <ImageUpload />
                 </Col>
-                <Col md={{ size: 8, offset: 2 }}>
-                  <Units handleChange={handleChange} errors={errors} />
+                <Col className="mt-3" md={{ size: 8, offset: 2 }}>
+                  <label className="h5">Units</label>
+                  <Row>
+                    <Col>
+                      {" "}
+                      <label>Weight</label>
+                      <br />
+                      <RadioButton
+                        label="KG"
+                        value={weightUnit}
+                        setValue={setWeightUnit}
+                      />
+                      <RadioButton
+                        label="LBS"
+                        value={weightUnit}
+                        setValue={setWeightUnit}
+                      />
+                    </Col>
+                    <Col>
+                      {" "}
+                      <label>Height</label>
+                      <br />
+                      <RadioButton
+                        label="CM"
+                        value={heightUnit}
+                        setValue={setHeightUnit}
+                      />
+                      <RadioButton
+                        label="FT & IN"
+                        value={heightUnit}
+                        setValue={setHeightUnit}
+                      />
+                    </Col>
+                  </Row>
                 </Col>
                 <Col md={{ size: 8, offset: 2 }} className="text-center">
                   <Button

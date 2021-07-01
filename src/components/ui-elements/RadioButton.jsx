@@ -67,10 +67,16 @@ function StyledRadio(props) {
   );
 }
 
-export default function CustomizedRadios({ label }) {
+export default function CustomizedRadios({ label, value, setValue }) {
   return (
     <FormControl component="fieldset">
-      <FormControlLabel value={label} control={<StyledRadio />} label={label} />
+      <FormControlLabel
+        value={label}
+        checked={value === label}
+        onClick={() => setValue(label)}
+        control={<StyledRadio />}
+        label={label}
+      />
     </FormControl>
   );
 }

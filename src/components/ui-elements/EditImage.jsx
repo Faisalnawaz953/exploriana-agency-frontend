@@ -28,6 +28,7 @@ const useStyles = makeStyles((theme) => ({
 
     alignSelf: "center",
     borderRadius: "50%",
+    border: "1px solid #F4F4F5",
     backgroundColor: "rgb(66, 159, 186,0.1)",
   },
   align: {
@@ -39,19 +40,44 @@ const useStyles = makeStyles((theme) => ({
     color: "#429FBA",
   },
 }));
-export default function EditImage({ src }) {
+export default function EditImage({ path, setPath }) {
   const classes = useStyles();
   return (
     <div className={classes.align}>
       <div className={classes.image}>
         {" "}
-        {src ? (
-          <img src={src} alt="" style={{ position: "relative" }} />
+        {path ? (
+          <img
+            src={path}
+            alt="img"
+            style={{
+              position: "relative",
+              width: "100%",
+              height: "100%",
+              borderRadius: "50%",
+            }}
+          />
         ) : (
           <div className={classes.text}>Your logo</div>
         )}
         <div className={classes.editIcon}>
-          <EditOutlinedIcon style={{ color: "white" }} />
+          <label
+            style={{ cursor: "pointer" }}
+            className="w-100 h-100 d-flex justify-content-center align-items-center"
+          >
+            <EditOutlinedIcon className="mt-1" style={{ color: "white" }} />{" "}
+            <input
+              onChange={(e) => {
+                if (e.target.files[0] === undefined) {
+                  setPath(path);
+                } else {
+                  setPath(URL.createObjectURL(e.target.files[0]));
+                }
+              }}
+              type="file"
+              hidden
+            />
+          </label>
         </div>
       </div>
     </div>
