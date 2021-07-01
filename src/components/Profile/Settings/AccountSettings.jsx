@@ -10,7 +10,9 @@ import { Edit } from "react-feather";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { BottomNavigation } from "@material-ui/core";
 import { Formik } from "formik";
+import { useAlert } from "react-alert";
 import * as yup from "yup";
+import { uploadImage, updateProfile } from "../../../dataServices/Services";
 
 const useStyles = makeStyles((theme) => ({
   headText: {
@@ -33,13 +35,14 @@ const schema = yup.object().shape({
   gender: yup.string().required(),
   about: yup.string().required(),
   email: yup.string().email().required(),
-  // coverImageUrl: yup.string().required(),
+  coverImageUrl: yup.string().required(),
   weightUnit: yup.string().required(),
   heightUnit: yup.string().required(),
 });
 
 const AccountSettings = () => {
   const classes = useStyles();
+  const alert = useAlert();
   const option = [
     { key: "option-1", value: "Male" },
     { key: "option-2", value: "Female" },
@@ -47,6 +50,16 @@ const AccountSettings = () => {
 
   const submitHandler = async (data) => {
     console.log(data);
+    //TODO
+    // uploadImage()
+    updateProfile(data)
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+        alert.error("Network Error Try Agian");
+      });
   };
 
   return (
@@ -56,7 +69,7 @@ const AccountSettings = () => {
           <Row>
             <Col md={{ size: 12 }}>
               <div className={classes.headText}>Edit Profile</div>
-              <EditImage src={ProfilePic}  />
+              <EditImage src={ProfilePic} />
             </Col>
           </Row>
         </Form>
@@ -69,6 +82,8 @@ const AccountSettings = () => {
           gender: "Male",
           about: "",
           email: "",
+          coverImageUrl:
+            "https://www.tailorbrands.com/wp-content/uploads/2020/07/mcdonalds-logo.jpg",
         }}
         validationSchema={schema}
         onSubmit={submitHandler}
@@ -81,7 +96,7 @@ const AccountSettings = () => {
           touched,
           handleSubmit,
         }) => (
-          <form>
+          <Form>
             <Container>
               <Row form>
                 <Col md={{ size: "4", offset: 2 }}>
@@ -189,7 +204,7 @@ const AccountSettings = () => {
                 </Col>
               </Row>
             </Container>
-          </form>
+          </Form>
         )}
       </Formik>
     </>
