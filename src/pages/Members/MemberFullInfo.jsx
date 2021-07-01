@@ -1,7 +1,7 @@
 import ProfilePic from "../../assets/images/Ellipse.png";
 import { Container, Row, Col, FormGroup, Form } from "reactstrap";
 import Input from "../../components/ui-elements/Input";
-import DorpDown from "../../components/ui-elements/DorpDown";
+import DorpDown from "../../components/ui-elements/DropDown";
 import Button from "../../components/ui-elements/Button";
 import { useHistory } from "react-router-dom";
 import BackButton from "../../components/ui-elements/BackButton";

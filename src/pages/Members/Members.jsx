@@ -1,5 +1,5 @@
 import { Container, Row, Col } from "reactstrap";
-import DorpDown from "../../components/ui-elements/DorpDown";
+import DorpDown from "../../components/ui-elements/DropDown";
 import "../../css/Members.css";
 import ProfilePic from "../../assets/images/Ellipse 2.png";
 import ProfilePic1 from "../../assets/images/Ellipsec.png";

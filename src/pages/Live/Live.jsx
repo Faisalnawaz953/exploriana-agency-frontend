@@ -5,7 +5,7 @@ import ProfilePic from "../../assets/images/Rectangle 1350.png";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Button from "../../components/ui-elements/Button";
 import IconButton from "../../components/ui-elements/IconButton";
-import DorpDown from "../../components/ui-elements/DorpDown";
+import DorpDown from "../../components/ui-elements/DropDown";
 import { useHistory } from "react-router-dom";
 import { MoreVert } from "@material-ui/icons";
 import Calendar from "../../components/Calendar";

@@ -1,7 +1,7 @@
 import { Container, Row, Col, FormGroup, Label, Form } from "reactstrap";
 import ProfilePic from "../../../assets/images/Ellipse22.png";
 import Input from "../../ui-elements/Input";
-import DorpDown from "../../ui-elements/DorpDown";
+import DorpDown from "../../ui-elements/DropDown";
 import Button from "../../ui-elements/Button";
 import BrandColorTheme from "../../ui-elements/BrandColorTheme";
 import { makeStyles, useTheme } from "@material-ui/core/styles";

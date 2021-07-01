@@ -4,7 +4,7 @@ import BackButton from "../../components/ui-elements/BackButton";
 import Input from "../../components/ui-elements/Input";
 import Tags from "../../components/ui-elements/Tags";
 import ImageUpload from "../../components/ui-elements/ImageUpload";
-import DorpDown from "../../components/ui-elements/DorpDown";
+import DorpDown from "../../components/ui-elements/DropDown";
 import UploadedImage from "../../components/ui-elements/UploadedImage";
 import Button from "../../components/ui-elements/Button";
 import { useHistory } from "react-router-dom";

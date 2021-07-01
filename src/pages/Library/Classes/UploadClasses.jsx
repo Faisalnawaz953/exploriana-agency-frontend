@@ -11,7 +11,7 @@ import {
 import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
 import Input from "../../../components/ui-elements/Input";
 import ImageUpload from "../../../components/ui-elements/ImageUpload";
-import DorpDown from "../../../components/ui-elements/DorpDown";
+import DorpDown from "../../../components/ui-elements/DropDown";
 import Button from "../../../components/ui-elements/Button";
 import Tags from "../../../components/ui-elements/Tags";
 import { Link } from "react-router-dom";

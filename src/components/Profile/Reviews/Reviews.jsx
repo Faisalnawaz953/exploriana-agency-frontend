@@ -4,7 +4,7 @@ import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import ProfilePic from "../../../assets/images/Ellipse 2.png";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import Button from "../../ui-elements/Button";
-import DorpDown from "../../ui-elements/DorpDown";
+import DorpDown from "../../ui-elements/DropDown";
 import { useHistory } from "react-router-dom";
 
 const Reviews = () => {

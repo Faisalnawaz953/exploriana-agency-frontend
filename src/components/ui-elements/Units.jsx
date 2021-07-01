@@ -1,5 +1,15 @@
-import { Container, Col, Row, CustomInput, Form } from "reactstrap";
-const Units = () => {
+import { ErrorSharp } from "@material-ui/icons";
+import {
+  Container,
+  Col,
+  Row,
+  CustomInput,
+  Form,
+  FormGroup,
+  Input,
+  Label,
+} from "reactstrap";
+const Units = ({ handleChange, errors }) => {
   return (
     <Container>
       <Row>
@@ -9,28 +19,72 @@ const Units = () => {
         <Col md="6">
           Weight
           <Col md="6">
-            <Row form>
-              <CustomInput
-                className="mr-4"
-                type="radio"
-                id="exampleCustomRadio"
-                label="kG"
-              />
-              <CustomInput type="radio" id="exampleCustomRadio2" label="LBS" />
+            <Row>
+              <FormGroup tag="fieldset">
+                <FormGroup check>
+                  <Label check>
+                    <Input
+                      type="radio"
+                      value="KG"
+                      onChange={handleChange("weightUnit")}
+                      className="mr-4"
+                      name="weightUnit"
+                    />{" "}
+                    KG
+                  </Label>
+                </FormGroup>
+                <FormGroup check>
+                  <Label check>
+                    <Input
+                      type="radio"
+                      value="LBS"
+                      onChange={handleChange("weightUnit")}
+                      className="mr-4"
+                      name="weightUnit"
+                    />{" "}
+                    LBS
+                  </Label>
+                </FormGroup>
+              </FormGroup>
+              {errors && errors.weightUnit && (
+                <p style={{ color: "red" }}>{errors.weightUnit}</p>
+              )}
             </Row>
           </Col>
         </Col>
         <Col md="6">
-          height
+          Height
           <Col md="6">
-            <Row form>
-              <CustomInput
-                className="mr-4"
-                type="radio"
-                id="exampleCustomRadio3"
-                label="CM"
-              />
-              <CustomInput type="radio" id="exampleCustomRadio4" label="LBS" />
+            <Row>
+              <FormGroup tag="fieldset">
+                <FormGroup check>
+                  <Label check>
+                    <Input
+                      type="radio"
+                      value="CM"
+                      onChange={handleChange("heightUnit")}
+                      className="mr-4"
+                      name="heightUnit"
+                    />{" "}
+                    CM
+                  </Label>
+                </FormGroup>
+                <FormGroup check>
+                  <Label check>
+                    <Input
+                      type="radio"
+                      value="LBS"
+                      onChange={handleChange("heightUnit")}
+                      className="mr-4"
+                      name="heightUnit"
+                    />{" "}
+                    LBS
+                  </Label>
+                </FormGroup>
+              </FormGroup>
+              {errors && errors.heightUnit && (
+                <p style={{ color: "red" }}>{errors.heightUnit}</p>
+              )}
             </Row>
           </Col>
         </Col>
