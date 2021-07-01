@@ -7,7 +7,7 @@ const DropDown = ({
   width,
   height,
   backgroundColor,
-  onChange,
+  setValue,
   value,
 }) => {
   return (
@@ -19,7 +19,7 @@ const DropDown = ({
       <select
         className="select my-3"
         value={value}
-        onChange={onChange}
+        onChange={(e) => setValue(e.target.value)}
         style={{
           width: width ? width : "100%",
           height: height ? height : "",

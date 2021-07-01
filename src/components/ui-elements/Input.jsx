@@ -17,6 +17,30 @@ const InputField = ({
   touched,
   errors,
 }) => {
+  if (type === "date") {
+    return (
+      <FormGroup>
+        <Label className="my-2">
+          {" "}
+          <b>{label}</b>{" "}
+        </Label>
+        <Input
+          className="custom_input my-3 "
+          color="#E6F5FE, 70%"
+          style={{
+            width: width ? width : "",
+            height: height ? height : "",
+            backgroundColor: backgroundColor && "#F4F4F5",
+          }}
+          placeholder={placeholder ? placeholder : ""}
+          id={id}
+          type={type}
+          value={value ? value : ""}
+          onChange={(e) => onChange(e.target.value)}
+        />
+      </FormGroup>
+    );
+  }
   return (
     <FormGroup>
       <Label className="my-2">

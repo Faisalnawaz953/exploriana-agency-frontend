@@ -62,6 +62,10 @@ import AlertTemplate from "react-alert-template-basic";
 const options = {
   timeout: 5000,
   position: positions.TOP_RIGHT,
+  containerStyle: {
+    zIndex: 200,
+  },
+  offset: "70px",
 };
 const drawerWidth = 247;
 

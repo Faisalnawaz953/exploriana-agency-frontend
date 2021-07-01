@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col, FormGroup, Label, Form } from "reactstrap";
 import ProfilePic from "../../../assets/images/Ellipse22.png";
 import Input from "../../ui-elements/Input";
@@ -11,10 +12,11 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { useAlert } from "react-alert";
 import { addBrand } from "../../../dataServices/Services";
+import get from "lodash/get";
+import ApiLoader from "../../ui-elements/ApiLoader";
+
 const schema = yup.object().shape({
-  brandLogoUrl: yup.string().required(),
-  brandName: yup.string().required(),
-  colorCodeHex: yup.string().required(),
+  brandName: yup.string().required("Brand Name is Required"),
 });
 
 const useStyles = makeStyles((theme) => ({
@@ -33,23 +35,41 @@ const useStyles = makeStyles((theme) => ({
 const BrandSettings = () => {
   const classes = useStyles();
   const alert = useAlert();
+  const [currency, setCurrency] = React.useState("ind");
+  const [colorCode, setColorCode] = React.useState("#F2453D");
+  const [brandImage, setBrandImage] = React.useState();
+  const [loading, setLoading] = React.useState(false);
   const option = [
     { key: "option-1", value: "ind" },
     { key: "option-2", value: "rs" },
   ];
 
-  const submitHandler = (data) => {
+  const submitHandler = async (values) => {
     //TODO
     // uploadImage()
-    console.log(data);
-    addBrand(data)
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-        alert.error("Network Error Try Agian");
-      });
+    setLoading(true);
+    const data = {
+      brandLogoUrl: "Brand logo url",
+      brandName: values.brandName,
+      colorCodeHex: colorCode,
+    };
+    //TODO
+    // uploadImage()
+
+    const res = await addBrand(data);
+    console.log(res);
+
+    const resCode = get(res, "status");
+    if (resCode !== 200) {
+      setLoading(false);
+
+      alert.error("Network Error Try Agian");
+    }
+    if (resCode === 200) {
+      setLoading(false);
+
+      alert.success("Brand Changes Saved SuccessFully");
+    }
   };
 
   return (
@@ -59,7 +79,7 @@ const BrandSettings = () => {
           <Row>
             <Col md={{ size: 12 }}>
               <div className={classes.headText}>Edit Profile</div>
-              <EditImage />
+              <EditImage path={brandImage} setPath={setBrandImage} />
             </Col>
           </Row>
         </Form>
@@ -67,9 +87,6 @@ const BrandSettings = () => {
 
       <Formik
         initialValues={{
-          brandLogoUrl:
-            "https://www.tailorbrands.com/wp-content/uploads/2020/07/mcdonalds-logo.jpg",
-          colorCodeHex: "#028af4",
           brandName: "",
         }}
         validationSchema={schema}
@@ -86,36 +103,51 @@ const BrandSettings = () => {
           <Container>
             <Form>
               <Row>
-                <Col md={{ size: "7", offset: 3 }}>
-                  <FormGroup>
-                    <Input
-                      type="text"
-                      label="Brand Name"
-                      placeholder="John"
-                      height={"50px"}
-                      value={values.brandName}
-                      onBlur={handleBlur("brandName")}
-                      onChange={handleChange("brandName")}
-                      touched={touched.brandName}
-                      errors={errors.brandName}
-                    />
-                  </FormGroup>
-                </Col>
-                <Col md={{ size: "7", offset: 3 }}>
-                  <FormGroup>
-                    <DropDown
-                      type="select"
-                      options={option}
-                      label="Currency"
-                      height={"50px"}
-                      // onChange={handleChange("gender")}
-                    />
-                  </FormGroup>
-                </Col>
-
-                <Col md={{ size: "8", offset: 3 }}>
-                  <BrandColorTheme />
-                </Col>
+                {loading ? (
+                  <Col
+                    md={{ size: "8", offset: 2 }}
+                    style={{ height: "400px" }}
+                    className="d-flex align-items-center justify-content-center"
+                  >
+                    <ApiLoader />
+                  </Col>
+                ) : (
+                  <>
+                    <Col md={{ size: "7", offset: 3 }}>
+                      <FormGroup>
+                        <Input
+                          type="text"
+                          label="Brand Name"
+                          placeholder="John"
+                          height={"50px"}
+                          value={values.brandName}
+                          onBlur={handleBlur("brandName")}
+                          onChange={handleChange("brandName")}
+                          touched={touched.brandName}
+                          errors={errors.brandName}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col md={{ size: "7", offset: 3 }}>
+                      <FormGroup>
+                        <DropDown
+                          type="select"
+                          options={option}
+                          label="Currency"
+                          height={"50px"}
+                          value={currency}
+                          setValue={setCurrency}
+                        />
+                      </FormGroup>
+                    </Col>
+                    <Col md={{ size: "8", offset: 3 }}>
+                      <BrandColorTheme
+                        brandColor={colorCode}
+                        setBrandColor={(val) => setColorCode(val)}
+                      />
+                    </Col>
+                  </>
+                )}
 
                 <Col md={{ size: 7, offset: 3 }} className="text-center">
                   <Button

@@ -1,6 +1,10 @@
 import axios from "axios";
 import { BASE_URL, NETWORK_ERROR } from "../Constants/Constants";
 
+const token = localStorage.getItem("token");
+const config = {
+  headers: { Authorization: `Bearer ${token}` },
+};
 export const authService = async (email) => {
   try {
     return await axios.post(`${BASE_URL}users/login`, { email });
@@ -26,7 +30,7 @@ export const uploadImage = async (formData) => {
 
 export const updateProfile = async (data) => {
   try {
-    return await axios.post(`${BASE_URL}users/profile`, { data });
+    return await axios.post(`${BASE_URL}users/profile`, data, config);
   } catch (error) {
     return NETWORK_ERROR;
   }
@@ -34,7 +38,7 @@ export const updateProfile = async (data) => {
 
 export const addBrand = async (data) => {
   try {
-    return await axios.post(`${BASE_URL}users/brand`, { data });
+    return await axios.post(`${BASE_URL}users/brand`, data, config);
   } catch (error) {
     return NETWORK_ERROR;
   }

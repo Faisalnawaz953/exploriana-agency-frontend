@@ -20,6 +20,8 @@ import BackButton from "../../../components/ui-elements/BackButton";
 import { useHistory } from "react-router-dom";
 import UploadedImage from "../../../components/ui-elements/UploadedImage";
 import { SelectAllTwoTone } from "@material-ui/icons";
+import RadioButton from "../../../components/ui-elements/RadioButton";
+import CustomCheckBox from "../../../components/ui-elements/CustomCheckBox";
 
 const UploadClasses = () => {
   const history = useHistory();
@@ -52,6 +54,8 @@ const UploadClasses = () => {
   const [selectedFitnessGoal, setSelectedFitnessGoal] = useState([]);
   const [selectedType, setSelectedType] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState([]);
+  const [visibility, setVisibility] = useState("Draft");
+  const [additional, setAdditional] = useState([]);
 
   return (
     <>
@@ -192,20 +196,16 @@ const UploadClasses = () => {
               <b>Visibility</b>
             </Col>
             <Col md={{ size: 8, offset: 2 }} className="mt-3">
-              <Row>
-                <CustomInput
-                  type="radio"
-                  id="exampleCustomRadio"
-                  name="customRadio"
-                  className="mr-3"
+              <Row className="pl-3">
+                <RadioButton
                   label="Draft"
+                  value={visibility}
+                  setValue={setVisibility}
                 />
-
-                <CustomInput
-                  type="radio"
-                  id="exampleCustomRadio2"
-                  name="customRadio"
+                <RadioButton
                   label="Publish"
+                  value={visibility}
+                  setValue={setVisibility}
                 />
               </Row>
             </Col>
@@ -214,10 +214,10 @@ const UploadClasses = () => {
             </Col>
             <Col md={{ size: 8, offset: 2 }} className="mt-3">
               <Row>
-                <CustomInput
-                  type="checkbox"
-                  id="exampleCustomCheckbox"
+                <CustomCheckBox
                   label="Featured"
+                  value={additional}
+                  setValue={setAdditional}
                 />
               </Row>
             </Col>
