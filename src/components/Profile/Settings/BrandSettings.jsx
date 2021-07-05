@@ -11,7 +11,7 @@ import EditImage from "../../ui-elements/EditImage";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { useAlert } from "react-alert";
-import { addBrand } from "../../../dataServices/Services";
+import { addBrand, updateBrandImage } from "../../../dataServices/Services";
 import get from "lodash/get";
 import ApiLoader from "../../ui-elements/ApiLoader";
 
@@ -37,21 +37,42 @@ const BrandSettings = () => {
   const alert = useAlert();
   const [currency, setCurrency] = React.useState("ind");
   const [colorCode, setColorCode] = React.useState("#F2453D");
-  const [brandImage, setBrandImage] = React.useState();
+  const [image, setImage] = React.useState();
   const [loading, setLoading] = React.useState(false);
   const option = [
     { key: "option-1", value: "ind" },
     { key: "option-2", value: "rs" },
   ];
 
+  const uploadBrandImage = async (e) => {
+    console.log(URL.createObjectURL(e.target.files[0]));
+    setImage(URL.createObjectURL(e.target.files[0]));
+    let blobImage = await fetch(URL.createObjectURL(e.target.files[0])).then(
+      (r) => r.blob()
+    );
+
+    const formData = new FormData();
+
+    formData.append("image", blobImage);
+
+    const res = await updateBrandImage(formData);
+    console.log(res);
+    const resCode = get(res, "status");
+    if (resCode !== 200) {
+      alert.error("Network Error Try Agian");
+    }
+    if (resCode === 200) {
+      alert.success("Brand Image Updated");
+    }
+  };
   const submitHandler = async (values) => {
     //TODO
     // uploadImage()
     setLoading(true);
     const data = {
-      brandLogoUrl: "Brand logo url",
       brandName: values.brandName,
       colorCodeHex: colorCode,
+      currency: currency,
     };
     //TODO
     // uploadImage()
@@ -79,7 +100,11 @@ const BrandSettings = () => {
           <Row>
             <Col md={{ size: 12 }}>
               <div className={classes.headText}>Edit Profile</div>
-              <EditImage path={brandImage} setPath={setBrandImage} />
+              <EditImage
+                path={image}
+                setPath={setImage}
+                upload={uploadBrandImage}
+              />
             </Col>
           </Row>
         </Form>

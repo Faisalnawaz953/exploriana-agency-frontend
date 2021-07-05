@@ -9,7 +9,7 @@ import * as yup from "yup";
 import { Formik } from "formik";
 import { useAlert } from "react-alert";
 import ApiLoader from "../../components/ui-elements/ApiLoader";
-import { authService } from "../../dataServices/Services";
+import { register } from "../../dataServices/Services";
 import get from "lodash/get";
 
 const registerSchema = yup.object().shape({
@@ -27,20 +27,28 @@ export default function Register() {
   const handleSubmit = async (data) => {
     setLoading(true);
     const { email } = data;
-    const res = await authService(email);
+    const res = await register(email);
     console.log(res);
 
     const resCode = get(res, "status");
+    console.log();
     if (resCode !== 200) {
-      setLoading(false);
+      console.log(resCode);
+      if (resCode === 201) {
+        setLoading(false);
 
-      alert.error("Network Error Try Agian");
+        alert.error("User  Already exists");
+      } else {
+        setLoading(false);
+
+        alert.error("Network Error Try Agian");
+      }
     }
     if (resCode === 200) {
       setLoading(false);
       localStorage.setItem("token", res.data.token);
-      alert.success("Login Link Sent");
-      history.push("/login-success");
+      alert.success("Register Link Sent");
+      history.push("/register-success");
     }
   };
 

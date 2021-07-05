@@ -13,6 +13,13 @@ export const authService = async (email) => {
   }
 };
 
+export const register = async (email) => {
+  try {
+    return await axios.post(`${BASE_URL}users/register`, { email });
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
 export const uploadImage = async (formData) => {
   try {
     return await axios({
@@ -27,6 +34,13 @@ export const uploadImage = async (formData) => {
     return NETWORK_ERROR;
   }
 };
+export const registerProfile = async (data) => {
+  try {
+    return await axios.post(`${BASE_URL}users/register-profile`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
 
 export const updateProfile = async (data) => {
   try {
@@ -35,10 +49,78 @@ export const updateProfile = async (data) => {
     return NETWORK_ERROR;
   }
 };
+export const updateProfileImage = async (data) => {
+  try {
+    return await axios.post(
+      `${BASE_URL}users//upload-profile-image`,
+      data,
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const updateBrandImage = async (data) => {
+  try {
+    return await axios.post(
+      `${BASE_URL}users/upload-brand-image`,
+      data,
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
 
 export const addBrand = async (data) => {
   try {
     return await axios.post(`${BASE_URL}users/brand`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+
+export const addChallange = async (data) => {
+  try {
+    return await axios.post(`${BASE_URL}challenges/create`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+
+export const addTrainer = async (data) => {
+  try {
+    return await axios.post(`${BASE_URL}trainers/create`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+
+export const updateTrainerImage = async (data) => {
+  try {
+    return await axios.post(
+      `${BASE_URL}users/upload-trainer-image`,
+      data,
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const updateImage = async (data) => {
+  try {
+    return await axios.post(`${BASE_URL}users/upload-image`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const updateNotificationSettings = async (data) => {
+  try {
+    return await axios.post(
+      `${BASE_URL}users/notifications-settings`,
+      data,
+      config
+    );
   } catch (error) {
     return NETWORK_ERROR;
   }

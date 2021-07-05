@@ -40,7 +40,7 @@ const useStyles = makeStyles((theme) => ({
     color: "#429FBA",
   },
 }));
-export default function EditImage({ path, setPath }) {
+export default function EditImage({ path, setPath, upload }) {
   const classes = useStyles();
   return (
     <div className={classes.align}>
@@ -71,7 +71,7 @@ export default function EditImage({ path, setPath }) {
                 if (e.target.files[0] === undefined) {
                   setPath(path);
                 } else {
-                  setPath(URL.createObjectURL(e.target.files[0]));
+                  upload(e);
                 }
               }}
               type="file"

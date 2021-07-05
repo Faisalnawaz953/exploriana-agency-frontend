@@ -8,7 +8,7 @@ import FormControlLabel from "@material-ui/core/FormControlLabel";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
-const SingleEmailNotification = ({ id, notification }) => {
+const SingleEmailNotification = ({ id, label, checked, setChecked }) => {
   const [state, setState] = React.useState({
     checkedA: true,
     checkedB: true,
@@ -42,15 +42,15 @@ const SingleEmailNotification = ({ id, notification }) => {
           letterSpacing: "0.2px",
         }}
       >
-        {(id, notification)}
+        {label}
       </div>
 
       <FormControlLabel
         control={
           <MySwitch
-            checked={state.checkedA}
-            onChange={handleChange}
-            name="checkedA"
+            checked={checked}
+            onChange={() => setChecked(!checked)}
+            name="label"
           />
         }
       />

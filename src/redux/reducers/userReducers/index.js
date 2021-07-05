@@ -1,7 +1,7 @@
 import { LOGIN_SUCCESS } from "../../../Constants/Constants";
 
 const initialState = {
-  auth: null,
+  auth: true,
   user: {},
 };
 

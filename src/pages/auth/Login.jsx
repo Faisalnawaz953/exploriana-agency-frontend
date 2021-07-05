@@ -74,10 +74,10 @@ const Login = () => {
                     <>
                       <Input
                         label="Your Email"
+                        placeholder="forexample@gmail.com"
                         value={values.email}
                         onBlur={handleBlur("email")}
                         onChange={handleChange("email")}
-                        placeholder="forexample@gmail.com"
                         touched={touched.email}
                         errors={errors.email}
                       />

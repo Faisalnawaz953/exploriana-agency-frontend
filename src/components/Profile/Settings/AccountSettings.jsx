@@ -13,9 +13,13 @@ import { BottomNavigation } from "@material-ui/core";
 import { Formik } from "formik";
 import { useAlert } from "react-alert";
 import * as yup from "yup";
-import { uploadImage, updateProfile } from "../../../dataServices/Services";
+import {
+  updateProfileImage,
+  updateProfile,
+} from "../../../dataServices/Services";
 import RadioButton from "../../ui-elements/RadioButton";
 import ApiLoader from "../../ui-elements/ApiLoader";
+import UploadedImage from "../../ui-elements/UploadedImage";
 
 const useStyles = makeStyles((theme) => ({
   headText: {
@@ -51,27 +55,53 @@ const AccountSettings = () => {
   const [gender, setGender] = React.useState("Male");
   const [dob, setDob] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [files, setFiles] = React.useState([]);
+
   const option = [
     { key: "option-1", value: "Male" },
     { key: "option-2", value: "Female" },
   ];
 
+  const uploadProfileImage = async (e) => {
+    console.log(URL.createObjectURL(e.target.files[0]));
+    setImage(URL.createObjectURL(e.target.files[0]));
+    let blobImage = await fetch(URL.createObjectURL(e.target.files[0])).then(
+      (r) => r.blob()
+    );
+
+    const formData = new FormData();
+
+    formData.append("image", blobImage);
+
+    const res = await updateProfileImage(formData);
+    console.log(res);
+    const resCode = get(res, "status");
+    if (resCode !== 200) {
+      alert.error("Network Error Try Agian");
+    }
+    if (resCode === 200) {
+      alert.success("Profile Image Updated");
+    }
+  };
+
   const submitHandler = async (values) => {
     setLoading(true);
-    const data = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      dateOfBirth: dob,
-      gender: gender,
-      about: values.about,
-      coverImageUrl: "zawar@gmail.com",
-      weightUnit: weightUnit,
-      heightUnit: heightUnit,
-    };
+
+    const formData = new FormData();
+
+    formData.append("firstName", values.firstName);
+    formData.append("lastName", values.lastName);
+    formData.append("about", values.about);
+    formData.append("dateOfBirth", dob);
+    formData.append("gender", gender);
+    formData.append("weightUnit", weightUnit);
+    formData.append("heightUnit", heightUnit);
+    files.map((file) => formData.append("videos", file));
+
     //TODO
     // uploadImage()
 
-    const res = await updateProfile(data);
+    const res = await updateProfile(formData);
     console.log(res);
 
     const resCode = get(res, "status");
@@ -94,7 +124,11 @@ const AccountSettings = () => {
           <Row>
             <Col md={{ size: 12 }}>
               <div className={classes.headText}>Edit Profile</div>
-              <EditImage path={image} setPath={setImage} />
+              <EditImage
+                path={image}
+                setPath={setImage}
+                upload={(e) => uploadProfileImage(e)}
+              />
             </Col>
           </Row>
         </Form>
@@ -214,7 +248,9 @@ const AccountSettings = () => {
                       </FormGroup>
                     </Col>
                     <Col md={{ size: 8, offset: 2 }}>
-                      <ImageUpload />
+                      <ImageUpload files={files} setFiles={setFiles} />
+                      {files &&
+                        files.map((file, i) => <UploadedImage key={i} />)}
                     </Col>
                     <Col className="mt-3" md={{ size: 8, offset: 2 }}>
                       <label className="h5">Units</label>

@@ -47,6 +47,7 @@ const TrainerInfo = lazy(() =>
   import("./components/Profile/Settings/Trainer/TrainerInfo")
 );
 const Auth = lazy(() => import("./pages/auth/Auth"));
+const RegisterAuth = lazy(() => import("./pages/auth/RegisterAuth"));
 
 const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
   return (
@@ -54,7 +55,7 @@ const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
       {...rest}
       render={(props) => {
         const token = localStorage.getItem("token");
-        console.log("token",token);
+        console.log("token", token);
         return (
           <>
             {/* {console.log("authth", auth)} */}
@@ -64,7 +65,7 @@ const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
                   <Component {...props} />
                 </Suspense>
               </AuthLayout>
-            ) : token  ? (
+            ) : token ? (
               <Layout {...props}>
                 <Suspense fallback={<Spinner />}>
                   <Component {...props} />
@@ -113,6 +114,7 @@ export default function Router() {
   return (
     <Switch>
       <AppRoute exact path="/auth" component={Auth} fullLayout />
+      <AppRoute path="/register-auth" fullLayout component={RegisterAuth} />
       <AppRoute exact path="/login" fullLayout component={Login} />
       <AppRoute path="/register" fullLayout component={Register} />
       <AppRoute path="/login-success" fullLayout component={LoginSuccess} />
@@ -121,7 +123,7 @@ export default function Router() {
         fullLayout
         component={RegisterSuccess}
       />
-      <AppRoute path="/lets-get-know" fullLayout component={LetsGetKnow} />
+      <AppRoute path="/user" fullLayout component={LetsGetKnow} />
       <AppRoute path="/profile" component={Profile} />
       <AppRoute path="/membership" component={Membership} />
       <AppRoute path="/payment" component={Payment} />
