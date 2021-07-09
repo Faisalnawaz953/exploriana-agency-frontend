@@ -12,13 +12,15 @@ import { registerProfile } from "../../dataServices/Services";
 import { useAlert } from "react-alert";
 import get from "lodash/get";
 import ApiLoader from "../../components/ui-elements/ApiLoader";
+import { updateUser } from "../../redux/actions/userActions/userActions";
+import { connect } from "react-redux";
 
 const userSchema = yup.object().shape({
   firstName: yup.string().required("First Name is required"),
   lastName: yup.string().required("Last Name is required"),
 });
 
-const LetsGetKnow = () => {
+const LetsGetKnow = ({ updateUser }) => {
   const history = useHistory();
   const [loading, setLoading] = React.useState();
   const alert = useAlert();
@@ -37,12 +39,11 @@ const LetsGetKnow = () => {
     const resCode = get(res, "status");
     if (resCode !== 200) {
       setLoading(false);
-
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
       setLoading(false);
-
+      updateUser(res.data.user);
       alert.success("User Changes Saved SuccessFully");
       history.push("/");
     }
@@ -115,4 +116,11 @@ const LetsGetKnow = () => {
   );
 };
 
-export default LetsGetKnow;
+const matchDispatchToProps = (dispatch) => {
+  return {
+    updateUser: (user) => {
+      dispatch(updateUser(user));
+    },
+  };
+};
+export default connect(null, matchDispatchToProps)(LetsGetKnow);

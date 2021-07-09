@@ -5,6 +5,7 @@ import ApiLoader from "../../components/ui-elements/ApiLoader";
 import { useAlert } from "react-alert";
 import { login } from "../../redux/actions/userActions/userActions";
 import { connect } from "react-redux";
+import jwt_decode from "jwt-decode";
 
 const Auth = ({ location, history, login }) => {
   const [loading, setLoading] = React.useState(true);
@@ -16,7 +17,9 @@ const Auth = ({ location, history, login }) => {
   useEffect(() => {
     if (userToken === queryToken) {
       alert.success("Login SuccessFull");
-      login("hello");
+      var decoded = jwt_decode(queryToken);
+      console.log(decoded);
+      login(decoded.user);
       history.push("/");
     } else {
       alert.error("Login Failed.TRY AGAIN");

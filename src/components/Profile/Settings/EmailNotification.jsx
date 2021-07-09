@@ -6,14 +6,25 @@ import { useAlert } from "react-alert";
 import ApiLoader from "../../ui-elements/ApiLoader";
 import get from "lodash/get";
 import { updateNotificationSettings } from "../../../dataServices/Services";
+import { updateNotificationSettings as updateNotifications } from "../../../redux/actions/userActions/userActions";
+import { connect } from "react-redux";
+import { getNotificationSettings } from "../../../redux/selectors";
 
-const EmailNotification = () => {
+const EmailNotification = ({ updateNotifications, settings }) => {
   // const [email, setEmail] = useState(Notification);
   const alert = useAlert();
-  const [signUp, setSignUp] = useState(false);
-  const [classBooking, setClassBooking] = useState(false);
-  const [workout, setWorkOut] = useState(false);
-  const [classReminder, setClassReminder] = useState(false);
+  const [signUp, setSignUp] = useState(
+    settings && settings.signUp ? settings.signUp : false
+  );
+  const [classBooking, setClassBooking] = useState(
+    settings && settings.classBooking ? settings.classBooking : false
+  );
+  const [workout, setWorkOut] = useState(
+    settings && settings.workout ? settings.workout : false
+  );
+  const [classReminder, setClassReminder] = useState(
+    settings && settings.classReminder ? settings.classReminder : false
+  );
   const [inbox, setInbox] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -36,6 +47,7 @@ const EmailNotification = () => {
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      updateNotifications(res.data.notification);
       setLoading(false);
 
       alert.success("Notification Settings Updated");
@@ -122,4 +134,20 @@ const EmailNotification = () => {
   );
 };
 
-export default EmailNotification;
+const mapStateToProps = (state) => {
+  return {
+    settings: getNotificationSettings(state),
+  };
+};
+const matchDispatchToProps = (dispatch) => {
+  return {
+    updateNotifications: (settings) => {
+      dispatch(updateNotifications(settings));
+    },
+  };
+};
+
+export default connect(
+  mapStateToProps,
+  matchDispatchToProps
+)(EmailNotification);

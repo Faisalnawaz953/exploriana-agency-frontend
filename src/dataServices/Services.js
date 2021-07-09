@@ -125,3 +125,43 @@ export const updateNotificationSettings = async (data) => {
     return NETWORK_ERROR;
   }
 };
+export const getBrandById = async (userId) => {
+  try {
+    return await axios.get(
+      `${BASE_URL}users/brand/user/${userId}`,
+
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const getNotificationSettingsById = async (userId) => {
+  try {
+    return await axios.get(
+      `${BASE_URL}users/notification-settings/${userId}`,
+
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const updateLandingPage = async (data) => {
+  try {
+    return await axios.post(`${BASE_URL}landings/add`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const getLandingPageById = async (userId) => {
+  try {
+    return await axios.get(
+      `${BASE_URL}landings/user/${userId}`,
+
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};

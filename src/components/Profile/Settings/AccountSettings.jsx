@@ -20,6 +20,8 @@ import {
 import RadioButton from "../../ui-elements/RadioButton";
 import ApiLoader from "../../ui-elements/ApiLoader";
 import UploadedImage from "../../ui-elements/UploadedImage";
+import { connect } from "react-redux";
+import { updateUser } from "../../../redux/actions/userActions/userActions";
 
 const useStyles = makeStyles((theme) => ({
   headText: {
@@ -46,14 +48,22 @@ const schema = yup.object().shape({
     .required("Email is required."),
 });
 
-const AccountSettings = () => {
+const AccountSettings = ({ user, updateUser }) => {
   const classes = useStyles();
   const alert = useAlert();
-  const [image, setImage] = React.useState();
-  const [weightUnit, setWeightUnit] = React.useState("KG");
-  const [heightUnit, setHeightUnit] = React.useState("CM");
+  const [image, setImage] = React.useState(
+    user.user.coverImageUrl ? user.user.coverImageUrl : ""
+  );
+  const [weightUnit, setWeightUnit] = React.useState(
+    user.user.weightUnit ? user.user.weightUnit : "KG"
+  );
+  const [heightUnit, setHeightUnit] = React.useState(
+    user.user.heightUnit ? user.user.heightUnit : "CM"
+  );
   const [gender, setGender] = React.useState("Male");
-  const [dob, setDob] = React.useState("");
+  const [dob, setDob] = React.useState(
+    user.user.dateOfBirth ? user.user.dateOfBirth : ""
+  );
   const [loading, setLoading] = React.useState(false);
   const [files, setFiles] = React.useState([]);
 
@@ -80,8 +90,16 @@ const AccountSettings = () => {
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      updateUser(res.data.user);
       alert.success("Profile Image Updated");
     }
+  };
+  const videosUpload = async (acceptedFiles) => {
+    let url = URL.createObjectURL(acceptedFiles[0]);
+    let blob = await fetch(url).then((r) => r.blob());
+    let file = [...files];
+    file.push(blob);
+    setFiles(file);
   };
 
   const submitHandler = async (values) => {
@@ -111,11 +129,14 @@ const AccountSettings = () => {
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      updateUser(res.data.user);
       setLoading(false);
 
       alert.success("User Changes Saved SuccessFully");
     }
   };
+
+  React.useEffect(() => {}, []);
 
   return (
     <>
@@ -135,13 +156,14 @@ const AccountSettings = () => {
       </Container>
       <Formik
         initialValues={{
-          firstName: "",
-          lastName: "",
-          about: "",
-          email: "",
+          firstName: user.user.firstName,
+          lastName: user.user.lastName,
+          about: user.user.about,
+          email: user.user.email,
         }}
         validationSchema={schema}
         onSubmit={submitHandler}
+        enableReinitialize={true}
       >
         {({
           handleChange,
@@ -248,7 +270,10 @@ const AccountSettings = () => {
                       </FormGroup>
                     </Col>
                     <Col md={{ size: 8, offset: 2 }}>
-                      <ImageUpload files={files} setFiles={setFiles} />
+                      <ImageUpload
+                        files={files}
+                        setSelectedFiles={videosUpload}
+                      />
                       {files &&
                         files.map((file, i) => <UploadedImage key={i} />)}
                     </Col>
@@ -308,5 +333,17 @@ const AccountSettings = () => {
     </>
   );
 };
+const mapStateToProps = (state) => {
+  return {
+    user: state.user,
+  };
+};
+const matchDispatchToProps = (dispatch) => {
+  return {
+    updateUser: (user) => {
+      dispatch(updateUser(user));
+    },
+  };
+};
 
-export default AccountSettings;
+export default connect(mapStateToProps, matchDispatchToProps)(AccountSettings);

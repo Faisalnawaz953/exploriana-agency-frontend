@@ -14,6 +14,9 @@ import { useAlert } from "react-alert";
 import { addBrand, updateBrandImage } from "../../../dataServices/Services";
 import get from "lodash/get";
 import ApiLoader from "../../ui-elements/ApiLoader";
+import { getUserId, getBrand } from "../../../redux/selectors";
+import { updateBrand } from "../../../redux/actions/userActions/userActions";
+import { connect } from "react-redux";
 
 const schema = yup.object().shape({
   brandName: yup.string().required("Brand Name is Required"),
@@ -32,12 +35,18 @@ const useStyles = makeStyles((theme) => ({
     color: "#2B2B2B",
   },
 }));
-const BrandSettings = () => {
+const BrandSettings = ({ brand, updateBrand }) => {
   const classes = useStyles();
   const alert = useAlert();
-  const [currency, setCurrency] = React.useState("ind");
-  const [colorCode, setColorCode] = React.useState("#F2453D");
-  const [image, setImage] = React.useState();
+  const [currency, setCurrency] = React.useState(
+    brand && brand.currency ? brand.currency : "ind"
+  );
+  const [colorCode, setColorCode] = React.useState(
+    brand && brand.colorCodeHex ? brand.colorCodeHex : "#F2453D"
+  );
+  const [image, setImage] = React.useState(
+    brand && brand.brandLogoUrl ? brand.brandLogoUrl : ""
+  );
   const [loading, setLoading] = React.useState(false);
   const option = [
     { key: "option-1", value: "ind" },
@@ -62,6 +71,7 @@ const BrandSettings = () => {
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      updateBrand(res.data.brand);
       alert.success("Brand Image Updated");
     }
   };
@@ -87,6 +97,7 @@ const BrandSettings = () => {
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      updateBrand(res.data.brand);
       setLoading(false);
 
       alert.success("Brand Changes Saved SuccessFully");
@@ -112,10 +123,11 @@ const BrandSettings = () => {
 
       <Formik
         initialValues={{
-          brandName: "",
+          brandName: brand && brand.brandName ? brand.brandName : "",
         }}
         validationSchema={schema}
         onSubmit={submitHandler}
+        enableReinitialize={true}
       >
         {({
           handleChange,
@@ -191,4 +203,17 @@ const BrandSettings = () => {
   );
 };
 
-export default BrandSettings;
+const mapStateToProps = (state) => {
+  return {
+    brand: getBrand(state),
+  };
+};
+const matchDispatchToProps = (dispatch) => {
+  return {
+    updateBrand: (brand) => {
+      dispatch(updateBrand(brand));
+    },
+  };
+};
+
+export default connect(mapStateToProps, matchDispatchToProps)(BrandSettings);

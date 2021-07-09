@@ -2,7 +2,7 @@ import { Label } from "reactstrap";
 import "../../css/imageupload.css";
 import Dropzone from "react-dropzone";
 
-const ImageUpload = ({ text, files, setFiles }) => {
+const ImageUpload = ({ text, files, setSelectedFiles }) => {
   return (
     <>
       <Label>
@@ -24,13 +24,8 @@ const ImageUpload = ({ text, files, setFiles }) => {
       </div> */}
       <Dropzone
         maxFiles={1}
-        onDrop={async (acceptedFiles) => {
-          let url = URL.createObjectURL(acceptedFiles[0]);
-          let blob = await fetch(url).then((r) => r.blob());
-          let file = [...files];
-          file.push(blob);
-
-          setFiles(file);
+        onDrop={(acceptedFiles) => {
+          setSelectedFiles(acceptedFiles);
         }}
       >
         {({ getRootProps, getInputProps, isDragActive }) => (

@@ -5,6 +5,7 @@ import ApiLoader from "../../components/ui-elements/ApiLoader";
 import { useAlert } from "react-alert";
 import { login } from "../../redux/actions/userActions/userActions";
 import { connect } from "react-redux";
+import jwt_decode from "jwt-decode";
 
 const RegisterAuth = ({ location, history, login }) => {
   const [loading, setLoading] = React.useState(true);
@@ -16,7 +17,10 @@ const RegisterAuth = ({ location, history, login }) => {
   useEffect(() => {
     if (userToken === queryToken) {
       alert.success("Register SuccessFull");
-      login("hello");
+      var decoded = jwt_decode(queryToken);
+      console.log(decoded);
+      login(decoded.user);
+
       history.push("/user");
     } else {
       alert.error("Register Failed.TRY AGAIN");

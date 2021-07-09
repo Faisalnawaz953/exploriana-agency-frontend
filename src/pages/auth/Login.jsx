@@ -40,6 +40,11 @@ const Login = () => {
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      if (!res.data.success) {
+        setLoading(false);
+        alert.error("User Not Exists");
+        return;
+      }
       setLoading(false);
       localStorage.setItem("token", res.data.token);
       alert.success("Login Link Sent");
