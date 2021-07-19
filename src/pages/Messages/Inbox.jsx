@@ -1,3 +1,4 @@
+import React from "react";
 import { Row, Col } from "reactstrap";
 import InboxHeader from "../../components/ui-elements/InboxHeader";
 import styles from "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
@@ -14,7 +15,7 @@ import {
   Sidebar,
   ConversationHeader,
   TypingIndicator,
-  MessageSeparator,
+  MessageSeparator
 } from "@chatscope/chat-ui-kit-react";
 import ChatImage from "../../assets/images/Ellipse 2.png";
 import MessagesSearchBox from "../../components/ui-elements/SearchBoxMessages";
@@ -96,7 +97,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Zoe",
                   direction: "incoming",
-                  position: "single",
+                  position: "single"
                 }}
               >
                 <Avatar src={ChatImage} name="Zoe" />
@@ -108,7 +109,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Zoe",
                   direction: "incoming",
-                  position: "normal",
+                  position: "normal"
                 }}
                 avatarSpacer
               />
@@ -118,7 +119,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Zoe",
                   direction: "incoming",
-                  position: "normal",
+                  position: "normal"
                 }}
                 avatarSpacer
               />
@@ -128,7 +129,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Zoe",
                   direction: "incoming",
-                  position: "last",
+                  position: "last"
                 }}
               >
                 <Avatar src={ChatImage} name="Zoe" />
@@ -140,7 +141,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Patrik",
                   direction: "outgoing",
-                  position: "first",
+                  position: "first"
                 }}
               />
               <Message
@@ -149,7 +150,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Patrik",
                   direction: "outgoing",
-                  position: "normal",
+                  position: "normal"
                 }}
               />
               <Message
@@ -158,7 +159,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Patrik",
                   direction: "outgoing",
-                  position: "normal",
+                  position: "normal"
                 }}
               />
               <Message
@@ -167,7 +168,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Patrik",
                   direction: "outgoing",
-                  position: "last",
+                  position: "last"
                 }}
               />
 
@@ -177,7 +178,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Zoe",
                   direction: "incoming",
-                  position: "first",
+                  position: "first"
                 }}
                 avatarSpacer
               />
@@ -187,7 +188,7 @@ export default function Inbox() {
                   sentTime: "15 mins ago",
                   sender: "Zoe",
                   direction: "incoming",
-                  position: "last",
+                  position: "last"
                 }}
               >
                 <Avatar src={ChatImage} name="Zoe" />

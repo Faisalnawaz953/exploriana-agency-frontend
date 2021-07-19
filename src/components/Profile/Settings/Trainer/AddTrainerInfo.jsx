@@ -29,9 +29,9 @@ const addTrainerSchema = yup.object().shape({
     .required("Email is required."),
   facebook: yup.string().required("Facebook link is required"),
   instagram: yup.string().required("Instagram link is required"),
-  twitter: yup.string().required("Twitter link is required"),
+  twitter: yup.string().required("Twitter link is required")
 });
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   headText: {
     fontStyle: "normal",
     fontWeight: "600",
@@ -41,8 +41,8 @@ const useStyles = makeStyles((theme) => ({
 
     letterSpacing: "0.6px",
 
-    color: "#2B2B2B",
-  },
+    color: "#2B2B2B"
+  }
 }));
 
 const AddTrainerInfo = () => {
@@ -54,11 +54,19 @@ const AddTrainerInfo = () => {
   const alert = useAlert();
   const [blobImage, setBlobImage] = React.useState();
 
-  const uploadTrainerImage = async (e) => {
+  const videosUpload = async acceptedFiles => {
+    let url = URL.createObjectURL(acceptedFiles[0]);
+    let blob = await fetch(url).then(r => r.blob());
+    let file = [...files];
+    file.push(blob);
+    setFiles(file);
+  };
+
+  const uploadTrainerImage = async e => {
     console.log(URL.createObjectURL(e.target.files[0]));
     setImage(URL.createObjectURL(e.target.files[0]));
     let blobimage = await fetch(URL.createObjectURL(e.target.files[0])).then(
-      (r) => r.blob()
+      r => r.blob()
     );
     const formData = new FormData();
 
@@ -75,7 +83,7 @@ const AddTrainerInfo = () => {
       alert.success("Trainer Image Added");
     }
   };
-  const uploadTrainer = async (values) => {
+  const uploadTrainer = async values => {
     setLoading(true);
     const formData = new FormData();
 
@@ -122,19 +130,19 @@ const AddTrainerInfo = () => {
         about: "",
         facebook: "",
         twitter: "",
-        instagram: "",
+        instagram: ""
       }}
       validationSchema={addTrainerSchema}
       onSubmit={uploadTrainer}
     >
-      {(props) => {
+      {props => {
         const {
           handleChange,
           handleBlur,
           values,
           errors,
           touched,
-          handleSubmit,
+          handleSubmit
         } = props;
         return (
           <>
@@ -150,7 +158,7 @@ const AddTrainerInfo = () => {
                   <EditImage
                     path={image}
                     setPath={setImage}
-                    upload={(e) => uploadTrainerImage(e)}
+                    upload={e => uploadTrainerImage(e)}
                   />
                 </Col>
               </Row>
@@ -283,7 +291,7 @@ const AddTrainerInfo = () => {
                         <ImageUpload
                           text="Intro video file"
                           files={files}
-                          setFiles={setFiles}
+                          setSelectedFiles={videosUpload}
                         />
                         {files &&
                           files.map((file, i) => <UploadedImage key={i} />)}

@@ -15,7 +15,7 @@ import { useAlert } from "react-alert";
 import * as yup from "yup";
 import {
   updateProfileImage,
-  updateProfile,
+  updateProfile
 } from "../../../dataServices/Services";
 import RadioButton from "../../ui-elements/RadioButton";
 import ApiLoader from "../../ui-elements/ApiLoader";
@@ -23,7 +23,7 @@ import UploadedImage from "../../ui-elements/UploadedImage";
 import { connect } from "react-redux";
 import { updateUser } from "../../../redux/actions/userActions/userActions";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   headText: {
     fontStyle: "normal",
     fontWeight: "600",
@@ -33,8 +33,8 @@ const useStyles = makeStyles((theme) => ({
 
     letterSpacing: "0.6px",
 
-    color: "#2B2B2B",
-  },
+    color: "#2B2B2B"
+  }
 }));
 
 const schema = yup.object().shape({
@@ -45,7 +45,7 @@ const schema = yup.object().shape({
   email: yup
     .string()
     .email("Must be Email Format.")
-    .required("Email is required."),
+    .required("Email is required.")
 });
 
 const AccountSettings = ({ user, updateUser }) => {
@@ -69,14 +69,14 @@ const AccountSettings = ({ user, updateUser }) => {
 
   const option = [
     { key: "option-1", value: "Male" },
-    { key: "option-2", value: "Female" },
+    { key: "option-2", value: "Female" }
   ];
 
-  const uploadProfileImage = async (e) => {
+  const uploadProfileImage = async e => {
     console.log(URL.createObjectURL(e.target.files[0]));
     setImage(URL.createObjectURL(e.target.files[0]));
     let blobImage = await fetch(URL.createObjectURL(e.target.files[0])).then(
-      (r) => r.blob()
+      r => r.blob()
     );
 
     const formData = new FormData();
@@ -94,15 +94,15 @@ const AccountSettings = ({ user, updateUser }) => {
       alert.success("Profile Image Updated");
     }
   };
-  const videosUpload = async (acceptedFiles) => {
+  const videosUpload = async acceptedFiles => {
     let url = URL.createObjectURL(acceptedFiles[0]);
-    let blob = await fetch(url).then((r) => r.blob());
+    let blob = await fetch(url).then(r => r.blob());
     let file = [...files];
     file.push(blob);
     setFiles(file);
   };
 
-  const submitHandler = async (values) => {
+  const submitHandler = async values => {
     setLoading(true);
 
     const formData = new FormData();
@@ -114,7 +114,7 @@ const AccountSettings = ({ user, updateUser }) => {
     formData.append("gender", gender);
     formData.append("weightUnit", weightUnit);
     formData.append("heightUnit", heightUnit);
-    files.map((file) => formData.append("videos", file));
+    files.map(file => formData.append("videos", file));
 
     //TODO
     // uploadImage()
@@ -148,7 +148,7 @@ const AccountSettings = ({ user, updateUser }) => {
               <EditImage
                 path={image}
                 setPath={setImage}
-                upload={(e) => uploadProfileImage(e)}
+                upload={e => uploadProfileImage(e)}
               />
             </Col>
           </Row>
@@ -159,7 +159,7 @@ const AccountSettings = ({ user, updateUser }) => {
           firstName: user.user.firstName,
           lastName: user.user.lastName,
           about: user.user.about,
-          email: user.user.email,
+          email: user.user.email
         }}
         validationSchema={schema}
         onSubmit={submitHandler}
@@ -171,7 +171,7 @@ const AccountSettings = ({ user, updateUser }) => {
           values,
           errors,
           touched,
-          handleSubmit,
+          handleSubmit
         }) => (
           <Form>
             <Container>
@@ -273,6 +273,7 @@ const AccountSettings = ({ user, updateUser }) => {
                       <ImageUpload
                         files={files}
                         setSelectedFiles={videosUpload}
+                        video
                       />
                       {files &&
                         files.map((file, i) => <UploadedImage key={i} />)}
@@ -319,7 +320,7 @@ const AccountSettings = ({ user, updateUser }) => {
                     text="SAVE CHANGES"
                     width="100%"
                     height="2.5rem"
-                    onClick={(e) => {
+                    onClick={e => {
                       console.log("click");
                       handleSubmit(e);
                     }}
@@ -333,16 +334,16 @@ const AccountSettings = ({ user, updateUser }) => {
     </>
   );
 };
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    user: state.user,
+    user: state.user
   };
 };
-const matchDispatchToProps = (dispatch) => {
+const matchDispatchToProps = dispatch => {
   return {
-    updateUser: (user) => {
+    updateUser: user => {
       dispatch(updateUser(user));
-    },
+    }
   };
 };
 

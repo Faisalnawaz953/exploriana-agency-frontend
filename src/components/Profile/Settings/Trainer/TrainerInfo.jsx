@@ -1,3 +1,4 @@
+import React from "react";
 import ProfilePic from "../../../../assets/images/Ellipse22.png";
 import { Container, Col, Row, FormGroup, Form } from "reactstrap";
 import Input from "../../../ui-elements/Input";
@@ -10,7 +11,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import { BottomNavigation } from "@material-ui/core";
 import EditImage from "../../../ui-elements/EditImage";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   headText: {
     fontStyle: "normal",
     fontWeight: "600",
@@ -20,8 +21,8 @@ const useStyles = makeStyles((theme) => ({
 
     letterSpacing: "0.6px",
 
-    color: "#2B2B2B",
-  },
+    color: "#2B2B2B"
+  }
 }));
 
 const TrainerInfo = () => {

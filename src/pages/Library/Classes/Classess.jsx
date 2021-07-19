@@ -12,31 +12,44 @@ import EditPopUp from "../../../components/ui-elements/EditPopUp";
 import { useHistory } from "react-router-dom";
 import "../../../css/Classes.css";
 import { makeStyles } from "@material-ui/core/styles";
+import { getUserClassRooms } from "../../../dataServices/Services";
+import { connect } from "react-redux";
+import { get, isEmpty, map } from "lodash";
+import { useAlert } from "react-alert";
+import { getClassrooms } from "../../../redux/selectors";
+import { updateClassrooms } from "../../../redux/actions/userActions/userActions";
+import {
+  getDaysDifference,
+  handleEditPopUp
+} from "../../../config/GlobalFunctions";
 
-const useStyles = makeStyles((theme) => ({
-  sectionDesktop: {
-    width: "200px",
-    [theme.breakpoints.up("md")]: {},
-  },
-}));
-
-const Classess = () => {
-  const classes = useStyles();
+const Classes = ({ updateClassrooms, classes }) => {
   const history = useHistory();
-  const editRef = useRef();
-  const handleEditPopUp = () => {
-    if (editRef.current.style.display === "block") {
-      editRef.current.style.display = "none";
+  const editRef = useRef([]);
+  const alert = useAlert();
+
+  const loadClassrooms = async () => {
+    const res = await getUserClassRooms();
+
+    const resCode = get(res, "status");
+    console.log("", res);
+
+    if (resCode === 200) {
+      updateClassrooms(res.data.classrooms);
     } else {
-      editRef.current.style.display = "block";
+      alert.error("Error Loading ClassRooms.");
     }
   };
+  React.useEffect(() => {
+    loadClassrooms();
+  }, []);
+
   return (
     <>
       <Container>
         <Row>
           <div className="mt-3 classess text-lg-left  text-md-left text-sm-center text-center">
-            All Classes (100)
+            All Classes {isEmpty(classes) ? "(0)" : `(${classes.length})`}
           </div>
 
           <div className="ml-auto ">
@@ -77,123 +90,65 @@ const Classess = () => {
             </th>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                {/* <div className="d-flex justify-content-center">
-                  <img
-                    src={ProfilePic}
-                    className=""
-                    width="50px"
-                    height="50px"
-                  />
-
-                  <p>
-                    <ul style={{ listStyle: "none" }} className="p-0">
-                      <li> Robert Fox</li>
-                      <li>
-                        {" "}
-                        <span
-                          style={{
-                            fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
-                          }}
-                        >
-                          Added 08, October 2019
-                        </span>
-                      </li>
-                    </ul>
-                  </p>
-                </div>*/}
-                <>
+            {isEmpty(classes) && (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  No Classrooms Added Yet.
+                </td>
+              </tr>
+            )}
+            {!isEmpty(classes) &&
+              classes.map((classroom, index) => (
+                <tr>
                   <td>
-                    <img src={ProfilePic} />
+                    <td>{classroom.title}</td>
                   </td>
                   <td>
-                    <p>
-                      Cardio Blast.mp4 <br />
-                      211MB{" "}
-                    </p>
+                    {getDaysDifference(classroom.createdAt) < 1
+                      ? "Today"
+                      : getDaysDifference(classroom.createdAt) + " days ago"}
                   </td>
-                </>
-              </td>
-              <td>4 days ago</td>
-              <td>HIT</td>
-              <td>1000</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td style={{ position: "relative" }}>
-                <MoreVertIcon
-                  style={{ cursor: "pointer" }}
-                  onClick={handleEditPopUp}
-                />
-                <div
-                  style={{
-                    display: "none",
-                    position: "absolute",
-                    top: 80,
-                    right: 40,
-                    zIndex: 9,
-                  }}
-                  ref={editRef}
-                >
-                  <EditPopUp />
-                </div>
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                {/* <div className="d-flex justify-content-center">
-                  <img
-                    src={ProfilePic}
-                    className=""
-                    width="50px"
-                    height="50px"
-                  />
-
-                  <p>
-                    <ul style={{ listStyle: "none" }} className="p-0">
-                      <li> Robert Fox</li>
-                      <li>
-                        {" "}
-                        <span
-                          style={{
-                            fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
-                          }}
-                        >
-                          Added 08, October 2019
-                        </span>
-                      </li>
-                    </ul>
-                  </p>
-                </div> */}
-                <>
-                  <td>
-                    <img src={ProfilePic} />
+                  <td>{classroom.category}</td>
+                  <td>1000</td>
+                  <td>50</td>
+                  <td>4.5</td>
+                  <td className="text-right" style={{ position: "relative" }}>
+                    <MoreVertIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleEditPopUp(editRef, index, classes)}
+                    />
+                    <div
+                      style={{
+                        display: "none",
+                        position: "absolute",
+                        top: 20,
+                        right: 40,
+                        zIndex: 9
+                      }}
+                      ref={el => (editRef.current[index] = el)}
+                    >
+                      <EditPopUp />
+                    </div>
                   </td>
-                  <td>
-                    <p>
-                      Cardio Blast.mp4 <br />
-                      211MB{" "}
-                    </p>
-                  </td>
-                </>
-              </td>
-              <td>4 days ago</td>
-              <td>HIT</td>
-              <td>1000</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td>
-                <MoreVertIcon />
-              </td>
-            </tr>
+                </tr>
+              ))}
           </tbody>
         </table>
       </div>
     </>
   );
 };
+const mapStateToProps = state => {
+  return {
+    classes: getClassrooms(state)
+  };
+};
+const matchDispatchToProps = dispatch => {
+  return {
+    updateClassrooms: classrooms => {
+      dispatch(updateClassrooms(classrooms));
+    }
+  };
+};
 
-export default Classess;
+export default connect(mapStateToProps, matchDispatchToProps)(Classes);

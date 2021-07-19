@@ -23,7 +23,7 @@ const uploadChallangeSchema = yup.object().shape({
     .required("Price is Required.")
     .typeError("Enter Price in Numbers."),
   description: yup.string().required("Description is required."),
-  notes: yup.string().required("Required"),
+  notes: yup.string().required("Required")
 });
 
 const UploadChallenges = () => {
@@ -52,7 +52,14 @@ const UploadChallenges = () => {
       videoRef.current.style.display = "none";
     }
   };
-  const addNewChallenge = async (values) => {
+  const videosUpload = async acceptedFiles => {
+    let url = URL.createObjectURL(acceptedFiles[0]);
+    let blob = await fetch(url).then(r => r.blob());
+    let file = [...files];
+    file.push(blob);
+    setFiles(file);
+  };
+  const addNewChallenge = async values => {
     setLoading(true);
     const formData = new FormData();
 
@@ -91,14 +98,14 @@ const UploadChallenges = () => {
       validationSchema={uploadChallangeSchema}
       onSubmit={addNewChallenge}
     >
-      {(props) => {
+      {props => {
         const {
           handleChange,
           handleBlur,
           values,
           errors,
           touched,
-          handleSubmit,
+          handleSubmit
         } = props;
         return (
           <>
@@ -148,8 +155,8 @@ const UploadChallenges = () => {
                       <Col md={{ size: 8, offset: 2 }}>
                         <ImageUpload
                           text="Video file"
-                          files={files}
-                          setFiles={setFiles}
+                          setSelectedFiles={videosUpload}
+                          video
                         />
                         {files &&
                           files.map((file, i) => <UploadedImage key={i} />)}
@@ -240,7 +247,7 @@ const UploadChallenges = () => {
                             top: 13,
                             right: 90,
                             zIndex: 9,
-                            position: "absolute",
+                            position: "absolute"
                           }}
                           ref={classRef}
                         >
@@ -253,7 +260,7 @@ const UploadChallenges = () => {
                             top: 13,
                             right: -2,
                             zIndex: 9,
-                            position: "absolute",
+                            position: "absolute"
                           }}
                           ref={videoRef}
                         >

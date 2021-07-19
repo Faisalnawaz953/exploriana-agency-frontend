@@ -11,13 +11,13 @@ import {
   DropdownToggle,
   DropdownMenu,
   DropdownItem,
-  NavbarText,
+  NavbarText
 } from "reactstrap";
 import User from "../assets/images/Ellipse 2.png";
 import EmailOutlinedIcon from "@material-ui/icons/EmailOutlined";
 import NotificationImportantOutlinedIcon from "@material-ui/icons/NotificationImportantOutlined";
 
-const Example = (props) => {
+const Example = props => {
   const [isOpen, setIsOpen] = useState(false);
 
   const toggle = () => setIsOpen(!isOpen);

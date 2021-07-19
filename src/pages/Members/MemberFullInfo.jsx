@@ -1,3 +1,4 @@
+import React from "react";
 import ProfilePic from "../../assets/images/Ellipse.png";
 import { Container, Row, Col, FormGroup, Form } from "reactstrap";
 import Input from "../../components/ui-elements/Input";
@@ -10,7 +11,7 @@ const MemberFullInfo = () => {
   const history = useHistory();
   const option = [
     { key: "option-1", value: "Male" },
-    { key: "option-2", value: "Female" },
+    { key: "option-2", value: "Female" }
   ];
   return (
     <>

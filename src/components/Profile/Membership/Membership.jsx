@@ -1,3 +1,4 @@
+import React from "react";
 import { Col, Container, Row } from "reactstrap";
 import Button from "../../ui-elements/Button";
 import IconButton from "../../ui-elements/IconButton";
@@ -7,7 +8,7 @@ import CheckCircleOutlineIcon from "@material-ui/icons/CheckCircleOutline";
 const MemberShip = () => {
   const styles = {
     margin: "0 auto",
-    marginTop: "10%",
+    marginTop: "10%"
   };
   return (
     <div>

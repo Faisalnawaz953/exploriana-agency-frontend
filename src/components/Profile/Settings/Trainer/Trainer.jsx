@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col, Table } from "reactstrap";
 import "../../../../css/customTable.css";
 import IconButton from "../../../ui-elements/IconButton";
@@ -22,7 +23,7 @@ const AddTrainer = () => {
 
           <IconButton
             title="Add Trainer"
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               history.push("/add-trainer-info");
             }}
@@ -64,7 +65,7 @@ const AddTrainer = () => {
                       <span
                         style={{
                           fontSize: "10px",
-                          color: "rgba(176, 176, 176, 1)",
+                          color: "rgba(176, 176, 176, 1)"
                         }}
                       >
                         Added 08, October 2019
@@ -88,9 +89,9 @@ const AddTrainer = () => {
                     width: "50px",
                     height: "40px",
                     borderRadius: "5px",
-                    cursor: "pointer",
+                    cursor: "pointer"
                   }}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault();
                     history.push("/inbox");
                   }}
@@ -118,7 +119,7 @@ const AddTrainer = () => {
                       <span
                         style={{
                           fontSize: "10px",
-                          color: "rgba(176, 176, 176, 1)",
+                          color: "rgba(176, 176, 176, 1)"
                         }}
                       >
                         Added 08, October 2019
@@ -141,7 +142,7 @@ const AddTrainer = () => {
                     color: "rgba(66, 159, 186, 0.89)",
                     width: "50px",
                     height: "40px",
-                    borderRadius: "5px",
+                    borderRadius: "5px"
                   }}
                 />
               </td>

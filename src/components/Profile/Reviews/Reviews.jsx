@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col, FormGroup, CustomInput } from "reactstrap";
 import "../../../css/reviewsTable.css";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
@@ -11,12 +12,12 @@ const Reviews = () => {
   const options = [
     {
       key: "option-1",
-      value: "Newest",
+      value: "Newest"
     },
     {
       key: "option-2",
-      value: "Old",
-    },
+      value: "Old"
+    }
   ];
   return (
     <>
@@ -150,7 +151,7 @@ const Reviews = () => {
                         <span
                           style={{
                             fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
+                            color: "rgba(176, 176, 176, 1)"
                           }}
                         >
                           Added 08, October 2019
@@ -209,7 +210,7 @@ const Reviews = () => {
                         <span
                           style={{
                             fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
+                            color: "rgba(176, 176, 176, 1)"
                           }}
                         >
                           Added 08, October 2019

@@ -1,3 +1,4 @@
+import React from "react";
 import "../../css/uploadedImage.css";
 import ProfilePic from "../../assets/images/Rectangle 1350.png";
 import DeleteOutlineIcon from "@material-ui/icons/DeleteOutline";

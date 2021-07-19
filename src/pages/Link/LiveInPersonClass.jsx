@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { Container, Row, Col, Form, CustomInput } from "reactstrap";
 import BackButton from "../../components/ui-elements/BackButton";
@@ -15,34 +16,34 @@ const LiveInPersonClass = () => {
     { key: "option-1", value: " 15 minutes" },
     { key: "option-2", value: " 25 minutes" },
     { key: "option-3", value: " 35 minutes" },
-    { key: "option-4", value: " 45 minutes" },
+    { key: "option-4", value: " 45 minutes" }
   ];
   const Trainer = [
     { key: "option-1", value: " Anna Martin" },
     { key: "option-2", value: " abc" },
     { key: "option-3", value: " xyz" },
-    { key: "option-4", value: " abc xyz" },
+    { key: "option-4", value: " abc xyz" }
   ];
   const type = [
     { key: "option-1", value: "Virtual" },
-    { key: "option-1", value: "Non-Virtual" },
+    { key: "option-1", value: "Non-Virtual" }
   ];
   const type1 = [
     { key: "option-1", value: "In-Person" },
     { key: "option-1", value: "xyz" },
     { key: "option-1", value: "abc" },
-    { key: "option-1", value: "abcxyz" },
+    { key: "option-1", value: "abcxyz" }
   ];
   const tags = [
     { id: "1", tag: " + New" },
     { id: "2", tag: " HIT" },
-    { id: "3", tag: " YOGA" },
+    { id: "3", tag: " YOGA" }
   ];
   const targetArea = [
     { id: "1", tag: " Upper body" },
     { id: "2", tag: " Full body" },
     { id: "3", tag: " Core" },
-    { id: "4", tag: " Lower body" },
+    { id: "4", tag: " Lower body" }
   ];
   const FitnessGoal = [
     { id: "1", tag: " Be more active" },
@@ -51,17 +52,17 @@ const LiveInPersonClass = () => {
     { id: "4", tag: " Build muscle" },
     { id: "5", tag: " Reduce stress" },
     { id: "6", tag: " Improve flexibility" },
-    { id: "7", tag: " Increase strength" },
+    { id: "7", tag: " Increase strength" }
   ];
   const Type = [
     { id: "1", tag: " Cardio    " },
     { id: "2", tag: " Strength" },
-    { id: "3", tag: " Calm" },
+    { id: "3", tag: " Calm" }
   ];
   const Locations = [
     { id: "1", value: "Pure Fitness" },
     { id: "2", value: "abc" },
-    { id: "3", value: "xyz" },
+    { id: "3", value: "xyz" }
   ];
 
   return (

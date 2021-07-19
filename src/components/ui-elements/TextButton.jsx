@@ -2,7 +2,7 @@ import React from "react";
 import { makeStyles } from "@material-ui/core/styles";
 import Classess from "../../pages/Library/Classes/Classess";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     color: "#429FBA",
 
@@ -11,13 +11,14 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    width: "90px",
+    width: "auto",
     height: "30px",
+    padding: "10px",
     "&:hover": {
       backgroundColor: "rgb(66, 159, 186,0.1)",
-      borderRadius: "20px",
-    },
-  },
+      borderRadius: "20px"
+    }
+  }
 }));
 export default function TextButton({ label, marginRight, onClick }) {
   const classes = useStyles();

@@ -1,7 +1,16 @@
+import React from "react";
 import { Button } from "reactstrap";
 import "../../assets/css/button.css";
 
-const CustomButton = ({ width, height, text, onClick, link }) => {
+const CustomButton = ({
+  width,
+  height,
+  text,
+  onClick,
+  link,
+  marginBottom,
+  marginTop
+}) => {
   return (
     <>
       {link ? (
@@ -15,7 +24,10 @@ const CustomButton = ({ width, height, text, onClick, link }) => {
         <Button
           onClick={onClick}
           className="custom_buttom_design mt-4 "
-          style={{ width: width ? width : "", height: height ? height : "" }}
+          style={{
+            width: width ? width : "",
+            height: height ? height : ""
+          }}
         >
           {" "}
           {text}

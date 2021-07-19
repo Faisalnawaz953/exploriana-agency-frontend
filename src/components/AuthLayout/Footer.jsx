@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import Logo from "../../assets/images/Moove-secondary-logo-black 1.png";
 

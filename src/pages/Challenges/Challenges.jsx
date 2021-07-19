@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col } from "reactstrap";
 
 import ProfilePic from "../../assets/images/Rectangle 1350.png";
@@ -7,15 +8,39 @@ import IconButton from "../../components/ui-elements/IconButton";
 
 import { useHistory } from "react-router-dom";
 import "../../css/Classes.css";
+import { getUserChallenges } from "../../dataServices/Services";
+import { connect } from "react-redux";
+import { updateChallenges } from "../../redux/actions/userActions/userActions";
+import { getChallenges } from "../../redux/selectors";
+import { get, isEmpty } from "lodash";
+import { handleEditPopUp } from "../../config/GlobalFunctions";
+import EditPopUp from "../../components/ui-elements/EditPopUp";
+import { formatDate } from "../../config/GlobalFunctions";
 
-const Challenges = () => {
+const Challenges = ({ challenges, updateChallenges }) => {
   const history = useHistory();
+  const editRef = React.useRef([]);
+  const loadChallenges = async () => {
+    const res = await getUserChallenges();
+
+    const resCode = get(res, "status");
+    console.log("", res);
+
+    if (resCode === 200) {
+      updateChallenges(res.data.challenges);
+    } else {
+      alert.error("Error Loading Challenges.");
+    }
+  };
+  React.useEffect(() => {
+    loadChallenges();
+  }, []);
   return (
     <>
       <Container>
         <Row>
           <div className="mt-3 classess text-lg-left  text-md-left text-sm-center text-center">
-            Videos (100)
+            Videos {isEmpty(challenges) ? "(0)" : `(${challenges.length})`}
           </div>
 
           <div className="ml-auto ">
@@ -54,195 +79,62 @@ const Challenges = () => {
             </th>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                {/* <div className="d-flex justify-content-center">
-                                    <img
-                                        src={ProfilePic}
-                                        className=""
-                                        width="50px"
-                                        height="50px"
-                                    />
-
-                                    <p>
-                                        <ul style={{ listStyle: "none" }} className="p-0">
-                                            <li> Robert Fox</li>
-                                            <li>
-                                                {" "}
-                                                <span
-                                                    style={{
-                                                        fontSize: "10px",
-                                                        color: "rgba(176, 176, 176, 1)",
-                                                    }}
-                                                >
-                                                    Added 08, October 2019
-                          </span>
-                                            </li>
-                                        </ul>
-                                    </p>
-                                                </div>*/}
-                <td>
-                  <img src={ProfilePic} />
+            {isEmpty(challenges) && (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  No Challenges Added Yet.
                 </td>
-                <td>
-                  <p>
-                    Cardio Blast.mp4 <br />
-                    10 Workouts{" "}
-                  </p>
-                </td>
-              </td>
-              <td>Started</td>
-              <td>10.02.21</td>
-              <td>10.03.21</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td>
-                <MoreVertIcon />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {/* <div className="d-flex justify-content-center">
-                                    <img
-                                        src={ProfilePic}
-                                        className=""
-                                        width="50px"
-                                        height="50px"
-                                    />
-
-                                    <p>
-                                        <ul style={{ listStyle: "none" }} className="p-0">
-                                            <li> Robert Fox</li>
-                                            <li>
-                                                {" "}
-                                                <span
-                                                    style={{
-                                                        fontSize: "10px",
-                                                        color: "rgba(176, 176, 176, 1)",
-                                                    }}
-                                                >
-                                                    Added 08, October 2019
-                          </span>
-                                            </li>
-                                        </ul>
-                                    </p>
-                                                </div>*/}
-                <td>
-                  <img src={ProfilePic} />
-                </td>
-                <td>
-                  <p>
-                    Cardio Blast.mp4 <br />
-                    10 Workouts{" "}
-                  </p>
-                </td>
-              </td>
-              <td>Started</td>
-              <td>10.02.21</td>
-              <td>10.03.21</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td>
-                <MoreVertIcon />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {/* <div className="d-flex justify-content-center">
-                                    <img
-                                        src={ProfilePic}
-                                        className=""
-                                        width="50px"
-                                        height="50px"
-                                    />
-
-                                    <p>
-                                        <ul style={{ listStyle: "none" }} className="p-0">
-                                            <li> Robert Fox</li>
-                                            <li>
-                                                {" "}
-                                                <span
-                                                    style={{
-                                                        fontSize: "10px",
-                                                        color: "rgba(176, 176, 176, 1)",
-                                                    }}
-                                                >
-                                                    Added 08, October 2019
-                          </span>
-                                            </li>
-                                        </ul>
-                                    </p>
-                                                </div>*/}
-                <td>
-                  <img src={ProfilePic} />
-                </td>
-                <td>
-                  <p>
-                    Cardio Blast.mp4 <br />
-                    10 Workouts{" "}
-                  </p>
-                </td>
-              </td>
-              <td>Started</td>
-              <td>10.02.21</td>
-              <td>10.03.21</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td>
-                <MoreVertIcon />
-              </td>
-            </tr>
-            <tr>
-              <td>
-                {/* <div className="d-flex justify-content-center">
-                                    <img
-                                        src={ProfilePic}
-                                        className=""
-                                        width="50px"
-                                        height="50px"
-                                    />
-
-                                    <p>
-                                        <ul style={{ listStyle: "none" }} className="p-0">
-                                            <li> Robert Fox</li>
-                                            <li>
-                                                {" "}
-                                                <span
-                                                    style={{
-                                                        fontSize: "10px",
-                                                        color: "rgba(176, 176, 176, 1)",
-                                                    }}
-                                                >
-                                                    Added 08, October 2019
-                          </span>
-                                            </li>
-                                        </ul>
-                                    </p>
-                                                </div>*/}
-                <td>
-                  <img src={ProfilePic} />
-                </td>
-                <td>
-                  <p>
-                    Cardio Blast.mp4 <br />
-                    10 Workouts{" "}
-                  </p>
-                </td>
-              </td>
-              <td>Started</td>
-              <td>10.02.21</td>
-              <td>10.03.21</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td>
-                <MoreVertIcon />
-              </td>
-            </tr>
+              </tr>
+            )}
+            {!isEmpty(challenges) &&
+              challenges.map((challenge, i) => (
+                <tr key={i}>
+                  <td>
+                    <td>{challenge.title}</td>
+                  </td>
+                  <td>Started</td>
+                  <td>{formatDate(challenge.startDate)}</td>
+                  <td>{formatDate(challenge.endDate)}</td>
+                  <td>50</td>
+                  <td>4.5</td>
+                  <td style={{ position: "relative" }}>
+                    <MoreVertIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleEditPopUp(editRef, i, challenges)}
+                    />
+                    <div
+                      style={{
+                        display: "none",
+                        position: "absolute",
+                        top: 20,
+                        right: 75,
+                        zIndex: 9
+                      }}
+                      ref={el => (editRef.current[i] = el)}
+                    >
+                      <EditPopUp />
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </Col>
     </>
   );
 };
+const mapStateToProps = state => {
+  return {
+    challenges: getChallenges(state)
+  };
+};
 
-export default Challenges;
+const matachDispatchToProps = dispatch => {
+  return {
+    updateChallenges: challenges => {
+      dispatch(updateChallenges(challenges));
+    }
+  };
+};
+
+export default connect(mapStateToProps, matachDispatchToProps)(Challenges);

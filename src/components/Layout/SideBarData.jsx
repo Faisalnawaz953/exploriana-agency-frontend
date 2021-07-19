@@ -1,3 +1,4 @@
+import React from "react";
 import AccountCircleIcon from "@material-ui/icons/AccountCircle";
 import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
 import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
@@ -19,7 +20,7 @@ export const sideBarData = [
     text: "Home",
     sublist: false,
     sublistData: [],
-    link: "/",
+    link: "/"
   },
   {
     icon: <AccountCircleIcon style={{ color: "#7A7D7D" }} />,
@@ -29,42 +30,42 @@ export const sideBarData = [
       {
         title: "Settings",
         icon: <SettingsIcon style={{ color: "#7A7D7D" }} />,
-        link: "/profile",
+        link: "/profile"
       },
       {
         title: "Membership",
         icon: <PostAddIcon style={{ color: "#7A7D7D" }} />,
-        link: "/membership",
+        link: "/membership"
       },
       {
         title: "Payment",
         icon: <PaymentIcon style={{ color: "#7A7D7D" }} />,
-        link: "/payment",
+        link: "/payment"
       },
       {
         title: "Subscription",
         icon: <CheckBoxIcon style={{ color: "#7A7D7D" }} />,
-        link: "/subscription",
+        link: "/subscription"
       },
       {
         title: "LandingPage",
         icon: <InsertInvitationIcon style={{ color: "#7A7D7D" }} />,
-        link: "/landing-page",
+        link: "/landing-page"
       },
       {
         title: "Reviews",
         icon: <StarIcon style={{ color: "#7A7D7D" }} />,
-        link: "/reviews",
-      },
+        link: "/reviews"
+      }
     ],
-    link: "/profile",
+    link: "/profile"
   },
   {
     icon: <PeopleAltIcon style={{ color: "#7A7D7D" }} />,
     text: "Members",
     sublist: false,
     sublistData: [],
-    link: "/members",
+    link: "/members"
   },
   {
     icon: <LibraryAddIcon style={{ color: "#7A7D7D" }} />,
@@ -74,42 +75,42 @@ export const sideBarData = [
       {
         title: "Classes",
         icon: <StarIcon style={{ color: "#7A7D7D" }} />,
-        link: "/classes",
+        link: "/classes"
       },
       {
         title: "Videos",
         icon: <StarIcon style={{ color: "#7A7D7D" }} />,
-        link: "/videos",
-      },
+        link: "/videos"
+      }
     ],
-    link: "/classes",
+    link: "/classes"
   },
   {
     icon: <WifiIcon style={{ color: "#7A7D7D" }} />,
     text: "Live",
     sublist: false,
     sublistData: [],
-    link: "/live",
+    link: "/live"
   },
   {
     icon: <FlagIcon style={{ color: "#7A7D7D" }} />,
     text: "Challenges",
     sublist: false,
     sublistData: [],
-    link: "/challenges",
+    link: "/challenges"
   },
   {
     icon: <LinkIcon style={{ color: "#7A7D7D" }} />,
     text: "Link",
     sublist: false,
     sublistData: [],
-    link: "/link",
+    link: "/link"
   },
   {
     icon: <HeadsetIcon style={{ color: "#7A7D7D" }} />,
     text: "Support",
     sublist: false,
     sublistData: [],
-    link: "/support",
-  },
+    link: "/support"
+  }
 ];

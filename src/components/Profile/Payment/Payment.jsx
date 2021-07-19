@@ -1,10 +1,11 @@
+import React from "react";
 import { Container, Row, Col } from "reactstrap";
 
 import Button from "../../ui-elements/Button";
 const Payment = () => {
   const styles = {
     margin: "0 auto",
-    marginTop: "10%",
+    marginTop: "10%"
   };
   return (
     <Container style={styles}>

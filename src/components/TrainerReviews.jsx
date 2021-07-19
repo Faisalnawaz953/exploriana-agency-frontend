@@ -1,3 +1,4 @@
+import React from "react";
 import pic from "../assets/images/Ellipse 2.png";
 import { Container, Row, Col } from "reactstrap";
 import Star from "@material-ui/icons/Star";
@@ -39,7 +40,7 @@ const TrainerReviews = () => {
                 fontWeight: "700",
                 color: "#429FBA",
                 borderBottom: "1px solid #429FBA",
-                cursor: "pointer",
+                cursor: "pointer"
               }}
             >
               Show More

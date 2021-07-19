@@ -1,8 +1,10 @@
+import React from "react";
 import { Label } from "reactstrap";
 import "../../css/imageupload.css";
 import Dropzone from "react-dropzone";
+import VideoSnapshot from "video-snapshot";
 
-const ImageUpload = ({ text, files, setSelectedFiles }) => {
+const ImageUpload = ({ text, files, setSelectedFiles, video }) => {
   return (
     <>
       <Label>
@@ -22,37 +24,71 @@ const ImageUpload = ({ text, files, setSelectedFiles }) => {
           </p>
         </div>
       </div> */}
-      <Dropzone
-        maxFiles={1}
-        onDrop={(acceptedFiles) => {
-          setSelectedFiles(acceptedFiles);
-        }}
-      >
-        {({ getRootProps, getInputProps, isDragActive }) => (
-          <div {...getRootProps()} className="imageupload    mt-3">
-            <input {...getInputProps()} />
-            <div className=" p-3 d-flex align-items-center flex-column ">
-              {isDragActive ? (
-                <p>Drop the files here ...</p>
-              ) : (
-                <>
-                  {" "}
-                  <p className="uploadTopText">
-                    Drag your video,{" "}
-                    <span style={{ fontWeight: "bold", color: "#429FBA" }}>
-                      click to upload
-                    </span>
-                  </p>
-                  <p className="uploadBottomText">
-                    If no image is provided, the first frame of the video will
-                    be used.
-                  </p>
-                </>
-              )}
+      {video ? (
+        <Dropzone
+          maxFiles={1}
+          onDrop={async acceptedFiles => {
+            setSelectedFiles(acceptedFiles);
+          }}
+        >
+          {({ getRootProps, getInputProps, isDragActive }) => (
+            <div {...getRootProps()} className="imageupload    mt-3">
+              <input {...getInputProps()} accept="video/*" />
+              <div className=" p-3 d-flex align-items-center flex-column ">
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : (
+                  <>
+                    {" "}
+                    <p className="uploadTopText">
+                      Drag your video,{" "}
+                      <span style={{ fontWeight: "bold", color: "#429FBA" }}>
+                        click to upload
+                      </span>
+                    </p>
+                    <p className="uploadBottomText">
+                      We accept any and all video files, most commonly .mp4,
+                      .mov and .avi.
+                    </p>
+                  </>
+                )}
+              </div>
             </div>
-          </div>
-        )}
-      </Dropzone>
+          )}
+        </Dropzone>
+      ) : (
+        <Dropzone
+          maxFiles={1}
+          onDrop={acceptedFiles => {
+            setSelectedFiles(acceptedFiles);
+          }}
+        >
+          {({ getRootProps, getInputProps, isDragActive }) => (
+            <div {...getRootProps()} className="imageupload    mt-3">
+              <input {...getInputProps()} />
+              <div className=" p-3 d-flex align-items-center flex-column ">
+                {isDragActive ? (
+                  <p>Drop the files here ...</p>
+                ) : (
+                  <>
+                    {" "}
+                    <p className="uploadTopText">
+                      Drag your video,{" "}
+                      <span style={{ fontWeight: "bold", color: "#429FBA" }}>
+                        click to upload
+                      </span>
+                    </p>
+                    <p className="uploadBottomText">
+                      If no image is provided, the first frame of the video will
+                      be used.
+                    </p>
+                  </>
+                )}
+              </div>
+            </div>
+          )}
+        </Dropzone>
+      )}
     </>
   );
 };

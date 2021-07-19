@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col, FormGroup, CustomInput } from "reactstrap";
 import "../../css/reviewsTable.css";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
@@ -7,27 +8,54 @@ import Button from "../../components/ui-elements/Button";
 import IconButton from "../../components/ui-elements/IconButton";
 import DorpDown from "../../components/ui-elements/DropDown";
 import { useHistory } from "react-router-dom";
-import { MoreVert } from "@material-ui/icons";
+import { ErrorTwoTone } from "@material-ui/icons";
+import MoreVertIcon from "@material-ui/icons/MoreVert";
 import Calendar from "../../components/Calendar";
+import { connect } from "react-redux";
+import { getLiveClasses } from "../../redux/selectors";
+import { updateLiveClasses } from "../../redux/actions/userActions/userActions";
+import { getUserLiveClasses } from "../../dataServices/Services";
+import { get, isEmpty } from "lodash";
+import { useAlert } from "react-alert";
+import { handleEditPopUp } from "../../config/GlobalFunctions";
+import EditPopUp from "../../components/ui-elements/EditPopUp";
 
-const Live = () => {
+const Live = ({ liveClasses, updateLiveClasses }) => {
+  const alert = useAlert();
   const history = useHistory();
   const options = [
     {
       key: "option-1",
-      value: "Newest",
+      value: "Newest"
     },
     {
       key: "option-2",
-      value: "Old",
-    },
+      value: "Old"
+    }
   ];
+  const editRef = React.useRef([]);
+  const loadLiveClasses = async () => {
+    const res = await getUserLiveClasses();
+
+    const resCode = get(res, "status");
+    console.log("", res);
+
+    if (resCode === 200) {
+      updateLiveClasses(res.data.liveclasses);
+    } else {
+      alert.error("Error Loading Challenges.");
+    }
+  };
+  React.useEffect(() => {
+    loadLiveClasses();
+  }, []);
   return (
     <>
       <Container>
         <Row>
           <div className="mt-3 member text-lg-left  text-md-left text-sm-center text-center">
-            All Classes (100)
+            All Classes{" "}
+            {isEmpty(liveClasses) ? "(0)" : `(${liveClasses.length})`}
           </div>
 
           <div className="ml-auto ">
@@ -98,76 +126,50 @@ const Live = () => {
             </th>
           </thead>
           <tbody>
-            <tr>
-              <td>20:00</td>
-              <td>
-                <>
+            {isEmpty(liveClasses) && (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  No Live Classes Added Yet.
+                </td>
+              </tr>
+            )}
+            {!isEmpty(liveClasses) &&
+              liveClasses.map((liveClass, index) => (
+                <tr>
+                  <td>{liveClass.startTime}</td>
                   <td>
-                    <img src={ProfilePic} />
+                    <td>{liveClass.title}</td>
                   </td>
+                  <td>{liveClass.type}</td>
                   <td>
-                    <p style={{ fontSize: "10px" }}>
-                      Cardio Blast.mp4 <br />
-                      10 Workouts{" "}
-                    </p>
+                    {liveClass.type === "Virtual"
+                      ? "Zoom"
+                      : liveClass.location.name}
                   </td>
-                </>
-              </td>
-              <td>Class</td>
-              <td>Zoom</td>
-              <td>200</td>
-              <td>4.5</td>
-              <td>
-                <MoreVert />
-              </td>
-            </tr>
-            <tr>
-              <td>20:00</td>
-              <td>
-                <>
-                  <td>
-                    <img src={ProfilePic} />
+                  <td>200</td>
+                  <td>4.5</td>
+                  <td style={{ position: "relative" }}>
+                    <MoreVertIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() =>
+                        handleEditPopUp(editRef, index, liveClasses)
+                      }
+                    />
+                    <div
+                      style={{
+                        display: "none",
+                        position: "absolute",
+                        top: 20,
+                        right: 75,
+                        zIndex: 9
+                      }}
+                      ref={el => (editRef.current[index] = el)}
+                    >
+                      <EditPopUp />
+                    </div>
                   </td>
-                  <td>
-                    <p style={{ fontSize: "10px" }}>
-                      Cardio Blast.mp4 <br />
-                      10 Workouts{" "}
-                    </p>
-                  </td>
-                </>
-              </td>
-              <td>Class</td>
-              <td>Zoom</td>
-              <td>200</td>
-              <td>4.5</td>
-              <td>
-                <MoreVert />
-              </td>
-            </tr>
-
-            <tr>
-              <td>20:00</td>
-              <td>
-                <>
-                  <td>
-                    <img src={ProfilePic} />
-                  </td>
-                  <td>
-                    <p style={{ fontSize: "10px" }}>
-                      Cardio Blast.mp4 <br />
-                      10 Workouts{" "}
-                    </p>
-                  </td>
-                </>
-              </td>
-              <td>Class</td>
-              <td>Zoom</td>
-              <td>200</td>
-              <td>4.5</td>
-              <td>
-                <MoreVert />
-              </td>
-            </tr>
+                </tr>
+              ))}
           </tbody>
         </table>
       </Col>
@@ -175,4 +177,17 @@ const Live = () => {
   );
 };
 
-export default Live;
+const mapStateToProps = state => {
+  return {
+    liveClasses: getLiveClasses(state)
+  };
+};
+
+const matchDispatchToProps = dispatch => {
+  return {
+    updateLiveClasses: liveClasses => {
+      dispatch(updateLiveClasses(liveClasses));
+    }
+  };
+};
+export default connect(mapStateToProps, matchDispatchToProps)(Live);

@@ -1,5 +1,7 @@
+import React from "react";
 import { FormGroup, Label, Input, FormFeedback } from "reactstrap";
 import "../../css/input.css";
+import CustomCheckbox from "./CustomCheckBox";
 
 const InputField = ({
   label,
@@ -16,7 +18,48 @@ const InputField = ({
   onBlur,
   touched,
   errors,
+  repeat,
+  repeatValue,
+  setRepeatValue
 }) => {
+  if (repeat) {
+    return (
+      <FormGroup>
+        <Label className="my-2">
+          {" "}
+          <b>{label}</b>{" "}
+        </Label>
+
+        <div className="d-flex w-100 align-items-center">
+          <CustomCheckbox
+            label="repeat"
+            value={repeatValue}
+            setValue={setRepeatValue}
+          />
+          <div className="w-100">
+            {" "}
+            <Input
+              className="custom_input my-3 "
+              color="#E6F5FE, 70%"
+              style={{
+                width: width ? width : "",
+                height: height ? height : "",
+                backgroundColor: backgroundColor && "#F4F4F5"
+              }}
+              placeholder={placeholder ? placeholder : ""}
+              id={id}
+              type={type}
+              value={value ? value : ""}
+              onChange={onChange}
+              onBlur={onBlur}
+              invalid={touched && errors ? true : false}
+            />
+            <FormFeedback invalid>{errors}</FormFeedback>
+          </div>
+        </div>
+      </FormGroup>
+    );
+  }
   if (type === "date") {
     return (
       <FormGroup>
@@ -30,13 +73,13 @@ const InputField = ({
           style={{
             width: width ? width : "",
             height: height ? height : "",
-            backgroundColor: backgroundColor && "#F4F4F5",
+            backgroundColor: backgroundColor && "#F4F4F5"
           }}
           placeholder={placeholder ? placeholder : ""}
           id={id}
           type={type}
           value={value ? value : ""}
-          onChange={(e) => onChange(e.target.value)}
+          onChange={e => onChange(e.target.value)}
         />
       </FormGroup>
     );
@@ -50,18 +93,28 @@ const InputField = ({
       {currency ? (
         <div className="d-flex w-100 align-items-center">
           <div className="h3 text-secondary pr-2">$</div>{" "}
-          <Input
-            className="custom_input my-3 "
-            color="#E6F5FE, 70%"
-            style={{
-              width: width ? width : "",
-              height: height ? height : "",
-              backgroundColor: backgroundColor && "#F4F4F5",
-            }}
-            placeholder={placeholder ? placeholder : ""}
-            id={id}
-            type={type}
-          />
+          <div className="w-100">
+            {" "}
+            <Input
+              className="custom_input my-3 "
+              color="#E6F5FE, 70%"
+              style={{
+                width: width ? width : "",
+                height: height ? height : "",
+                backgroundColor: backgroundColor && "#F4F4F5"
+              }}
+              placeholder={placeholder ? placeholder : ""}
+              id={id}
+              type={type}
+              value={value ? value : ""}
+              onChange={onChange}
+              onBlur={onBlur}
+              valid={touched && !errors ? true : false}
+              invalid={touched && errors ? true : false}
+            />
+            <FormFeedback valid>Valid</FormFeedback>
+            <FormFeedback invalid>{errors}</FormFeedback>
+          </div>
         </div>
       ) : (
         <Input
@@ -70,7 +123,7 @@ const InputField = ({
           style={{
             width: width ? width : "",
             height: height ? height : "",
-            backgroundColor: backgroundColor && "#F4F4F5",
+            backgroundColor: backgroundColor && "#F4F4F5"
           }}
           placeholder={placeholder ? placeholder : ""}
           id={id}
@@ -78,11 +131,11 @@ const InputField = ({
           value={value ? value : ""}
           onChange={onChange}
           onBlur={onBlur}
-          valid={touched && !errors ? true : false}
+          // valid={touched && !errors ? true : false}
           invalid={touched && errors ? true : false}
         />
       )}
-      <FormFeedback valid>Valid</FormFeedback>
+      {/* <FormFeedback valid>Valid</FormFeedback> */}
       <FormFeedback invalid>{errors}</FormFeedback>
     </FormGroup>
   );

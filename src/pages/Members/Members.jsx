@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import DorpDown from "../../components/ui-elements/DropDown";
 import "../../css/Members.css";
@@ -13,16 +14,16 @@ const Members = () => {
   const options = [
     {
       key: "option-1",
-      value: "All",
+      value: "All"
     },
     {
       key: "option-2",
-      value: "Newest",
+      value: "Newest"
     },
     {
       key: "option-3",
-      value: "Old",
-    },
+      value: "Old"
+    }
   ];
   return (
     <>
@@ -107,7 +108,7 @@ const Members = () => {
                         <span
                           style={{
                             fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
+                            color: "rgba(176, 176, 176, 1)"
                           }}
                         >
                           Added 08, October 2019
@@ -130,9 +131,9 @@ const Members = () => {
                     width: "50px",
                     height: "40px",
                     borderRadius: "5px",
-                    cursor: "pointer",
+                    cursor: "pointer"
                   }}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault();
                     history.push("/inbox");
                   }}
@@ -161,7 +162,7 @@ const Members = () => {
                         <span
                           style={{
                             fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
+                            color: "rgba(176, 176, 176, 1)"
                           }}
                         >
                           joined 08, October 2019
@@ -183,9 +184,9 @@ const Members = () => {
                     color: "rgba(66, 159, 186, 0.89)",
                     width: "50px",
                     height: "40px",
-                    borderRadius: "5px",
+                    borderRadius: "5px"
                   }}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault();
                     history.push("/inbox");
                   }}
@@ -213,7 +214,7 @@ const Members = () => {
                         <span
                           style={{
                             fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
+                            color: "rgba(176, 176, 176, 1)"
                           }}
                         >
                           joined 08, October 2019
@@ -235,9 +236,9 @@ const Members = () => {
                     color: "rgba(66, 159, 186, 0.89)",
                     width: "50px",
                     height: "40px",
-                    borderRadius: "5px",
+                    borderRadius: "5px"
                   }}
-                  onClick={(e) => {
+                  onClick={e => {
                     e.preventDefault();
                     history.push("/inbox");
                   }}

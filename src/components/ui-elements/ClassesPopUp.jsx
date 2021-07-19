@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col, CustomInput, FormGroup } from "reactstrap";
 import Input from "./Input";
 import "../../assets/css/login.css";
@@ -10,17 +11,17 @@ import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   root: {
     width: "100%",
     border: "1px solid #E6E6E6",
     boxSizing: "border-box",
-    borderRadius: "20px",
+    borderRadius: "20px"
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
-    fontWeight: theme.typography.fontWeightRegular,
-  },
+    fontWeight: theme.typography.fontWeightRegular
+  }
 }));
 
 export default function ClassesPopup({ toggle }) {
@@ -39,7 +40,7 @@ export default function ClassesPopup({ toggle }) {
 
                   letterSpacing: "0.6px",
 
-                  color: "#2B2B2B",
+                  color: "#2B2B2B"
                 }}
                 className="  "
               >

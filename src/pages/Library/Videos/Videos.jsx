@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col, FormGroup, CustomInput } from "reactstrap";
 import DeleteIcon from "@material-ui/icons/DeleteOutline";
 import OutLinedButton from "../../../components/ui-elements/OutLinedButton";
@@ -5,18 +6,46 @@ import ProfilePic from "../../../assets/images/Rectangle 1350.png";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import IconButton from "../../../components/ui-elements/IconButton";
-
+import { getUserVideos } from "../../../dataServices/Services";
+import { connect } from "react-redux";
+import { get, isEmpty } from "lodash";
 import { useHistory } from "react-router-dom";
 import "../../../css/Classes.css";
+import { getVideos } from "../../../redux/selectors";
+import { updateVideos } from "../../../redux/actions/userActions/userActions";
+import { useAlert } from "react-alert";
+import {
+  getDaysDifference,
+  handleEditPopUp
+} from "../../../config/GlobalFunctions";
+import EditPopUp from "../../../components/ui-elements/EditPopUp";
 
-const Videos = () => {
+const Videos = ({ updateVideos, videos }) => {
+  const alert = useAlert();
   const history = useHistory();
+  const editRef = React.useRef([]);
+
+  const loadVideos = async () => {
+    const res = await getUserVideos();
+
+    const resCode = get(res, "status");
+    console.log("", res);
+
+    if (resCode === 200) {
+      updateVideos(res.data.videos);
+    } else {
+      alert.error("Error Loading Challenges.");
+    }
+  };
+  React.useEffect(() => {
+    loadVideos();
+  }, []);
   return (
     <>
       <Container>
         <Row>
           <div className="mt-3 classess text-lg-left  text-md-left text-sm-center text-center">
-            Videos (100)
+            Videos{isEmpty(videos) ? "(0)" : `(${videos.length})`}
           </div>
 
           <div className="ml-auto ">
@@ -55,86 +84,66 @@ const Videos = () => {
             </th>
           </thead>
           <tbody>
-            <tr>
-              <td>
-                <div className="d-flex justify-content-center">
-                  <img
-                    src={ProfilePic}
-                    className=""
-                    width="50px"
-                    height="50px"
-                  />
-
-                  <p>
-                    <ul style={{ listStyle: "none" }} className="p-0">
-                      <li> Robert Fox</li>
-                      <li>
-                        {" "}
-                        <span
-                          style={{
-                            fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
-                          }}
-                        >
-                          Added 08, October 2019
-                        </span>
-                      </li>
-                    </ul>
-                  </p>
-                </div>
-              </td>
-              <td>4 days ago</td>
-              <td>HIT</td>
-              <td>1000</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td>
-                <MoreVertIcon />
-              </td>
-            </tr>
-
-            <tr>
-              <td>
-                <div className="d-flex justify-content-center">
-                  <img
-                    src={ProfilePic}
-                    className=""
-                    width="50px"
-                    height="50px"
-                  />
-
-                  <p>
-                    <ul style={{ listStyle: "none" }} className="p-0">
-                      <li> Robert Fox</li>
-                      <li>
-                        {" "}
-                        <span
-                          style={{
-                            fontSize: "10px",
-                            color: "rgba(176, 176, 176, 1)",
-                          }}
-                        >
-                          Added 08, October 2019
-                        </span>
-                      </li>
-                    </ul>
-                  </p>
-                </div>
-              </td>
-              <td>4 days ago</td>
-              <td>HIT</td>
-              <td>1000</td>
-              <td>50</td>
-              <td>4.5</td>
-              <td>
-                <MoreVertIcon />
-              </td>
-            </tr>
+            {isEmpty(videos) && (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  No Videos Added Yet.
+                </td>
+              </tr>
+            )}
+            {!isEmpty(videos) &&
+              videos.map((video, index) => (
+                <tr key={index}>
+                  <td>
+                    <td>{video.title}</td>
+                  </td>
+                  <td>
+                    {getDaysDifference(video.createdAt) < 1
+                      ? "Today"
+                      : getDaysDifference(video.createdAt) + " days ago"}
+                  </td>
+                  <td>{video.category}</td>
+                  <td>1000</td>
+                  <td>50</td>
+                  <td>4.5</td>
+                  <td className="text-right" style={{ position: "relative" }}>
+                    <MoreVertIcon
+                      style={{ cursor: "pointer" }}
+                      onClick={() => handleEditPopUp(editRef, index, videos)}
+                    />
+                    <div
+                      style={{
+                        display: "none",
+                        position: "absolute",
+                        top: 20,
+                        right: 40,
+                        zIndex: 9
+                      }}
+                      ref={el => (editRef.current[index] = el)}
+                    >
+                      <EditPopUp />
+                    </div>
+                  </td>
+                </tr>
+              ))}
           </tbody>
         </table>
       </Col>
     </>
   );
 };
+const mapStateToProps = state => {
+  return {
+    videos: getVideos(state)
+  };
+};
 
-export default Videos;
+const matchDispatchToProps = dispatch => {
+  return {
+    updateVideos: videos => {
+      dispatch(updateVideos(videos));
+    }
+  };
+};
+
+export default connect(mapStateToProps, matchDispatchToProps)(Videos);

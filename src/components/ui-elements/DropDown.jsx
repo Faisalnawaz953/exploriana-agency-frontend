@@ -1,3 +1,4 @@
+import React from "react";
 import { FormGroup, Label, Input } from "reactstrap";
 import "../../css/input.css";
 const DropDown = ({
@@ -8,7 +9,7 @@ const DropDown = ({
   height,
   backgroundColor,
   setValue,
-  value,
+  value
 }) => {
   return (
     <div>
@@ -19,17 +20,16 @@ const DropDown = ({
       <select
         className="select my-3"
         value={value}
-        onChange={(e) => setValue(e.target.value)}
+        onChange={e => setValue(e.target.value)}
         style={{
           width: width ? width : "100%",
           height: height ? height : "",
           paddingLeft: "10px",
 
-          backgroundColor: backgroundColor && "#F4F4F5",
+          backgroundColor: backgroundColor && "#F4F4F5"
         }}
       >
-        {options &&
-          options.map((op) => <option key={op.key}>{op.value}</option>)}
+        {options && options.map(op => <option key={op.key}>{op.value}</option>)}
       </select>
     </div>
   );

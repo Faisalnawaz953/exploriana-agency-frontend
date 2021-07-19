@@ -1,3 +1,4 @@
+import React from "react";
 import { Container, Row, Col } from "reactstrap";
 import { Check } from "react-feather";
 const BrandColorTheme = ({ brandColor, setBrandColor }) => {
@@ -17,7 +18,7 @@ const BrandColorTheme = ({ brandColor, setBrandColor }) => {
     "#C0C942",
     "#FCD748",
     "#FEC02F",
-    "#FD9827",
+    "#FD9827"
   ];
 
   return (
@@ -34,7 +35,7 @@ const BrandColorTheme = ({ brandColor, setBrandColor }) => {
               height: "70px ",
               width: "70px",
               borderRadius: "12px",
-              backgroundColor: brandColor,
+              backgroundColor: brandColor
             }}
             className="d-flex justify-content-center align-items-center  "
           >
@@ -55,7 +56,7 @@ const BrandColorTheme = ({ brandColor, setBrandColor }) => {
                       width: "50px",
                       marginBottom: "10px",
                       borderRadius: "12px",
-                      cursor: "pointer",
+                      cursor: "pointer"
                     }}
                     className="   mr-3     "
                     onClick={() => {

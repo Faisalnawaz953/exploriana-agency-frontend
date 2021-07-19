@@ -1,3 +1,4 @@
+import React from "react";
 import { useState } from "react";
 import { Container, Col, Row } from "reactstrap";
 import SingleEmailNotification from "../../ui-elements/SingleEmailNotification";
@@ -35,7 +36,7 @@ const EmailNotification = ({ updateNotifications, settings }) => {
       classReminder: classReminder,
       classBooking: classBooking,
       workout: workout,
-      inbox: inbox,
+      inbox: inbox
     };
     const res = await updateNotificationSettings(data);
     console.log(res);
@@ -67,7 +68,7 @@ const EmailNotification = ({ updateNotifications, settings }) => {
 
                 letterSpacing: "0.6px",
 
-                color: "#2B2B2B",
+                color: "#2B2B2B"
               }}
             >
               Email notifications
@@ -134,16 +135,16 @@ const EmailNotification = ({ updateNotifications, settings }) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    settings: getNotificationSettings(state),
+    settings: getNotificationSettings(state)
   };
 };
-const matchDispatchToProps = (dispatch) => {
+const matchDispatchToProps = dispatch => {
   return {
-    updateNotifications: (settings) => {
+    updateNotifications: settings => {
       dispatch(updateNotifications(settings));
-    },
+    }
   };
 };
 
