@@ -94,6 +94,32 @@ export const getUserChallenges = async () => {
     return NETWORK_ERROR;
   }
 };
+export const updateUserChallenge = async (id, data) => {
+  try {
+    return await axios.patch(
+      `${BASE_URL}challenges/update/${id}`,
+      data,
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const deleteUserChallenge = async id => {
+  try {
+    return await axios.delete(`${BASE_URL}challenges/remove/${id}`, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+
+export const addPaymentMethod = async id => {
+  try {
+    return await axios.get(`${BASE_URL}stripe/authorize`, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
 
 export const addTrainer = async data => {
   try {
@@ -186,6 +212,24 @@ export const getUserClassRooms = async () => {
     return NETWORK_ERROR;
   }
 };
+export const updateUserClassRoom = async (id, data) => {
+  try {
+    return await axios.patch(
+      `${BASE_URL}classrooms/update/${id}`,
+      data,
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const deleteUserClassRoom = async id => {
+  try {
+    return await axios.delete(`${BASE_URL}classrooms/remove/${id}`, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
 
 export const addVideo = async data => {
   try {
@@ -197,6 +241,20 @@ export const addVideo = async data => {
 export const getUserVideos = async () => {
   try {
     return await axios.get(`${BASE_URL}videos/`, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const updateUserVideo = async (id, data) => {
+  try {
+    return await axios.patch(`${BASE_URL}videos/update/${id}`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const deleteUserVideo = async id => {
+  try {
+    return await axios.delete(`${BASE_URL}videos/remove/${id}`, config);
   } catch (error) {
     return NETWORK_ERROR;
   }
@@ -217,6 +275,25 @@ export const addLiveClass = async data => {
   }
 };
 
+export const updateUserLiveClass = async (id, data) => {
+  try {
+    return await axios.patch(
+      `${BASE_URL}live-classroom/update/${id}`,
+      data,
+      config
+    );
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const deleteUserLiveClass = async id => {
+  try {
+    return await axios.delete(`${BASE_URL}live-classroom/remove/${id}`, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+
 export const addLink = async data => {
   try {
     return await axios.post(`${BASE_URL}link/create`, data, config);
@@ -227,6 +304,20 @@ export const addLink = async data => {
 export const getUserLinks = async () => {
   try {
     return await axios.get(`${BASE_URL}link/`, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const updateUserLink = async (linkId, data) => {
+  try {
+    return await axios.patch(`${BASE_URL}link/update/${linkId}`, data, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+export const deleteUserLink = async linkId => {
+  try {
+    return await axios.delete(`${BASE_URL}link/remove/${linkId}`, config);
   } catch (error) {
     return NETWORK_ERROR;
   }

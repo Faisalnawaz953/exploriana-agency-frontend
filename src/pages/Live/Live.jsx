@@ -14,14 +14,19 @@ import Calendar from "../../components/Calendar";
 import { connect } from "react-redux";
 import { getLiveClasses } from "../../redux/selectors";
 import { updateLiveClasses } from "../../redux/actions/userActions/userActions";
-import { getUserLiveClasses } from "../../dataServices/Services";
+import {
+  getUserLiveClasses,
+  deleteUserLiveClass
+} from "../../dataServices/Services";
 import { get, isEmpty } from "lodash";
 import { useAlert } from "react-alert";
 import { handleEditPopUp } from "../../config/GlobalFunctions";
 import EditPopUp from "../../components/ui-elements/EditPopUp";
+import ApiLoader from "../../components/ui-elements/ApiLoader";
 
 const Live = ({ liveClasses, updateLiveClasses }) => {
   const alert = useAlert();
+  const [loading, setLoading] = React.useState(false);
   const history = useHistory();
   const options = [
     {
@@ -34,6 +39,23 @@ const Live = ({ liveClasses, updateLiveClasses }) => {
     }
   ];
   const editRef = React.useRef([]);
+  const deleteLiveClass = async id => {
+    setLoading(true);
+    const res = await deleteUserLiveClass(id);
+
+    const resCode = get(res, "status");
+    console.log("linkss", res);
+
+    if (resCode === 200) {
+      setLoading(false);
+      loadLiveClasses();
+      alert.error("SuccessFully Deleted Live Classes.");
+    } else {
+      setLoading(false);
+      alert.error("Error Loading Live Classes.");
+    }
+  };
+
   const loadLiveClasses = async () => {
     const res = await getUserLiveClasses();
 
@@ -133,7 +155,14 @@ const Live = ({ liveClasses, updateLiveClasses }) => {
                 </td>
               </tr>
             )}
-            {!isEmpty(liveClasses) &&
+            {loading ? (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  <ApiLoader />
+                </td>
+              </tr>
+            ) : (
+              !isEmpty(liveClasses) &&
               liveClasses.map((liveClass, index) => (
                 <tr>
                   <td>{liveClass.startTime}</td>
@@ -165,11 +194,17 @@ const Live = ({ liveClasses, updateLiveClasses }) => {
                       }}
                       ref={el => (editRef.current[index] = el)}
                     >
-                      <EditPopUp />
+                      <EditPopUp
+                        onEdit={() =>
+                          history.push(`/edit-live-class/${liveClass._id}`)
+                        }
+                        onDelete={() => deleteLiveClass(liveClass._id)}
+                      />
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+            )}
           </tbody>
         </table>
       </Col>

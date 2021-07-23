@@ -1,11 +1,17 @@
 import React from "react";
 import { Container, Row, Col } from "reactstrap";
+import { addPaymentMethod } from "../../../dataServices/Services";
 
 import Button from "../../ui-elements/Button";
 const Payment = () => {
   const styles = {
     margin: "0 auto",
     marginTop: "10%"
+  };
+
+  const connectStripe = async () => {
+    const res = await addPaymentMethod();
+    console.log(res);
   };
   return (
     <Container style={styles}>
@@ -19,7 +25,12 @@ const Payment = () => {
           </p>
         </Col>
         <Col md="12" className="text-center">
-          <Button text="Connect" width="25rem" height="3rem" />
+          <Button
+            text="Connect"
+            width="25rem"
+            height="3rem"
+            onClick={connectStripe}
+          />
         </Col>
       </Row>
     </Container>

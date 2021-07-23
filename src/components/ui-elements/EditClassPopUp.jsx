@@ -10,10 +10,11 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import { getVideos } from "../../redux/selectors";
+import Button from "../ui-elements/Button";
+import { getClassrooms } from "../../redux/selectors";
 import { connect } from "react-redux";
-import { uniq, isEmpty } from "lodash";
-import CustomCheckBox from "./CustomCheckBox";
+import { isEmpty, uniq } from "lodash";
+import CustomCheckBox from "../ui-elements/CustomCheckBox";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,20 +29,31 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
+const EditClassesPopup = ({
+  toggle,
+  classrooms,
+  workoutClasses,
+  setWorkoutClasses
+}) => {
   const classes = useStyles();
   const [categories, setCategories] = React.useState([]);
   const [value, setValue] = React.useState([]);
 
   React.useEffect(() => {
     let arr = [];
-    videos.forEach(val => arr.push(val.category));
+    classrooms.forEach(val => arr.push(val.category));
+    let cl = [];
+    cl = classrooms.filter(val => workoutClasses.includes(val._id));
+    let sval = [];
+    cl.forEach(val => sval.push(val.title));
+    setValue(sval);
+
     setCategories(uniq(arr));
-  }, []);
+  }, [workoutClasses]);
 
   return (
-    <Container>
-      <Row className="d-flex justify-content-center">
+    <Container className="">
+      <Row className="d-flex justify-content-center mb-5">
         <Col md="12" className="mt-3 ">
           <form className=" bg-light p-3  rounded ">
             <div className="d-flex justify-content-between">
@@ -58,7 +70,7 @@ const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
                 className="  "
               >
                 {" "}
-                Add Videos
+                Add Classes
               </span>
               <CloseIcon
                 fontSize="small"
@@ -66,12 +78,12 @@ const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
                 style={{ cursor: "pointer" }}
               />
             </div>
-            <Input placeholder="Search Videos" height="50px" backgroundColor />
+            <Input placeholder="Search Classes" height="50px" backgroundColor />
             <div className={classes.root}>
               {isEmpty(categories)
                 ? "Add Classes tO add in workout"
-                : categories.map((cat, ind) => (
-                    <Accordion key={ind}>
+                : categories.map((cat, i) => (
+                    <Accordion key={i}>
                       <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
                         aria-controls="panel1a-content"
@@ -84,17 +96,17 @@ const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
                       <AccordionDetails>
                         <FormGroup>
                           <div>
-                            {videos.map((video, i) => {
-                              if (video.category !== cat) return;
+                            {classrooms.map((classroom, i) => {
+                              if (classroom.category !== cat) return;
                               return (
                                 <CustomCheckBox
                                   key={i}
-                                  label={video.title}
+                                  label={classroom.title}
                                   value={value}
                                   showLabel
-                                  id={video._id}
-                                  ids={workoutVideos}
-                                  setIds={setWorkoutVideos}
+                                  id={classroom._id}
+                                  ids={workoutClasses}
+                                  setIds={setWorkoutClasses}
                                   setValue={setValue}
                                   indexing
                                 />
@@ -106,6 +118,9 @@ const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
                     </Accordion>
                   ))}
             </div>
+            <div className="text-center">
+              <Button text="Add" width="100%" height="3rem" />
+            </div>
           </form>
         </Col>
       </Row>
@@ -114,8 +129,8 @@ const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
 };
 const mapStateToProps = state => {
   return {
-    videos: getVideos(state)
+    classrooms: getClassrooms(state)
   };
 };
 
-export default connect(mapStateToProps, null)(VideosPopup);
+export default connect(mapStateToProps, null)(EditClassesPopup);

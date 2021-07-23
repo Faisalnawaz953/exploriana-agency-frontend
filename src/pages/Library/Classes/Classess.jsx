@@ -12,7 +12,10 @@ import EditPopUp from "../../../components/ui-elements/EditPopUp";
 import { useHistory } from "react-router-dom";
 import "../../../css/Classes.css";
 import { makeStyles } from "@material-ui/core/styles";
-import { getUserClassRooms } from "../../../dataServices/Services";
+import {
+  deleteUserClassRoom,
+  getUserClassRooms
+} from "../../../dataServices/Services";
 import { connect } from "react-redux";
 import { get, isEmpty, map } from "lodash";
 import { useAlert } from "react-alert";
@@ -22,11 +25,30 @@ import {
   getDaysDifference,
   handleEditPopUp
 } from "../../../config/GlobalFunctions";
+import ApiLoader from "../../../components/ui-elements/ApiLoader";
 
 const Classes = ({ updateClassrooms, classes }) => {
   const history = useHistory();
   const editRef = useRef([]);
   const alert = useAlert();
+  const [loading, setLoading] = React.useState(false);
+
+  const deleteClassRoom = async id => {
+    setLoading(true);
+    const res = await deleteUserClassRoom(id);
+
+    const resCode = get(res, "status");
+    console.log("linkss", res);
+
+    if (resCode === 200) {
+      alert.error("ClassRoom Deleted SuccessFully");
+      setLoading(false);
+      loadClassrooms();
+    } else {
+      setLoading(false);
+      alert.error("Error Deleting Class Room");
+    }
+  };
 
   const loadClassrooms = async () => {
     const res = await getUserClassRooms();
@@ -97,7 +119,14 @@ const Classes = ({ updateClassrooms, classes }) => {
                 </td>
               </tr>
             )}
-            {!isEmpty(classes) &&
+            {loading ? (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  <ApiLoader />
+                </td>
+              </tr>
+            ) : (
+              !isEmpty(classes) &&
               classes.map((classroom, index) => (
                 <tr>
                   <td>
@@ -127,11 +156,17 @@ const Classes = ({ updateClassrooms, classes }) => {
                       }}
                       ref={el => (editRef.current[index] = el)}
                     >
-                      <EditPopUp />
+                      <EditPopUp
+                        onEdit={() =>
+                          history.push(`/edit-class/${classroom._id}`)
+                        }
+                        onDelete={() => deleteClassRoom(classroom._id)}
+                      />
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+            )}
           </tbody>
         </table>
       </div>

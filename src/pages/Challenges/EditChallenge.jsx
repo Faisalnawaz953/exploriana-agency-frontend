@@ -10,11 +10,16 @@ import ApiLoader from "../../components/ui-elements/ApiLoader";
 import get from "lodash/get";
 import UploadedImage from "../../components/ui-elements/UploadedImage";
 import TextButton from "../../components/ui-elements/TextButton";
-import VideosPopup from "../../components/ui-elements/VideosPopup";
-import ClassesPopup from "../../components/ui-elements/ClassesPopUp";
+import EditVideosPopup from "../../components/ui-elements/EditVideosPopUp";
+import EditClassesPopup from "../../components/ui-elements/EditClassPopUp";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { addChallange } from "../../dataServices/Services";
+import { connect } from "react-redux";
+import { getChallenges } from "../../redux/selectors";
+import { useParams } from "react-router-dom";
+import { isEmpty } from "lodash";
+import { updateUserChallenge } from "../../dataServices/Services";
 
 const uploadChallangeSchema = yup.object().shape({
   title: yup.string().required("Title is Required"),
@@ -26,18 +31,38 @@ const uploadChallangeSchema = yup.object().shape({
   notes: yup.string().required("Required")
 });
 
-const UploadChallenges = () => {
+const EditChallenge = ({ challenges }) => {
   const history = useHistory();
+  const { id } = useParams();
   const videoRef = useRef();
   const classRef = useRef();
   const alert = useAlert();
   const [startDate, setStartDate] = React.useState();
   const [endDate, setEndDate] = React.useState();
-  const [file, setFile] = React.useState();
+  const [file, setFile] = React.useState("");
   const [loading, setLoading] = React.useState(false);
+  const [challenge, setChallenge] = React.useState();
+
   const [workoutVideos, setWorkoutVideos] = React.useState([]);
   const [workoutClasses, setWorkoutClasses] = React.useState([]);
 
+  const getSingleChallenge = () => {
+    if (!isEmpty(challenges)) {
+      let singleChallenge = challenges.filter(
+        challenge => challenge._id === id
+      );
+
+      setChallenge(singleChallenge[0]);
+      setStartDate(singleChallenge[0].startDate);
+      setEndDate(singleChallenge[0].endDate);
+      setWorkoutVideos(singleChallenge[0].workouts.videos);
+      setWorkoutClasses(singleChallenge[0].workouts.classes);
+      setFile(singleChallenge[0].coverImage);
+    } else {
+      alert.error("Network Error or no Challenge exists");
+      history.push("/challenges");
+    }
+  };
   const toggleVideoPopUp = () => {
     if (videoRef.current.style.display === "block") {
       videoRef.current.style.display = "none";
@@ -60,15 +85,14 @@ const UploadChallenges = () => {
 
     setFile(blob);
   };
-  const addNewChallenge = async values => {
+  const updateChallenge = async values => {
     setLoading(true);
+    const formData = new FormData();
 
     let workouts = {
       videos: workoutVideos,
       classes: workoutClasses
     };
-
-    const formData = new FormData();
 
     formData.append("title", values.title);
     formData.append("description", values.description);
@@ -78,7 +102,7 @@ const UploadChallenges = () => {
     formData.append("notes", values.notes);
     formData.append("price", values.price);
     formData.append("workouts", JSON.stringify(workouts));
-    const res = await addChallange(formData);
+    const res = await updateUserChallenge(id, formData);
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
@@ -88,25 +112,26 @@ const UploadChallenges = () => {
     }
     if (resCode === 200) {
       setLoading(false);
-      values.title = "";
-      setWorkoutClasses([]);
-      setWorkoutVideos([]);
-      setEndDate("");
-      setStartDate("");
-      setFile();
-      values.notes = "";
-      values.description = "";
-      values.price = "";
 
-      alert.success("Challenge Added SuccessFully");
+      alert.success("Challenge upated SuccessFully");
     }
   };
 
+  React.useEffect(() => {
+    getSingleChallenge();
+  }, []);
+
   return (
     <Formik
-      initialValues={{ title: "", description: "", notes: "", price: "" }}
+      initialValues={{
+        title: challenge && challenge.title,
+        description: challenge && challenge.description,
+        notes: challenge && challenge.notes,
+        price: challenge && challenge.price
+      }}
       validationSchema={uploadChallangeSchema}
-      onSubmit={addNewChallenge}
+      onSubmit={updateChallenge}
+      enableReinitialize={true}
     >
       {props => {
         const {
@@ -129,7 +154,7 @@ const UploadChallenges = () => {
                 <Row>
                   <Col md={{ size: 12 }}>
                     <h3>
-                      <b>Add New Challenge</b>
+                      <b>Edit Challenge</b>
                     </h3>
                   </Col>
                 </Row>
@@ -236,7 +261,6 @@ const UploadChallenges = () => {
                           <UploadedImage key={vid} />
                         ))}
                       </Col>
-
                       <Col
                         md={{ size: 8, offset: 2 }}
                         className="d-flex justify-content-end"
@@ -262,10 +286,10 @@ const UploadChallenges = () => {
                           }}
                           ref={classRef}
                         >
-                          <ClassesPopup
+                          <EditClassesPopup
+                            toggle={toggleClassPopUp}
                             workoutClasses={workoutClasses}
                             setWorkoutClasses={setWorkoutClasses}
-                            toggle={toggleClassPopUp}
                           />
                         </div>
                         <div
@@ -279,7 +303,7 @@ const UploadChallenges = () => {
                           }}
                           ref={videoRef}
                         >
-                          <VideosPopup
+                          <EditVideosPopup
                             workoutVideos={workoutVideos}
                             setWorkoutVideos={setWorkoutVideos}
                             toggle={toggleVideoPopUp}
@@ -307,7 +331,7 @@ const UploadChallenges = () => {
 
                   <Col md={{ size: 8, offset: 2 }} className="text-center mb-5">
                     <Button
-                      text={"Add Challenge"}
+                      text={"Save Changes"}
                       width="100%"
                       height="2.5rem"
                       onClick={handleSubmit}
@@ -322,5 +346,10 @@ const UploadChallenges = () => {
     </Formik>
   );
 };
+const mapStateToProps = state => {
+  return {
+    challenges: getChallenges(state)
+  };
+};
 
-export default UploadChallenges;
+export default connect(mapStateToProps, null)(EditChallenge);

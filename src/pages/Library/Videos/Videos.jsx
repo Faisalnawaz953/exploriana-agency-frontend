@@ -6,7 +6,7 @@ import ProfilePic from "../../../assets/images/Rectangle 1350.png";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import MoreVertIcon from "@material-ui/icons/MoreVert";
 import IconButton from "../../../components/ui-elements/IconButton";
-import { getUserVideos } from "../../../dataServices/Services";
+import { getUserVideos, deleteUserVideo } from "../../../dataServices/Services";
 import { connect } from "react-redux";
 import { get, isEmpty } from "lodash";
 import { useHistory } from "react-router-dom";
@@ -19,12 +19,29 @@ import {
   handleEditPopUp
 } from "../../../config/GlobalFunctions";
 import EditPopUp from "../../../components/ui-elements/EditPopUp";
+import ApiLoader from "../../../components/ui-elements/ApiLoader";
 
 const Videos = ({ updateVideos, videos }) => {
   const alert = useAlert();
   const history = useHistory();
   const editRef = React.useRef([]);
+  const [loading, setLoading] = React.useState(false);
 
+  const deleteVideo = async id => {
+    setLoading(true);
+    const res = await deleteUserVideo(id);
+
+    const resCode = get(res, "status");
+    console.log("linkss", res);
+
+    if (resCode === 200) {
+      setLoading(false);
+      loadVideos();
+    } else {
+      setLoading(false);
+      alert.error("Error Deleting Video.");
+    }
+  };
   const loadVideos = async () => {
     const res = await getUserVideos();
 
@@ -91,7 +108,14 @@ const Videos = ({ updateVideos, videos }) => {
                 </td>
               </tr>
             )}
-            {!isEmpty(videos) &&
+            {loading ? (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  <ApiLoader />
+                </td>
+              </tr>
+            ) : (
+              !isEmpty(videos) &&
               videos.map((video, index) => (
                 <tr key={index}>
                   <td>
@@ -121,11 +145,15 @@ const Videos = ({ updateVideos, videos }) => {
                       }}
                       ref={el => (editRef.current[index] = el)}
                     >
-                      <EditPopUp />
+                      <EditPopUp
+                        onEdit={() => history.push(`/edit-video/${video._id}`)}
+                        onDelete={() => deleteVideo(video._id)}
+                      />
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+            )}
           </tbody>
         </table>
       </Col>

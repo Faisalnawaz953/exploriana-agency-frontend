@@ -10,6 +10,11 @@ import AccordionSummary from "@material-ui/core/AccordionSummary";
 import AccordionDetails from "@material-ui/core/AccordionDetails";
 import Typography from "@material-ui/core/Typography";
 import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
+import Button from "../ui-elements/Button";
+import { getClassrooms } from "../../redux/selectors";
+import { connect } from "react-redux";
+import { isEmpty, uniq } from "lodash";
+import CustomCheckBox from "../ui-elements/CustomCheckBox";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -24,11 +29,26 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-export default function ClassesPopup({ toggle }) {
+const ClassesPopup = ({
+  toggle,
+  classrooms,
+  workoutClasses,
+  setWorkoutClasses
+}) => {
   const classes = useStyles();
+  const [categories, setCategories] = React.useState([]);
+  const [value, setValue] = React.useState([]);
+
+  React.useEffect(() => {
+    let arr = [];
+    classrooms.forEach(val => arr.push(val.category));
+
+    setCategories(uniq(arr));
+  }, []);
+
   return (
-    <Container>
-      <Row className="d-flex justify-content-center">
+    <Container className="">
+      <Row className="d-flex justify-content-center mb-5">
         <Col md="12" className="mt-3 ">
           <form className=" bg-light p-3  rounded ">
             <div className="d-flex justify-content-between">
@@ -53,117 +73,59 @@ export default function ClassesPopup({ toggle }) {
                 style={{ cursor: "pointer" }}
               />
             </div>
-            <Input placeholder="Search members" height="50px" backgroundColor />
+            <Input placeholder="Search Classes" height="50px" backgroundColor />
             <div className={classes.root}>
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography className={classes.heading}>CLass 1</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <FormGroup>
-                    <div>
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                    </div>
-                  </FormGroup>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography className={classes.heading}>CLass 2</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <FormGroup>
-                    <div>
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                    </div>
-                  </FormGroup>
-                </AccordionDetails>
-              </Accordion>
-              <Accordion>
-                <AccordionSummary
-                  expandIcon={<ExpandMoreIcon />}
-                  aria-controls="panel1a-content"
-                  id="panel1a-header"
-                >
-                  <Typography className={classes.heading}>CLass 3</Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <FormGroup>
-                    <div>
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                      <CustomInput
-                        type="checkbox"
-                        id="exampleCustomInline"
-                        label="Featured"
-                      />
-                    </div>
-                  </FormGroup>
-                </AccordionDetails>
-              </Accordion>
+              {isEmpty(categories)
+                ? "Add Classes tO add in workout"
+                : categories.map((cat, i) => (
+                    <Accordion key={i}>
+                      <AccordionSummary
+                        expandIcon={<ExpandMoreIcon />}
+                        aria-controls="panel1a-content"
+                        id="panel1a-header"
+                      >
+                        <Typography className={classes.heading}>
+                          {cat}
+                        </Typography>
+                      </AccordionSummary>
+                      <AccordionDetails>
+                        <FormGroup>
+                          <div>
+                            {classrooms.map((classroom, i) => {
+                              if (classroom.category !== cat) return;
+                              return (
+                                <CustomCheckBox
+                                  key={i}
+                                  label={classroom.title}
+                                  value={value}
+                                  showLabel
+                                  id={classroom._id}
+                                  ids={workoutClasses}
+                                  setIds={setWorkoutClasses}
+                                  setValue={setValue}
+                                  indexing
+                                />
+                              );
+                            })}
+                          </div>
+                        </FormGroup>
+                      </AccordionDetails>
+                    </Accordion>
+                  ))}
+            </div>
+            <div className="text-center">
+              <Button text="Add" width="100%" height="3rem" />
             </div>
           </form>
         </Col>
       </Row>
     </Container>
   );
-}
+};
+const mapStateToProps = state => {
+  return {
+    classrooms: getClassrooms(state)
+  };
+};
+
+export default connect(mapStateToProps, null)(ClassesPopup);

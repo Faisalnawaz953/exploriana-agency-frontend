@@ -8,7 +8,10 @@ import IconButton from "../../components/ui-elements/IconButton";
 
 import { useHistory } from "react-router-dom";
 import "../../css/Classes.css";
-import { getUserChallenges } from "../../dataServices/Services";
+import {
+  deleteUserChallenge,
+  getUserChallenges
+} from "../../dataServices/Services";
 import { connect } from "react-redux";
 import { updateChallenges } from "../../redux/actions/userActions/userActions";
 import { getChallenges } from "../../redux/selectors";
@@ -16,10 +19,14 @@ import { get, isEmpty } from "lodash";
 import { handleEditPopUp } from "../../config/GlobalFunctions";
 import EditPopUp from "../../components/ui-elements/EditPopUp";
 import { formatDate } from "../../config/GlobalFunctions";
+import ApiLoader from "../../components/ui-elements/ApiLoader";
+import { useAlert } from "react-alert";
 
 const Challenges = ({ challenges, updateChallenges }) => {
   const history = useHistory();
+  const alert = useAlert();
   const editRef = React.useRef([]);
+  const [loading, setLoading] = React.useState(false);
   const loadChallenges = async () => {
     const res = await getUserChallenges();
 
@@ -32,12 +39,28 @@ const Challenges = ({ challenges, updateChallenges }) => {
       alert.error("Error Loading Challenges.");
     }
   };
+  const deleteChallenge = async id => {
+    setLoading(true);
+    const res = await deleteUserChallenge(id);
+
+    const resCode = get(res, "status");
+    console.log("linkss", res);
+
+    if (resCode === 200) {
+      alert.error("Challenge Deleted SuccessFully");
+      setLoading(false);
+      loadChallenges();
+    } else {
+      setLoading(false);
+      alert.error("Error Deleting Challenge");
+    }
+  };
   React.useEffect(() => {
     loadChallenges();
   }, []);
   return (
     <>
-      <Container>
+      <Container className="bg-white ">
         <Row>
           <div className="mt-3 classess text-lg-left  text-md-left text-sm-center text-center">
             Videos {isEmpty(challenges) ? "(0)" : `(${challenges.length})`}
@@ -86,7 +109,14 @@ const Challenges = ({ challenges, updateChallenges }) => {
                 </td>
               </tr>
             )}
-            {!isEmpty(challenges) &&
+            {loading ? (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
+                  <ApiLoader />
+                </td>
+              </tr>
+            ) : (
+              !isEmpty(challenges) &&
               challenges.map((challenge, i) => (
                 <tr key={i}>
                   <td>
@@ -112,11 +142,17 @@ const Challenges = ({ challenges, updateChallenges }) => {
                       }}
                       ref={el => (editRef.current[i] = el)}
                     >
-                      <EditPopUp />
+                      <EditPopUp
+                        onEdit={() =>
+                          history.push(`/edit-challenge/${challenge._id}`)
+                        }
+                        onDelete={() => deleteChallenge(challenge._id)}
+                      />
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+            )}
           </tbody>
         </table>
       </Col>

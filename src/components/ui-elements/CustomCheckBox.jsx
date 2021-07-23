@@ -71,7 +71,11 @@ export default function CustomizedCheckbox({
   label,
   value,
   setValue,
-  showLabel
+  showLabel,
+  id,
+  ids,
+  setIds,
+  indexing
 }) {
   return (
     <div className="d-flex align-items-center justift-content-center">
@@ -87,9 +91,24 @@ export default function CustomizedCheckbox({
             }
             setValue(arr);
           } else {
-            let arr = [...label];
+            let arr = [...value];
             arr.push(label);
-            setValue(label);
+            setValue(arr);
+          }
+          if (indexing) {
+            if (ids.includes(id)) {
+              let ar = [...ids];
+              var inde = ar.indexOf(id);
+
+              if (inde > -1) {
+                ar.splice(inde, 1);
+              }
+              setIds(ar);
+            } else {
+              let ar = [...ids];
+              ar.push(id);
+              setIds(ar);
+            }
           }
         }}
       />

@@ -28,7 +28,12 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
+const EditVideosPopup = ({
+  toggle,
+  videos,
+  workoutVideos,
+  setWorkoutVideos
+}) => {
   const classes = useStyles();
   const [categories, setCategories] = React.useState([]);
   const [value, setValue] = React.useState([]);
@@ -36,8 +41,14 @@ const VideosPopup = ({ toggle, videos, workoutVideos, setWorkoutVideos }) => {
   React.useEffect(() => {
     let arr = [];
     videos.forEach(val => arr.push(val.category));
+    let vid = [];
+    vid = videos.filter(val => workoutVideos.includes(val._id));
+    let sval = [];
+    vid.forEach(val => sval.push(val.title));
+
+    setValue(sval);
     setCategories(uniq(arr));
-  }, []);
+  }, [workoutVideos]);
 
   return (
     <Container>
@@ -118,4 +129,4 @@ const mapStateToProps = state => {
   };
 };
 
-export default connect(mapStateToProps, null)(VideosPopup);
+export default connect(mapStateToProps, null)(EditVideosPopup);

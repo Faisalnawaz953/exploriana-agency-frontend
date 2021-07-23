@@ -3,7 +3,7 @@ import { makeStyles, useTheme } from "@material-ui/core/styles";
 import EditOutlinedIcon from "@material-ui/icons/EditOutlined";
 import DeleteOutlineOutlinedIcon from "@material-ui/icons/DeleteOutlineOutlined";
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   box: {
     width: "120px",
     height: "100px",
@@ -12,7 +12,7 @@ const useStyles = makeStyles((theme) => ({
     display: "flex",
     flexDirection: "column",
 
-    justifyContent: "center",
+    justifyContent: "center"
   },
   row: {
     display: "flex",
@@ -23,24 +23,24 @@ const useStyles = makeStyles((theme) => ({
     cursor: "pointer",
     "&:hover": {
       backgroundColor: "rgb(66, 159, 186,0.1)",
-      color: "#429FBA",
-    },
+      color: "#429FBA"
+    }
   },
   text: {
-    marginLeft: "10px",
+    marginLeft: "10px"
   },
-  icon: {},
+  icon: {}
 }));
 
-export default function EditPopUp() {
+export default function EditPopUp({ onEdit, onDelete }) {
   const classes = useStyles();
   return (
     <div className={classes.box}>
-      <div className={classes.row}>
+      <div className={classes.row} onClick={onEdit}>
         <EditOutlinedIcon />
         <div className={classes.text}>Edit</div>
       </div>
-      <div className={classes.row}>
+      <div className={classes.row} onClick={onDelete}>
         <DeleteOutlineOutlinedIcon />
         <div className={classes.text}>Delete</div>
       </div>

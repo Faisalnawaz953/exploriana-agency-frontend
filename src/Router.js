@@ -6,6 +6,7 @@ import AuthLayout from "./components/AuthLayout/AuthLayout";
 import { Redirect } from "react-router-dom";
 import { getUserAuth } from "./redux/selectors";
 import { connect } from "react-redux";
+
 const Login = lazy(() => import("./pages/auth/Login"));
 const Register = lazy(() => import("./pages/auth/Register"));
 const LoginSuccess = lazy(() => import("./pages/auth/LoginSuccess"));
@@ -48,12 +49,17 @@ const TrainerInfo = lazy(() =>
 );
 const Auth = lazy(() => import("./pages/auth/Auth"));
 const RegisterAuth = lazy(() => import("./pages/auth/RegisterAuth"));
+const EditLink = lazy(() => import("./pages/Link/EditLink"));
+const EditChallenge = lazy(() => import("./pages/Challenges/EditChallenge"));
+const EditLiveClass = lazy(() => import("./pages/Live/EditLiveClass"));
+const EditVideo = lazy(() => import("./pages/Library/Videos/EditVideo"));
+const EditClass = lazy(() => import("./pages/Library/Classes/EditClass"));
 
 const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
   return (
     <Route
       {...rest}
-      render={(props) => {
+      render={props => {
         const token = localStorage.getItem("token");
         console.log("token", token);
         return (
@@ -74,7 +80,7 @@ const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
             ) : (
               <Redirect
                 to={{
-                  pathname: "/login",
+                  pathname: "/login"
                 }}
               />
             )}
@@ -85,9 +91,9 @@ const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
   );
 };
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    auth: getUserAuth(state),
+    auth: getUserAuth(state)
   };
 };
 
@@ -147,8 +153,12 @@ export default function Router() {
       <AppRoute path="/all-modal" component={AllModals} />
       <AppRoute path="/link" component={Link} />
       <AppRoute path="/live" component={Live} />
-
       <AppRoute exact path="/" component={Home} />
+      <AppRoute path="/edit-link/:id" component={EditLink} />
+      <AppRoute path="/edit-challenge/:id" component={EditChallenge} />
+      <AppRoute path="/edit-live-class/:id" component={EditLiveClass} />
+      <AppRoute path="/edit-video/:id" component={EditVideo} />
+      <AppRoute path="/edit-class/:id" component={EditClass} />
     </Switch>
   );
 }

@@ -26,7 +26,10 @@ import { useAlert } from "react-alert";
 import { addClassRoom } from "../../../dataServices/Services";
 import ApiLoader from "../../../components/ui-elements/ApiLoader";
 import RadioButton from "../../../components/ui-elements/RadioButton";
-import { addVideo } from "../../../dataServices/Services";
+import { updateUserVideo } from "../../../dataServices/Services";
+import { getVideos } from "../../../redux/selectors";
+import { connect } from "react-redux";
+import { useParams } from "react-router-dom";
 
 const videoSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -38,8 +41,9 @@ const videoSchema = yup.object().shape({
     .typeError("Enter Price in numbers")
 });
 
-const UploadVideos = () => {
+const EditVideo = ({ videos }) => {
   const alert = useAlert();
+  const { id } = useParams();
   const history = useHistory();
   const [categoryTags, setCategoryTags] = useState(["TALKS", "Nutrition"]);
   const [visibility, setVisibility] = useState("Publish");
@@ -48,6 +52,23 @@ const UploadVideos = () => {
   const [coverImage, setCoverImage] = useState("");
   const [video, setVideo] = useState("");
   const [loading, setLoading] = useState(false);
+  const [singleVideo, setSingleVideo] = useState();
+
+  const getSingleVideo = () => {
+    if (!isEmpty(videos)) {
+      let singlev = videos.filter(video => video._id === id);
+
+      setSingleVideo(singlev[0]);
+      let cat = [...selectedCategory];
+      cat.push(singlev[0].category);
+      setSelectedCategory(cat);
+      setVisibility(singlev[0].visibility);
+      setVideo(singlev[0].videoURL);
+      setCoverImage(singlev[0].coverImage);
+    } else {
+      alert.error("Error.Network Error or No Video exist.");
+    }
+  };
 
   const uploadCoverImage = async acceptedFiles => {
     let url = URL.createObjectURL(acceptedFiles[0]);
@@ -88,7 +109,7 @@ const UploadVideos = () => {
       alert.success("Video Added");
     }
   };
-  const uploadVideo = async values => {
+  const updateVideo = async values => {
     setLoading(true);
     const data = {
       title: values.title,
@@ -103,7 +124,7 @@ const UploadVideos = () => {
       coverImage: coverImage,
       category: selectedCategory[0]
     };
-    const res = await addVideo(data);
+    const res = await updateUserVideo(id, data);
     console.log(res);
 
     const resCode = get(res, "status");
@@ -112,30 +133,30 @@ const UploadVideos = () => {
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
-      values.title = "";
-      values.price = "";
-      values.description = "";
-      values.notes = "";
-
-      setClicked(false);
-      setCoverImage("");
-      setVideo("");
-      setSelectedCategory([]);
-
       setLoading(false);
-      alert.success("Video Added Successfully.");
+      alert.success("Video Updated Successfully.");
     }
   };
 
+  React.useEffect(() => {
+    getSingleVideo();
+  }, []);
+
   return (
     <Formik
-      initialValues={{ title: "", description: "", notes: "", price: "" }}
+      initialValues={{
+        title: singleVideo && singleVideo.title,
+        description: singleVideo && singleVideo.description,
+        notes: singleVideo && singleVideo.notes,
+        price: singleVideo && singleVideo.price
+      }}
       validationSchema={videoSchema}
+      enableReinitialize={true}
       onSubmit={values => {
         if (isEmpty(selectedCategory) || coverImage === "" || video === "") {
           setClicked(true);
         } else {
-          uploadVideo(values);
+          updateVideo(values);
         }
       }}
     >
@@ -158,7 +179,7 @@ const UploadVideos = () => {
               <Form>
                 <Row>
                   <Col md={{ size: 12 }}>
-                    <h3>Upload Video</h3>
+                    <h3>Edit Video</h3>
                   </Col>
                 </Row>
               </Form>
@@ -296,7 +317,7 @@ const UploadVideos = () => {
                   )}
                   <Col md={{ size: 8, offset: 2 }} className="text-center mb-5">
                     <Button
-                      text={"Upload Video"}
+                      text={"Save Changes"}
                       width="100%"
                       height="2.5rem"
                       onClick={handleSubmit}
@@ -312,4 +333,10 @@ const UploadVideos = () => {
   );
 };
 
-export default UploadVideos;
+const mapStateToProps = state => {
+  return {
+    videos: getVideos(state)
+  };
+};
+
+export default connect(mapStateToProps, null)(EditVideo);

@@ -14,7 +14,9 @@ import {
   getBrandById,
   getNotificationSettingsById,
   getLandingPageById,
-  getUserLinks
+  getUserLinks,
+  getUserClassRooms,
+  getUserVideos
 } from "../../../dataServices/Services";
 import get from "lodash/get";
 
@@ -67,17 +69,27 @@ export const updateClassrooms = payload => {
 export const login = payload => {
   return async dispatch => {
     // console.log(payload);
-    //get links api
-    // const linkres = await getUserLinks();
+    //Videos api
+    const videores = await getUserVideos();
 
-    // const linkresCode = get(linkres, "status");
-    // console.log("linkss", linkres);
+    const videoresCode = get(videores, "status");
 
-    // if (linkresCode === 200) {
-    //   dispatch(updateLinks(linkres.data.links));
-    // } else {
-    //   dispatch(updateLinks([]));
-    // }
+    if (videoresCode === 200) {
+      dispatch(updateVideos(videores.data.videos));
+    } else {
+      dispatch(updateVideos([]));
+    }
+    // get ClassRoom api
+    const classres = await getUserClassRooms();
+
+    const classresCode = get(classres, "status");
+    console.log("classes", classres);
+
+    if (classresCode === 200) {
+      dispatch(updateClassrooms(classres.data.classrooms));
+    } else {
+      dispatch(updateClassrooms([]));
+    }
     //landing page api
     const landingres = await getLandingPageById(payload._id);
 

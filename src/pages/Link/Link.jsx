@@ -9,15 +9,33 @@ import { getLinks } from "../../redux/selectors";
 import { connect } from "react-redux";
 import { isEmpty } from "lodash";
 import EditPopUp from "../../components/ui-elements/EditPopUp";
-import { getUserLinks } from "../../dataServices/Services";
+import { getUserLinks, deleteUserLink } from "../../dataServices/Services";
 import { updateLinks } from "../../redux/actions/userActions/userActions";
 import { get } from "lodash";
 import { useAlert } from "react-alert";
+import ApiLoader from "../../components/ui-elements/ApiLoader";
 
 const AllLink = ({ links, updateLinks }) => {
   const history = useHistory();
   const editRef = useRef([]);
   const alert = useAlert();
+  const [loading, setLoading] = React.useState(false);
+
+  const deleteLink = async id => {
+    setLoading(true);
+    const res = await deleteUserLink(id);
+
+    const resCode = get(res, "status");
+    console.log("linkss", res);
+
+    if (resCode === 200) {
+      setLoading(false);
+      loadLinks();
+    } else {
+      setLoading(false);
+      alert.error("Error Loading Links.");
+    }
+  };
 
   const loadLinks = async () => {
     const linkres = await getUserLinks();
@@ -81,13 +99,23 @@ const AllLink = ({ links, updateLinks }) => {
           </thead>
           <tbody>
             {isEmpty(links) && (
-              <tr className="h4 text-muted pt-5 bg-white ">
+              <tr
+                className="h4 text-muted pt-5 bg-white "
+                style={{ height: "300px" }}
+              >
                 <td colSpan={2} className="text-center ">
                   No Links Added Yet.
                 </td>
               </tr>
             )}
-            {!isEmpty(links) &&
+            {loading ? (
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={2} className="text-center ">
+                  <ApiLoader />
+                </td>
+              </tr>
+            ) : (
+              !isEmpty(links) &&
               links.map((link, index) => (
                 <tr key={index}>
                   <td>{link.linkName}</td>
@@ -107,11 +135,15 @@ const AllLink = ({ links, updateLinks }) => {
                       }}
                       ref={el => (editRef.current[index] = el)}
                     >
-                      <EditPopUp />
+                      <EditPopUp
+                        onEdit={() => history.push(`/edit-link/${link._id}`)}
+                        onDelete={() => deleteLink(link._id)}
+                      />
                     </div>
                   </td>
                 </tr>
-              ))}
+              ))
+            )}
           </tbody>
         </table>
       </Col>

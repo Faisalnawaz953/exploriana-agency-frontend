@@ -20,7 +20,8 @@ const InputField = ({
   errors,
   repeat,
   repeatValue,
-  setRepeatValue
+  setRepeatValue,
+  min
 }) => {
   if (repeat) {
     return (
@@ -80,6 +81,7 @@ const InputField = ({
           type={type}
           value={value ? value : ""}
           onChange={e => onChange(e.target.value)}
+          min={min && min}
         />
       </FormGroup>
     );
