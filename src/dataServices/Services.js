@@ -52,7 +52,7 @@ export const updateProfile = async data => {
 export const updateProfileImage = async data => {
   try {
     return await axios.post(
-      `${BASE_URL}users//upload-profile-image`,
+      `${BASE_URL}users/upload-profile-image`,
       data,
       config
     );

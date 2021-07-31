@@ -16,12 +16,14 @@ import { connect } from "react-redux";
 import { getLandingPageData } from "../../../redux/selectors";
 import { updateLanding } from "../../../redux/actions/userActions/userActions";
 import { LandscapeOutlined } from "@material-ui/icons";
+import { formatBytes } from "../../../config/GlobalFunctions";
+import UploadedVideo from "../../ui-elements/UploadedVideo";
 
 const LandingPageSchema = yup.object().shape({
   heroTitle: yup.string().required("Hero Title is required."),
   heroDescription: yup.string().required("Hero Description is required."),
   accessTitle: yup.string().required("Access Title is required."),
-  accessDescription: yup.string().required("Access Description is required."),
+  accessDescription: yup.string().required("Access Description is required.")
 });
 
 const LandingPage = ({ landing, updateLanding }) => {
@@ -42,9 +44,30 @@ const LandingPage = ({ landing, updateLanding }) => {
     landing && landing.accessCoverImageUrl ? landing.accessCoverImageUrl : ""
   );
   const [loading, setLoading] = React.useState(false);
+  const [heroImageSize, setHeroImageSize] = React.useState("");
+  const [heroImageName, setHeroImageName] = React.useState("");
+  const [trailerVideoSize, setTrailerVideoSize] = React.useState("");
+  const [trailerVideoName, setTrailerVideoName] = React.useState("");
+  const [accessImageSize, setAccessImageSize] = React.useState("");
+  const [accessImageName, setAccessImageName] = React.useState("");
+  const [loadingHeroImage, setLoadingHeroImage] = React.useState(false);
+  const [loadingAccessImage, setLoadingAccessImage] = React.useState(false);
+  const [loadingHeroVideo, setLoadingHeroVideo] = React.useState(false);
 
-  const onSave = async (values) => {
+  const onSave = async values => {
     setLoading(true);
+    const heroCoverImageDetails = {
+      name: heroImageName,
+      size: heroImageSize
+    };
+    const heroTrailerDetails = {
+      size: trailerVideoSize,
+      name: trailerVideoName
+    };
+    const accessCoverImageDetails = {
+      size: accessImageSize,
+      name: accessImageName
+    };
     const data = {
       heroCoverImageUrl: heroCoverImage,
       heroTitle: values.heroTitle,
@@ -55,6 +78,9 @@ const LandingPage = ({ landing, updateLanding }) => {
       accessDescription: values.accessDescription,
       accessReview: review === "Show",
       accessMembership: membership === "Show",
+      heroCoverImageDetails: heroCoverImageDetails,
+      heroTrailerDetails: heroTrailerDetails,
+      accessCoverImageDetails: accessCoverImageDetails
     };
     const res = await updateLandingPage(data);
     console.log(res);
@@ -71,9 +97,13 @@ const LandingPage = ({ landing, updateLanding }) => {
     }
   };
 
-  const uploadHeroCoverImage = async (acceptedFiles) => {
+  const uploadHeroCoverImage = async acceptedFiles => {
+    setLoadingHeroImage(true);
+    setHeroImageName(acceptedFiles[0].name);
+    const size = formatBytes(acceptedFiles[0].size);
+    setHeroImageSize(size);
     let url = URL.createObjectURL(acceptedFiles[0]);
-    let blob = await fetch(url).then((r) => r.blob());
+    let blob = await fetch(url).then(r => r.blob());
     const formData = new FormData();
 
     formData.append("image", blob);
@@ -82,16 +112,22 @@ const LandingPage = ({ landing, updateLanding }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingHeroImage(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
       setHeroCoverImage(res.data.imageUrl);
+      setLoadingHeroImage(false);
       alert.success("Cover Image Added");
     }
   };
-  const uploadHeroTrailerVideo = async (acceptedFiles) => {
+  const uploadHeroTrailerVideo = async acceptedFiles => {
+    setLoadingHeroVideo(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setTrailerVideoSize(size);
+    setTrailerVideoName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
-    let blob = await fetch(url).then((r) => r.blob());
+    let blob = await fetch(url).then(r => r.blob());
     const formData = new FormData();
 
     formData.append("image", blob);
@@ -100,16 +136,22 @@ const LandingPage = ({ landing, updateLanding }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingHeroVideo(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
       setHeroTrailerVideo(res.data.imageUrl);
+      setLoadingHeroVideo(false);
       alert.success("Trailer Video Added");
     }
   };
-  const uploadAccessCoverImage = async (acceptedFiles) => {
+  const uploadAccessCoverImage = async acceptedFiles => {
+    setLoadingAccessImage(true);
+    setAccessImageName(acceptedFiles[0].name);
+    const size = formatBytes(acceptedFiles[0].size);
+    setAccessImageSize(size);
     let url = URL.createObjectURL(acceptedFiles[0]);
-    let blob = await fetch(url).then((r) => r.blob());
+    let blob = await fetch(url).then(r => r.blob());
     const formData = new FormData();
 
     formData.append("image", blob);
@@ -118,10 +160,12 @@ const LandingPage = ({ landing, updateLanding }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingAccessImage(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
       setAccessCoverImage(res.data.imageUrl);
+      setLoadingAccessImage(false);
       alert.success("Access Image Added");
     }
   };
@@ -133,20 +177,20 @@ const LandingPage = ({ landing, updateLanding }) => {
           landing && landing.heroDescription ? landing.heroDescription : "",
         accessTitle: landing && landing.accessTitle ? landing.accessTitle : "",
         accessDescription:
-          landing && landing.accessDescription ? landing.accessDescription : "",
+          landing && landing.accessDescription ? landing.accessDescription : ""
       }}
       validationSchema={LandingPageSchema}
       onSubmit={onSave}
       enableReinitialize={true}
     >
-      {(props) => {
+      {props => {
         const {
           handleChange,
           handleBlur,
           values,
           errors,
           touched,
-          handleSubmit,
+          handleSubmit
         } = props;
         return (
           <>
@@ -180,8 +224,23 @@ const LandingPage = ({ landing, updateLanding }) => {
                         <ImageUpload
                           text="Cover image"
                           setSelectedFiles={uploadHeroCoverImage}
+                          loadingFile={loadingHeroImage}
                         />
-                        {heroCoverImage !== "" && <UploadedImage />}
+                        {heroCoverImage !== "" && (
+                          <UploadedImage
+                            size={
+                              heroImageSize === ""
+                                ? landing && landing.heroCoverImageDetails.size
+                                : heroImageSize
+                            }
+                            url={heroCoverImage}
+                            name={
+                              heroImageName === ""
+                                ? landing && landing.heroCoverImageDetails.name
+                                : heroImageName
+                            }
+                          />
+                        )}
                       </Col>
                       <Col md={{ size: 8, offset: 2 }}>
                         <Input
@@ -208,8 +267,23 @@ const LandingPage = ({ landing, updateLanding }) => {
                         <ImageUpload
                           text="Trailer video(optional)"
                           setSelectedFiles={uploadHeroTrailerVideo}
+                          video
+                          loadingFile={loadingHeroVideo}
                         />
-                        {heroTrailerVideo !== "" && <UploadedImage />}
+                        {heroTrailerVideo !== "" && (
+                          <UploadedVideo
+                            name={
+                              trailerVideoName === ""
+                                ? landing && landing.heroTrailerDetails.name
+                                : trailerVideoName
+                            }
+                            size={
+                              trailerVideoSize === ""
+                                ? landing && landing.heroTrailerDetails.size
+                                : trailerVideoSize
+                            }
+                          />
+                        )}
                       </Col>
                       <Col md={{ size: 8, offset: 2 }} className="mt-4 mb-4 h6">
                         <b>Access:</b>
@@ -218,8 +292,25 @@ const LandingPage = ({ landing, updateLanding }) => {
                         <ImageUpload
                           text="Cover image"
                           setSelectedFiles={uploadAccessCoverImage}
+                          loadingFile={loadingAccessImage}
                         />
-                        {accessCoverImage !== "" && <UploadedImage />}
+                        {accessCoverImage !== "" && (
+                          <UploadedImage
+                            url={accessCoverImage}
+                            name={
+                              accessImageName === ""
+                                ? landing &&
+                                  landing.accessCoverImageDetails.name
+                                : accessImageName
+                            }
+                            size={
+                              accessImageSize === ""
+                                ? landing &&
+                                  landing.accessCoverImageDetails.size
+                                : accessImageSize
+                            }
+                          />
+                        )}
                       </Col>
                       <Col md={{ size: 8, offset: 2 }}>
                         <Input
@@ -296,17 +387,17 @@ const LandingPage = ({ landing, updateLanding }) => {
   );
 };
 
-export const mapStateToProps = (state) => {
+export const mapStateToProps = state => {
   return {
-    landing: getLandingPageData(state),
+    landing: getLandingPageData(state)
   };
 };
 
-export const matchDispatchToProps = (dispatch) => {
+export const matchDispatchToProps = dispatch => {
   return {
-    updateLanding: (landing) => {
+    updateLanding: landing => {
       dispatch(updateLanding(landing));
-    },
+    }
   };
 };
 

@@ -27,6 +27,8 @@ import { addClassRoom } from "../../../dataServices/Services";
 import ApiLoader from "../../../components/ui-elements/ApiLoader";
 import RadioButton from "../../../components/ui-elements/RadioButton";
 import { addVideo } from "../../../dataServices/Services";
+import { formatBytes } from "../../../config/GlobalFunctions";
+import UploadedVideo from "../../../components/ui-elements/UploadedVideo";
 
 const videoSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -48,8 +50,18 @@ const UploadVideos = () => {
   const [coverImage, setCoverImage] = useState("");
   const [video, setVideo] = useState("");
   const [loading, setLoading] = useState(false);
+  const [videoSize, setVideoSize] = useState("");
+  const [videoName, setVideoName] = useState("");
+  const [imageSize, setImageSize] = useState("");
+  const [imageName, setImageName] = useState("");
+  const [loadingVideo, setLoadingVideo] = React.useState(false);
+  const [loadingImage, setLoadingImage] = React.useState(false);
 
   const uploadCoverImage = async acceptedFiles => {
+    setLoadingImage(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setImageSize(size);
+    setImageName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -61,15 +73,21 @@ const UploadVideos = () => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingImage(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingImage(false);
       setCoverImage(res.data.imageUrl);
       alert.success("Cover Image Added");
     }
   };
 
   const videoUpload = async acceptedFiles => {
+    setLoadingVideo(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setVideoSize(size);
+    setVideoName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -81,15 +99,25 @@ const UploadVideos = () => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingVideo(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingVideo(false);
       setVideo(res.data.imageUrl);
       alert.success("Video Added");
     }
   };
   const uploadVideo = async values => {
     setLoading(true);
+    const imageDetails = {
+      name: imageName,
+      size: imageSize
+    };
+    const videoDetails = {
+      name: videoName,
+      size: videoSize
+    };
     const data = {
       title: values.title,
       description: values.description,
@@ -101,7 +129,9 @@ const UploadVideos = () => {
 
       visibility: visibility,
       coverImage: coverImage,
-      category: selectedCategory[0]
+      category: selectedCategory[0],
+      imageDetails: imageDetails,
+      videoDetails: videoDetails
     };
     const res = await addVideo(data);
     console.log(res);
@@ -256,18 +286,28 @@ const UploadVideos = () => {
                           text="Video file"
                           setSelectedFiles={videoUpload}
                           video
+                          loadingFile={loadingVideo}
                         />
                         {clicked && video === "" && (
                           <div className="text-danger">Video is required</div>
                         )}
-                        {video !== "" && <UploadedImage />}
+                        {video !== "" && (
+                          <UploadedVideo name={videoName} size={videoSize} />
+                        )}
                       </Col>
                       <Col md={{ size: 8, offset: 2 }}>
                         <ImageUpload
                           text="Cover image"
                           setSelectedFiles={uploadCoverImage}
+                          loadingFile={loadingImage}
                         />
-                        {coverImage !== "" && <UploadedImage />}
+                        {coverImage !== "" && (
+                          <UploadedImage
+                            url={coverImage}
+                            name={imageName}
+                            size={imageSize}
+                          />
+                        )}
                         {clicked && coverImage === "" && (
                           <div className="text-danger">
                             Cover Image is required

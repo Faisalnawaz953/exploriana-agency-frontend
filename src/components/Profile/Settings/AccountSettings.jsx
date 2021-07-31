@@ -22,6 +22,8 @@ import ApiLoader from "../../ui-elements/ApiLoader";
 import UploadedImage from "../../ui-elements/UploadedImage";
 import { connect } from "react-redux";
 import { updateUser } from "../../../redux/actions/userActions/userActions";
+import { formatBytes } from "../../../config/GlobalFunctions";
+import UploadedVideo from "../../ui-elements/UploadedVideo";
 
 const useStyles = makeStyles(theme => ({
   headText: {
@@ -54,6 +56,12 @@ const AccountSettings = ({ user, updateUser }) => {
   const [image, setImage] = React.useState(
     user.user.coverImageUrl ? user.user.coverImageUrl : ""
   );
+  const [videoSize, setVideoSize] = React.useState(
+    user.user.videoDetails && user.user.videoDetails.size
+  );
+  const [videoName, setVideoName] = React.useState(
+    user.user.videoDetails && user.user.videoDetails.name
+  );
   const [weightUnit, setWeightUnit] = React.useState(
     user.user.weightUnit ? user.user.weightUnit : "KG"
   );
@@ -65,8 +73,8 @@ const AccountSettings = ({ user, updateUser }) => {
     user.user.dateOfBirth ? user.user.dateOfBirth : ""
   );
   const [loading, setLoading] = React.useState(false);
-  const [files, setFiles] = React.useState([]);
-
+  const [file, setFile] = React.useState(user.user && user.user.videos);
+  console.log(user.user);
   const option = [
     { key: "option-1", value: "Male" },
     { key: "option-2", value: "Female" }
@@ -95,16 +103,22 @@ const AccountSettings = ({ user, updateUser }) => {
     }
   };
   const videosUpload = async acceptedFiles => {
+    const size = formatBytes(acceptedFiles[0].size, 2);
+    setVideoSize(size);
+    setVideoName(acceptedFiles[0].name);
+
     let url = URL.createObjectURL(acceptedFiles[0]);
     let blob = await fetch(url).then(r => r.blob());
-    let file = [...files];
-    file.push(blob);
-    setFiles(file);
+
+    setFile(blob);
   };
 
   const submitHandler = async values => {
     setLoading(true);
-
+    const videoDetails = {
+      name: videoName,
+      size: videoSize
+    };
     const formData = new FormData();
 
     formData.append("firstName", values.firstName);
@@ -114,7 +128,8 @@ const AccountSettings = ({ user, updateUser }) => {
     formData.append("gender", gender);
     formData.append("weightUnit", weightUnit);
     formData.append("heightUnit", heightUnit);
-    files.map(file => formData.append("videos", file));
+    formData.append("videos", file);
+    formData.append("videoDetails", JSON.stringify(videoDetails));
 
     //TODO
     // uploadImage()
@@ -271,12 +286,19 @@ const AccountSettings = ({ user, updateUser }) => {
                     </Col>
                     <Col md={{ size: 8, offset: 2 }}>
                       <ImageUpload
-                        files={files}
+                        files={file}
                         setSelectedFiles={videosUpload}
                         video
                       />
-                      {files &&
-                        files.map((file, i) => <UploadedImage key={i} />)}
+                      {file !== "" && (
+                        <UploadedVideo name={videoName} size={videoSize} />
+                      )}
+                      {/* {user.user && user.user.videos !== "" && (
+                        <UploadedVideo
+                          name={user.user && user.user.videoDetails.name}
+                          size={user.user && user.user.videoDetails.size}
+                        />
+                      )} */}
                     </Col>
                     <Col className="mt-3" md={{ size: 8, offset: 2 }}>
                       <label className="h5">Units</label>

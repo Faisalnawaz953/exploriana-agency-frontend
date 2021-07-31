@@ -16,10 +16,11 @@ import { Formik } from "formik";
 import * as yup from "yup";
 import { addChallange } from "../../dataServices/Services";
 import { connect } from "react-redux";
-import { getChallenges } from "../../redux/selectors";
+import { getChallenges, getClassrooms, getVideos } from "../../redux/selectors";
 import { useParams } from "react-router-dom";
 import { isEmpty } from "lodash";
 import { updateUserChallenge } from "../../dataServices/Services";
+import { formatBytes } from "../../config/GlobalFunctions";
 
 const uploadChallangeSchema = yup.object().shape({
   title: yup.string().required("Title is Required"),
@@ -31,7 +32,7 @@ const uploadChallangeSchema = yup.object().shape({
   notes: yup.string().required("Required")
 });
 
-const EditChallenge = ({ challenges }) => {
+const EditChallenge = ({ challenges, classrooms, videos }) => {
   const history = useHistory();
   const { id } = useParams();
   const videoRef = useRef();
@@ -45,6 +46,9 @@ const EditChallenge = ({ challenges }) => {
 
   const [workoutVideos, setWorkoutVideos] = React.useState([]);
   const [workoutClasses, setWorkoutClasses] = React.useState([]);
+  const [imageSize, setImageSize] = React.useState("");
+  const [imageName, setImageName] = React.useState("");
+  const [coverImage, setCoverImage] = React.useState("");
 
   const getSingleChallenge = () => {
     if (!isEmpty(challenges)) {
@@ -57,7 +61,9 @@ const EditChallenge = ({ challenges }) => {
       setEndDate(singleChallenge[0].endDate);
       setWorkoutVideos(singleChallenge[0].workouts.videos);
       setWorkoutClasses(singleChallenge[0].workouts.classes);
-      setFile(singleChallenge[0].coverImage);
+      setCoverImage(singleChallenge[0].coverImage);
+      setImageName(singleChallenge[0].imageDetails.name);
+      setImageSize(singleChallenge[0].imageDetails.size);
     } else {
       alert.error("Network Error or no Challenge exists");
       history.push("/challenges");
@@ -79,8 +85,12 @@ const EditChallenge = ({ challenges }) => {
       videoRef.current.style.display = "none";
     }
   };
-  const videosUpload = async acceptedFiles => {
+  const imageUpload = async acceptedFiles => {
+    const size = formatBytes(acceptedFiles[0].size);
+    setImageSize(size);
+    setImageName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
+    setCoverImage(url);
     let blob = await fetch(url).then(r => r.blob());
 
     setFile(blob);
@@ -93,7 +103,10 @@ const EditChallenge = ({ challenges }) => {
       videos: workoutVideos,
       classes: workoutClasses
     };
-
+    const imageDetails = {
+      name: imageName,
+      size: imageSize
+    };
     formData.append("title", values.title);
     formData.append("description", values.description);
     formData.append("image", file);
@@ -102,6 +115,8 @@ const EditChallenge = ({ challenges }) => {
     formData.append("notes", values.notes);
     formData.append("price", values.price);
     formData.append("workouts", JSON.stringify(workouts));
+    formData.append("imageDetails", JSON.stringify(imageDetails));
+
     const res = await updateUserChallenge(id, formData);
     console.log(res);
     const resCode = get(res, "status");
@@ -190,9 +205,15 @@ const EditChallenge = ({ challenges }) => {
                       <Col md={{ size: 8, offset: 2 }}>
                         <ImageUpload
                           text="Image"
-                          setSelectedFiles={videosUpload}
+                          setSelectedFiles={imageUpload}
                         />
-                        {file && <UploadedImage />}
+                        {coverImage !== "" && (
+                          <UploadedImage
+                            size={imageSize}
+                            name={imageName}
+                            url={coverImage}
+                          />
+                        )}
                       </Col>
                       <Col md={{ size: 4, offset: 2 }}>
                         <Input
@@ -255,10 +276,44 @@ const EditChallenge = ({ challenges }) => {
                       <Col md={{ size: 8, offset: 2 }}>
                         <b>Workouts</b>
                         {workoutClasses.map(cl => (
-                          <UploadedImage key={cl} />
+                          <UploadedImage
+                            key={cl}
+                            name={classrooms.map(classroom => {
+                              if (classroom._id === cl) {
+                                return classroom.videoDetails.name;
+                              }
+                            })}
+                            size={classrooms.map(classroom => {
+                              if (classroom._id === cl) {
+                                return classroom.videoDetails.size;
+                              }
+                            })}
+                            url={classrooms.map(classroom => {
+                              if (classroom._id === cl) {
+                                return classroom.coverImage;
+                              }
+                            })}
+                          />
                         ))}
                         {workoutVideos.map(vid => (
-                          <UploadedImage key={vid} />
+                          <UploadedImage
+                            name={videos.map(video => {
+                              if (video._id === vid) {
+                                return video.videoDetails.name;
+                              }
+                            })}
+                            size={videos.map(video => {
+                              if (video._id === vid) {
+                                return video.videoDetails.size;
+                              }
+                            })}
+                            url={videos.map(video => {
+                              if (video._id === vid) {
+                                return video.coverImage;
+                              }
+                            })}
+                            key={vid}
+                          />
                         ))}
                       </Col>
                       <Col
@@ -348,7 +403,9 @@ const EditChallenge = ({ challenges }) => {
 };
 const mapStateToProps = state => {
   return {
-    challenges: getChallenges(state)
+    challenges: getChallenges(state),
+    classrooms: getClassrooms(state),
+    videos: getVideos(state)
   };
 };
 

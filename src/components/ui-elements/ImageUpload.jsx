@@ -3,8 +3,9 @@ import { Label } from "reactstrap";
 import "../../css/imageupload.css";
 import Dropzone from "react-dropzone";
 import VideoSnapshot from "video-snapshot";
+import FileLoader from "./FileLoader";
 
-const ImageUpload = ({ text, files, setSelectedFiles, video }) => {
+const ImageUpload = ({ text, files, setSelectedFiles, video, loadingFile }) => {
   return (
     <>
       <Label>
@@ -24,7 +25,9 @@ const ImageUpload = ({ text, files, setSelectedFiles, video }) => {
           </p>
         </div>
       </div> */}
-      {video ? (
+      {loadingFile ? (
+        <FileLoader />
+      ) : video ? (
         <Dropzone
           maxFiles={1}
           onDrop={async acceptedFiles => {
@@ -65,7 +68,7 @@ const ImageUpload = ({ text, files, setSelectedFiles, video }) => {
         >
           {({ getRootProps, getInputProps, isDragActive }) => (
             <div {...getRootProps()} className="imageupload    mt-3">
-              <input {...getInputProps()} />
+              <input {...getInputProps()} accept="image/*" />
               <div className=" p-3 d-flex align-items-center flex-column ">
                 {isDragActive ? (
                   <p>Drop the files here ...</p>

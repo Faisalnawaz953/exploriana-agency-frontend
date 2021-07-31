@@ -15,6 +15,9 @@ import ClassesPopup from "../../components/ui-elements/ClassesPopUp";
 import { Formik } from "formik";
 import * as yup from "yup";
 import { addChallange } from "../../dataServices/Services";
+import { formatBytes } from "../../config/GlobalFunctions";
+import { getClassrooms, getVideos } from "../../redux/selectors";
+import { connect } from "react-redux";
 
 const uploadChallangeSchema = yup.object().shape({
   title: yup.string().required("Title is Required"),
@@ -26,7 +29,8 @@ const uploadChallangeSchema = yup.object().shape({
   notes: yup.string().required("Required")
 });
 
-const UploadChallenges = () => {
+const UploadChallenges = ({ classrooms, videos }) => {
+  console.log(classrooms);
   const history = useHistory();
   const videoRef = useRef();
   const classRef = useRef();
@@ -37,6 +41,9 @@ const UploadChallenges = () => {
   const [loading, setLoading] = React.useState(false);
   const [workoutVideos, setWorkoutVideos] = React.useState([]);
   const [workoutClasses, setWorkoutClasses] = React.useState([]);
+  const [imageSize, setImageSize] = React.useState("");
+  const [imageName, setImageName] = React.useState("");
+  const [coverImage, setCoverImage] = React.useState("");
 
   const toggleVideoPopUp = () => {
     if (videoRef.current.style.display === "block") {
@@ -54,8 +61,12 @@ const UploadChallenges = () => {
       videoRef.current.style.display = "none";
     }
   };
-  const videosUpload = async acceptedFiles => {
+  const imageUpload = async acceptedFiles => {
+    const size = formatBytes(acceptedFiles[0].size);
+    setImageSize(size);
+    setImageName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
+    setCoverImage(url);
     let blob = await fetch(url).then(r => r.blob());
 
     setFile(blob);
@@ -66,6 +77,10 @@ const UploadChallenges = () => {
     let workouts = {
       videos: workoutVideos,
       classes: workoutClasses
+    };
+    const imageDetails = {
+      name: imageName,
+      size: imageSize
     };
 
     const formData = new FormData();
@@ -78,6 +93,8 @@ const UploadChallenges = () => {
     formData.append("notes", values.notes);
     formData.append("price", values.price);
     formData.append("workouts", JSON.stringify(workouts));
+    formData.append("imageDetails", JSON.stringify(imageDetails));
+
     const res = await addChallange(formData);
     console.log(res);
     const resCode = get(res, "status");
@@ -165,9 +182,15 @@ const UploadChallenges = () => {
                       <Col md={{ size: 8, offset: 2 }}>
                         <ImageUpload
                           text="Image"
-                          setSelectedFiles={videosUpload}
+                          setSelectedFiles={imageUpload}
                         />
-                        {file && <UploadedImage />}
+                        {file && (
+                          <UploadedImage
+                            url={coverImage}
+                            name={imageName}
+                            size={imageSize}
+                          />
+                        )}
                       </Col>
                       <Col md={{ size: 4, offset: 2 }}>
                         <Input
@@ -230,10 +253,44 @@ const UploadChallenges = () => {
                       <Col md={{ size: 8, offset: 2 }}>
                         <b>Workouts</b>
                         {workoutClasses.map(cl => (
-                          <UploadedImage key={cl} />
+                          <UploadedImage
+                            key={cl}
+                            name={classrooms.map(classroom => {
+                              if (classroom._id === cl) {
+                                return classroom.videoDetails.name;
+                              }
+                            })}
+                            size={classrooms.map(classroom => {
+                              if (classroom._id === cl) {
+                                return classroom.videoDetails.size;
+                              }
+                            })}
+                            url={classrooms.map(classroom => {
+                              if (classroom._id === cl) {
+                                return classroom.coverImage;
+                              }
+                            })}
+                          />
                         ))}
                         {workoutVideos.map(vid => (
-                          <UploadedImage key={vid} />
+                          <UploadedImage
+                            name={videos.map(video => {
+                              if (video._id === vid) {
+                                return video.videoDetails.name;
+                              }
+                            })}
+                            size={videos.map(video => {
+                              if (video._id === vid) {
+                                return video.videoDetails.size;
+                              }
+                            })}
+                            url={videos.map(video => {
+                              if (video._id === vid) {
+                                return video.coverImage;
+                              }
+                            })}
+                            key={vid}
+                          />
                         ))}
                       </Col>
 
@@ -323,4 +380,11 @@ const UploadChallenges = () => {
   );
 };
 
-export default UploadChallenges;
+const mapStateToProps = state => {
+  return {
+    classrooms: getClassrooms(state),
+    videos: getVideos(state)
+  };
+};
+
+export default connect(mapStateToProps, null)(UploadChallenges);

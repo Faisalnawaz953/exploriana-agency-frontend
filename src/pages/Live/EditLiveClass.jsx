@@ -32,6 +32,7 @@ import { width } from "@material-ui/system";
 import { connect } from "react-redux";
 import { getLiveClasses } from "../../redux/selectors";
 import { useParams } from "react-router-dom";
+import { formatBytes } from "../../config/GlobalFunctions";
 
 const livepersonSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -72,6 +73,9 @@ const EditLiveClass = ({ liveClasses }) => {
   const [locationsList, setLocationsList] = useState([]);
   const [selectedLocation, setSelectedLocation] = useState();
   const [liveClass, setLiveClass] = useState();
+  const [imageSize, setImageSize] = useState("");
+  const [imageName, setImageName] = useState("");
+  const [loadingImage, setLoadingImage] = React.useState(false);
   const { id } = useParams();
   const getSingleLiveClass = () => {
     let singleLiveClass = liveClasses.filter(liveClass => liveClass._id === id);
@@ -108,6 +112,8 @@ const EditLiveClass = ({ liveClasses }) => {
     setSelectedFitnessGoal(fgoal);
     setVisibility(singleLiveClass[0].visibility);
     setAdditional(singleLiveClass[0].additional);
+    setImageSize(singleLiveClass[0].imageDetails.size);
+    setImageName(singleLiveClass[0].imageDetails.name);
   };
 
   const alert = useAlert();
@@ -160,6 +166,10 @@ const EditLiveClass = ({ liveClasses }) => {
   };
 
   const uploadCoverImage = async acceptedFiles => {
+    setLoadingImage(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setImageSize(size);
+    setImageName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -171,9 +181,11 @@ const EditLiveClass = ({ liveClasses }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingImage(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingImage(false);
       setCoverImage(res.data.imageUrl);
       alert.success("Cover Image Added");
     }
@@ -181,6 +193,10 @@ const EditLiveClass = ({ liveClasses }) => {
 
   const uploadLiveClass = async values => {
     setLoading(true);
+    const imageDetails = {
+      name: imageName,
+      size: imageSize
+    };
     const data = {
       title: values.title,
       description: values.description,
@@ -200,7 +216,8 @@ const EditLiveClass = ({ liveClasses }) => {
       startTime: values.startTime,
       date: date,
       location: selectedLocation,
-      capacity: values.capacity
+      capacity: values.capacity,
+      imageDetails: imageDetails
     };
     const res = await updateUserLiveClass(id, data);
     console.log(res);
@@ -545,8 +562,15 @@ const EditLiveClass = ({ liveClasses }) => {
                         <ImageUpload
                           text="Upload Image"
                           setSelectedFiles={uploadCoverImage}
+                          loadingFile={loadingImage}
                         />
-                        {coverImage !== "" && <UploadedImage />}
+                        {coverImage !== "" && (
+                          <UploadedImage
+                            url={coverImage}
+                            name={imageName}
+                            size={imageSize}
+                          />
+                        )}
                         {clicked && coverImage === "" && (
                           <div className="text-danger">
                             Cover Image is required

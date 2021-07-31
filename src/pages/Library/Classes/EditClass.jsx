@@ -35,6 +35,8 @@ import ApiLoader from "../../../components/ui-elements/ApiLoader";
 import { getClassrooms } from "../../../redux/selectors";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
+import { formatBytes } from "../../../config/GlobalFunctions";
+import UploadedVideo from "../../../components/ui-elements/UploadedVideo";
 
 const classSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -87,6 +89,12 @@ const EditClass = ({ classes }) => {
   const [loading, setLoading] = useState();
   const [length, setLength] = useState();
   const [classroom, setClassRoom] = useState();
+  const [videoSize, setVideoSize] = useState("");
+  const [videoName, setVideoName] = useState("");
+  const [imageSize, setImageSize] = useState("");
+  const [imageName, setImageName] = useState("");
+  const [loadingVideo, setLoadingVideo] = React.useState(false);
+  const [loadingImage, setLoadingImage] = React.useState(false);
 
   const getSingleClass = () => {
     if (!isEmpty(classes)) {
@@ -109,12 +117,20 @@ const EditClass = ({ classes }) => {
       fgoal.push(singleClass[0].fitnessGoal);
       setSelectedFitnessGoal(fgoal);
       setAdditional(singleClass[0].additional);
+      setVideoSize(singleClass[0].videoDetails.size);
+      setVideoName(singleClass[0].videoDetails.name);
+      setImageSize(singleClass[0].imageDetails.size);
+      setImageName(singleClass[0].imageDetails.name);
     } else {
       alert.error("Error.Network Error or No Class exist.");
     }
   };
 
   const uploadCoverImage = async acceptedFiles => {
+    setLoadingImage(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setImageSize(size);
+    setImageName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -126,15 +142,22 @@ const EditClass = ({ classes }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingImage(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingImage(false);
       setCoverImage(res.data.imageUrl);
       alert.success("Cover Image Added");
     }
   };
 
   const videoUpload = async acceptedFiles => {
+    setLoadingVideo(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setVideoSize(size);
+    setVideoName(acceptedFiles[0].name);
+
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -146,9 +169,11 @@ const EditClass = ({ classes }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingVideo(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingVideo(false);
       setVideo(res.data.imageUrl);
       alert.success("Video Added");
     }
@@ -156,6 +181,14 @@ const EditClass = ({ classes }) => {
 
   const updateClass = async values => {
     setLoading(true);
+    const imageDetails = {
+      name: imageName,
+      size: imageSize
+    };
+    const videoDetails = {
+      name: videoName,
+      size: videoSize
+    };
     const data = {
       title: values.title,
       description: values.description,
@@ -170,7 +203,9 @@ const EditClass = ({ classes }) => {
       fitnessGoal: selectedFitnessGoal[0],
       visibility: visibility,
       coverImage: coverImage,
-      additional: additional
+      additional: additional,
+      videoDetails: videoDetails,
+      imageDetails: imageDetails
     };
     const res = await updateUserClassRoom(id, data);
     console.log(res);
@@ -182,7 +217,7 @@ const EditClass = ({ classes }) => {
     }
     if (resCode === 200) {
       setLoading(false);
-      alert.success("Class Added Successfully.");
+      alert.success("Class Update Successfully.");
     }
   };
 
@@ -362,18 +397,28 @@ const EditClass = ({ classes }) => {
                           text="Video file"
                           setSelectedFiles={videoUpload}
                           video
+                          loadingFile={loadingVideo}
                         />
                         {clicked && video === "" && (
                           <div className="text-danger">Video is required</div>
                         )}
-                        {video !== "" && <UploadedImage />}
+                        {video !== "" && (
+                          <UploadedVideo name={videoName} size={videoSize} />
+                        )}
                       </Col>
                       <Col md={{ size: 8, offset: 2 }}>
                         <ImageUpload
+                          loadingFile={loadingImage}
                           text="Cover image"
                           setSelectedFiles={uploadCoverImage}
                         />
-                        {coverImage !== "" && <UploadedImage />}
+                        {coverImage !== "" && (
+                          <UploadedImage
+                            name={imageName}
+                            size={imageSize}
+                            url={coverImage}
+                          />
+                        )}
                         {clicked && coverImage === "" && (
                           <div className="text-danger">
                             Cover Image is required

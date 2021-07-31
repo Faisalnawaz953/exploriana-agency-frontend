@@ -30,6 +30,8 @@ import { updateUserVideo } from "../../../dataServices/Services";
 import { getVideos } from "../../../redux/selectors";
 import { connect } from "react-redux";
 import { useParams } from "react-router-dom";
+import { formatBytes } from "../../../config/GlobalFunctions";
+import UploadedVideo from "../../../components/ui-elements/UploadedVideo";
 
 const videoSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -53,6 +55,12 @@ const EditVideo = ({ videos }) => {
   const [video, setVideo] = useState("");
   const [loading, setLoading] = useState(false);
   const [singleVideo, setSingleVideo] = useState();
+  const [videoSize, setVideoSize] = useState("");
+  const [videoName, setVideoName] = useState("");
+  const [imageSize, setImageSize] = useState("");
+  const [imageName, setImageName] = useState("");
+  const [loadingVideo, setLoadingVideo] = React.useState(false);
+  const [loadingImage, setLoadingImage] = React.useState(false);
 
   const getSingleVideo = () => {
     if (!isEmpty(videos)) {
@@ -65,12 +73,20 @@ const EditVideo = ({ videos }) => {
       setVisibility(singlev[0].visibility);
       setVideo(singlev[0].videoURL);
       setCoverImage(singlev[0].coverImage);
+      setVideoSize(singlev[0].videoDetails.size);
+      setVideoName(singlev[0].videoDetails.name);
+      setImageSize(singlev[0].imageDetails.size);
+      setImageName(singlev[0].imageDetails.name);
     } else {
       alert.error("Error.Network Error or No Video exist.");
     }
   };
 
   const uploadCoverImage = async acceptedFiles => {
+    setLoadingImage(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setImageSize(size);
+    setImageName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -82,15 +98,21 @@ const EditVideo = ({ videos }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingImage(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingImage(false);
       setCoverImage(res.data.imageUrl);
       alert.success("Cover Image Added");
     }
   };
 
   const videoUpload = async acceptedFiles => {
+    setLoadingVideo(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setVideoSize(size);
+    setVideoName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -102,15 +124,25 @@ const EditVideo = ({ videos }) => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingVideo(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingVideo(false);
       setVideo(res.data.imageUrl);
       alert.success("Video Added");
     }
   };
   const updateVideo = async values => {
     setLoading(true);
+    const imageDetails = {
+      name: imageName,
+      size: imageSize
+    };
+    const videoDetails = {
+      name: videoName,
+      size: videoSize
+    };
     const data = {
       title: values.title,
       description: values.description,
@@ -122,7 +154,9 @@ const EditVideo = ({ videos }) => {
 
       visibility: visibility,
       coverImage: coverImage,
-      category: selectedCategory[0]
+      category: selectedCategory[0],
+      videoDetails: videoDetails,
+      imageDetails: imageDetails
     };
     const res = await updateUserVideo(id, data);
     console.log(res);
@@ -277,18 +311,28 @@ const EditVideo = ({ videos }) => {
                           text="Video file"
                           setSelectedFiles={videoUpload}
                           video
+                          loadingFile={loadingVideo}
                         />
                         {clicked && video === "" && (
                           <div className="text-danger">Video is required</div>
                         )}
-                        {video !== "" && <UploadedImage />}
+                        {video !== "" && (
+                          <UploadedVideo name={videoName} size={videoSize} />
+                        )}
                       </Col>
                       <Col md={{ size: 8, offset: 2 }}>
                         <ImageUpload
                           text="Cover image"
                           setSelectedFiles={uploadCoverImage}
+                          loadingFile={loadingImage}
                         />
-                        {coverImage !== "" && <UploadedImage />}
+                        {coverImage !== "" && (
+                          <UploadedImage
+                            url={coverImage}
+                            name={imageName}
+                            size={imageSize}
+                          />
+                        )}
                         {clicked && coverImage === "" && (
                           <div className="text-danger">
                             Cover Image is required

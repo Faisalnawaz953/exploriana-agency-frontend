@@ -17,6 +17,8 @@ import { useAlert } from "react-alert";
 import ApiLoader from "../../../ui-elements/ApiLoader";
 import get from "lodash/get";
 import { addTrainer, updateImage } from "../../../../dataServices/Services";
+import UploadedVideo from "../../../ui-elements/UploadedVideo";
+import { formatBytes } from "../../../../config/GlobalFunctions";
 
 const addTrainerSchema = yup.object().shape({
   firstName: yup.string().required("First Name is required."),
@@ -53,8 +55,13 @@ const AddTrainerInfo = () => {
   const [image, setImage] = React.useState();
   const alert = useAlert();
   const [blobImage, setBlobImage] = React.useState();
+  const [videoName, setVideoName] = React.useState("");
+  const [videoSize, setVideoSize] = React.useState("");
 
   const videosUpload = async acceptedFiles => {
+    const size = formatBytes(acceptedFiles[0].size, 2);
+    setVideoSize(size);
+    setVideoName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
     let blob = await fetch(url).then(r => r.blob());
     let file = [...files];
@@ -86,6 +93,10 @@ const AddTrainerInfo = () => {
   const uploadTrainer = async values => {
     setLoading(true);
     const formData = new FormData();
+    const videoDetails = {
+      name: videoName,
+      size: videoSize
+    };
 
     formData.append("firstName", values.firstName);
     formData.append("lastName", values.lastName);
@@ -96,6 +107,8 @@ const AddTrainerInfo = () => {
     formData.append("facebook", values.facebook);
     formData.append("instagram", values.instagram);
     formData.append("image", blobImage);
+    formData.append("videoDetails", JSON.stringify(videoDetails));
+
     const res = await addTrainer(formData);
     console.log(res);
     const resCode = get(res, "status");
@@ -292,9 +305,16 @@ const AddTrainerInfo = () => {
                           text="Intro video file"
                           files={files}
                           setSelectedFiles={videosUpload}
+                          video
                         />
                         {files &&
-                          files.map((file, i) => <UploadedImage key={i} />)}
+                          files.map((file, i) => (
+                            <UploadedVideo
+                              size={videoSize}
+                              name={videoName}
+                              key={i}
+                            />
+                          ))}
                       </Col>
                     </>
                   )}

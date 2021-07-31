@@ -11,6 +11,7 @@ const Payment = () => {
 
   const connectStripe = async () => {
     const res = await addPaymentMethod();
+    window.location = res.data.url;
     console.log(res);
   };
   return (

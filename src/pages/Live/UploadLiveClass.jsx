@@ -29,6 +29,7 @@ import ApiLoader from "../../components/ui-elements/ApiLoader";
 import TextButton from "../../components/ui-elements/TextButton";
 import LocationPopUp from "../../components/ui-elements/LocationPopUp";
 import { width } from "@material-ui/system";
+import { formatBytes } from "../../config/GlobalFunctions";
 
 const livepersonSchema = yup.object().shape({
   title: yup.string().required("Title is required"),
@@ -109,6 +110,9 @@ const UploadLiveClass = props => {
   const [liveType, setLiveType] = useState("Virtual");
   const [loading, setLoading] = useState();
   const [repeatValue, setRepeatValue] = useState([]);
+  const [imageSize, setImageSize] = useState("");
+  const [imageName, setImageName] = useState("");
+  const [loadingImage, setLoadingImage] = React.useState(false);
 
   const toggleLocationPopUp = () => {
     if (locationRef.current.style.display === "flex") {
@@ -119,6 +123,10 @@ const UploadLiveClass = props => {
   };
 
   const uploadCoverImage = async acceptedFiles => {
+    setLoadingImage(true);
+    const size = formatBytes(acceptedFiles[0].size);
+    setImageSize(size);
+    setImageName(acceptedFiles[0].name);
     let url = URL.createObjectURL(acceptedFiles[0]);
 
     let blob = await fetch(url).then(r => r.blob());
@@ -130,9 +138,11 @@ const UploadLiveClass = props => {
     console.log(res);
     const resCode = get(res, "status");
     if (resCode !== 200) {
+      setLoadingImage(false);
       alert.error("Network Error Try Agian");
     }
     if (resCode === 200) {
+      setLoadingImage(false);
       setCoverImage(res.data.imageUrl);
       alert.success("Cover Image Added");
     }
@@ -140,6 +150,10 @@ const UploadLiveClass = props => {
 
   const uploadLiveClass = async values => {
     setLoading(true);
+    const imageDetails = {
+      name: imageName,
+      size: imageSize
+    };
     const data = {
       title: values.title,
       description: values.description,
@@ -159,7 +173,8 @@ const UploadLiveClass = props => {
       startTime: values.startTime,
       date: date,
       location: selectedLocation,
-      capacity: values.capacity
+      capacity: values.capacity,
+      imageDetails: imageDetails
     };
     const res = await addLiveClass(data);
     console.log(res);
@@ -183,11 +198,9 @@ const UploadLiveClass = props => {
       values.capacity = "";
       setSelectedLocation();
       setDate("");
-
       setSelectedFitnessGoal([]);
       setSelectedTargetArea([]);
       setSelectedType([]);
-
       setLoading(false);
       alert.success("Class Added Successfully.");
     }
@@ -517,8 +530,15 @@ const UploadLiveClass = props => {
                         <ImageUpload
                           text="Upload Image"
                           setSelectedFiles={uploadCoverImage}
+                          loadingFile={loadingImage}
                         />
-                        {coverImage !== "" && <UploadedImage />}
+                        {coverImage !== "" && (
+                          <UploadedImage
+                            url={coverImage}
+                            name={imageName}
+                            size={imageSize}
+                          />
+                        )}
                         {clicked && coverImage === "" && (
                           <div className="text-danger">
                             Cover Image is required
