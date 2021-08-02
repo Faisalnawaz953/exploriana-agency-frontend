@@ -54,6 +54,9 @@ const EditChallenge = lazy(() => import("./pages/Challenges/EditChallenge"));
 const EditLiveClass = lazy(() => import("./pages/Live/EditLiveClass"));
 const EditVideo = lazy(() => import("./pages/Library/Videos/EditVideo"));
 const EditClass = lazy(() => import("./pages/Library/Classes/EditClass"));
+const StripeConnected = lazy(() =>
+  import("./components/Profile/StripeConnected")
+);
 
 const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
   return (
@@ -61,7 +64,7 @@ const RouteConfig = ({ component: Component, fullLayout, auth, ...rest }) => {
       {...rest}
       render={props => {
         const token = localStorage.getItem("token");
-        console.log("token", token);
+        // console.log("token", token);
         return (
           <>
             {/* {console.log("authth", auth)} */}
@@ -159,6 +162,7 @@ export default function Router() {
       <AppRoute path="/edit-live-class/:id" component={EditLiveClass} />
       <AppRoute path="/edit-video/:id" component={EditVideo} />
       <AppRoute path="/edit-class/:id" component={EditClass} />
+      <AppRoute path="/stripe-connect" component={StripeConnected} />
     </Switch>
   );
 }

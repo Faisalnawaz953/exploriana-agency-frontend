@@ -14,7 +14,6 @@ import {
   getBrandById,
   getNotificationSettingsById,
   getLandingPageById,
-  getUserLinks,
   getUserClassRooms,
   getUserVideos
 } from "../../../dataServices/Services";

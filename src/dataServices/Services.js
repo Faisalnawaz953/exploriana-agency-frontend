@@ -13,6 +13,14 @@ export const authService = async email => {
   }
 };
 
+export const getSingleUser = async uid => {
+  try {
+    return await axios.get(`${BASE_URL}users/${uid}`, config);
+  } catch (error) {
+    return NETWORK_ERROR;
+  }
+};
+
 export const register = async email => {
   try {
     return await axios.post(`${BASE_URL}users/register`, { email });

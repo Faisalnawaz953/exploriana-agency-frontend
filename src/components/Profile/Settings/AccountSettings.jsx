@@ -74,7 +74,7 @@ const AccountSettings = ({ user, updateUser }) => {
   );
   const [loading, setLoading] = React.useState(false);
   const [file, setFile] = React.useState(user.user && user.user.videos);
-  console.log(user.user);
+
   const option = [
     { key: "option-1", value: "Male" },
     { key: "option-2", value: "Female" }
