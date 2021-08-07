@@ -20,6 +20,18 @@ export const getAllUsers = async () => {
   }
 }
 
+export const updateFirebaseToken = async body => {
+  try {
+    return await axios.post(
+      `${BASE_URL}users/update-device-token`,
+      body,
+      config
+    )
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
+
 export const getSingleUser = async uid => {
   try {
     return await axios.get(`${BASE_URL}users/${uid}`, config)
@@ -321,6 +333,18 @@ export const updateUserLink = async (linkId, data) => {
 export const deleteUserLink = async linkId => {
   try {
     return await axios.delete(`${BASE_URL}link/remove/${linkId}`, config)
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
+
+export const createNotification = async notification => {
+  try {
+    return await axios.post(
+      `${BASE_URL}notifications/create`,
+      notification,
+      config
+    )
   } catch (error) {
     return NETWORK_ERROR
   }

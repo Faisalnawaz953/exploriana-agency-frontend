@@ -60,7 +60,8 @@ import { positions, Provider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 import { connect } from 'react-redux'
 import { getBrand } from '../../redux/selectors'
-import { BRAND_COLOR } from '../../Constants/Constants'
+import { messaging } from '../../firebase'
+import { createNotification } from '../../dataServices/Services'
 
 const options = {
   timeout: 5000,
@@ -227,6 +228,15 @@ function ResponsiveDrawer(props) {
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
+  messaging.onMessage(async mes => {
+    console.log('Mesage recieved ===> ', mes)
+    const notification = {
+      title: mes.title,
+      description: mes.body
+    }
+    const res = createNotification(notification)
+    console.log(res)
+  })
   useEffect(() => {
     console.log(props.brandColor)
     setBrandColor(props.brandColor)
@@ -334,7 +344,10 @@ function ResponsiveDrawer(props) {
             primary={
               props.brand && props.brand.brandName
                 ? props.brand.brandName
-                : props.user &&props.user.user &&props.user.user.firstName &&  props.user.user.firstName
+                : props.user &&
+                  props.user.user &&
+                  props.user.user.firstName &&
+                  props.user.user.firstName
             }
           />
         </ListItem>
@@ -717,7 +730,8 @@ function ResponsiveDrawer(props) {
                 >
                   <img
                     src={
-                     props.user.user.coverImageUrl &&  props.user.user.coverImageUrl
+                      props.user.user.coverImageUrl &&
+                      props.user.user.coverImageUrl
                         ? props.user.user.coverImageUrl
                         : User
                     }

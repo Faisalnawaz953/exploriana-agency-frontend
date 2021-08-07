@@ -1,16 +1,35 @@
-import React from "react";
-import { Row, Col } from "reactstrap";
-import * as classes from "../../css/Home.module.css";
-import { useAlert } from "react-alert";
-import { connect } from "react-redux";
-import { getUserAuth } from "../../redux/selectors";
+import React from 'react'
+import { Row, Col } from 'reactstrap'
+import * as classes from '../../css/Home.module.css'
+import { useAlert } from 'react-alert'
+import { connect } from 'react-redux'
+import { getUserAuth } from '../../redux/selectors'
+import { getAllChatRoomsByUserId } from '../../dataServices/ChatService'
+import {
+  requestFirebaseNotificationPermission,
+  messaging
+} from '../../firebase'
+import { updateFirebaseToken } from '../../dataServices/Services'
 
 const Home = ({ auth }) => {
-  const alert = useAlert();
-  console.log(auth);
+  const alert = useAlert()
+  requestFirebaseNotificationPermission()
+    .then(async firebaseToken => {
+      // eslint-disable-next-line no-console
+      console.log(firebaseToken)
+      // setDeviceToken(firebaseToken);
+      let body = {
+        deviceToken: firebaseToken
+      }
+      const res = await updateFirebaseToken(body)
+    })
+    .catch(err => {
+      console.log('Error ===========> ', err)
+      return err
+    })
   return (
-    <Row className="w-100  align-items-center justify-content-center ">
-      <Col sm={12} md={12} lg={8} xl={6} className={"pt-4"}>
+    <Row className='w-100  align-items-center justify-content-center '>
+      <Col sm={12} md={12} lg={8} xl={6} className={'pt-4'}>
         <div
           className={`p-3  d-flex justify-content-center flex-column w-100 ${classes.parent}`}
         >
@@ -18,13 +37,13 @@ const Home = ({ auth }) => {
           <div>
             <p className={classes.headText}>Your Studio </p>
             <p>
-              <a href="#" style={{ color: "#429FBA", lineHeight: "25px" }}>
-                {" "}
+              <a href='#' style={{ color: '#429FBA', lineHeight: '25px' }}>
+                {' '}
                 https://www.moove.fit/brandname
               </a>
             </p>
           </div>
-          <Row className="d-flex w-100 align-items-center">
+          <Row className='d-flex w-100 align-items-center'>
             <Col md={6}>
               <p className={classes.headText}>Complete profile</p>
               <p className={classes.text}>Edit profile</p>
@@ -40,7 +59,7 @@ const Home = ({ auth }) => {
           </div>
           <div>
             <p className={classes.headText}>Add first on demand activity</p>
-            <div className="d-flex">
+            <div className='d-flex'>
               <p className={classes.text}>Add class</p>
               <p className={`${classes.text} pl-5`}>Add video</p>
             </div>
@@ -48,8 +67,8 @@ const Home = ({ auth }) => {
           <div>
             <p className={classes.headText}>Schedule class</p>
             <p className={classes.text}>Add class</p>
-          </div>{" "}
-          <Row className="d-flex w-100 align-items-center">
+          </div>{' '}
+          <Row className='d-flex w-100 align-items-center'>
             <Col md={6}>
               <p className={classes.headText}>Create membership</p>
               <p className={classes.text}>Add membership</p>
@@ -62,12 +81,12 @@ const Home = ({ auth }) => {
         </div>
       </Col>
     </Row>
-  );
-};
-const mapStateToProps = (state) => {
+  )
+}
+const mapStateToProps = state => {
   return {
-    auth: getUserAuth(state),
-  };
-};
+    auth: getUserAuth(state)
+  }
+}
 
-export default connect(mapStateToProps, null)(Home);
+export default connect(mapStateToProps, null)(Home)

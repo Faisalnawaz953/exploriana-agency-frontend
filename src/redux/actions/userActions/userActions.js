@@ -20,7 +20,6 @@ import {
   getUserVideos
 } from '../../../dataServices/Services'
 import get from 'lodash/get'
-import { getAllChatRoomsByUserId } from '../../../dataServices/ChatService'
 
 export const updateLinks = payload => {
   return dispatch => {

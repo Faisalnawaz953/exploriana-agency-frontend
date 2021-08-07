@@ -31,6 +31,7 @@ import { isEmpty } from 'lodash'
 function Inbox({ loggedUser, chatRooms, updateChatRooms }) {
   const [selectedChatRoom, setSelectedChatRoom] = React.useState(null)
   const [messageText, setMessageText] = React.useState('')
+  const [loading, setLoading] = React.useState(false)
 
   useEffect(() => {
     if (
@@ -45,10 +46,14 @@ function Inbox({ loggedUser, chatRooms, updateChatRooms }) {
     }
   }, [selectedChatRoom])
   const getChatRooms = async () => {
+    setLoading(true)
     const res = await getAllChatRoomsByUserId(loggedUser?.user?._id)
     if (res.success) {
+      setLoading(false)
       console.log('chays', res.chatRooms)
       updateChatRooms(res.chatRooms)
+    } else {
+      setLoading(false)
     }
   }
 
@@ -98,20 +103,25 @@ function Inbox({ loggedUser, chatRooms, updateChatRooms }) {
         <MainContainer responsive>
           <Sidebar position='left' scrollable={true}>
             <MessagesSearchBox />
-            <ConversationList>
+            <ConversationList loading={loading}>
               {!isEmpty(chatRooms) &&
                 chatRooms.map((chatRoom, i) => (
                   <Conversation
-                    name={
-                      (chatRoom.participants[0]._id === loggedUser?.user?._id
-                        ? chatRoom.participants[1].firstName
-                        : chatRoom.participants[0].firstName) +
-                      ' ' +
+                    active={
+                      selectedChatRoom && selectedChatRoom._id === chatRoom._id
+                    }
+                    unreadCnt={
+                      getTotalUnreadMessagesCount(chatRoom.messages) !== '' &&
                       getTotalUnreadMessagesCount(chatRoom.messages)
+                    }
+                    name={
+                      chatRoom.participants[0]._id === loggedUser?.user?._id
+                        ? chatRoom.participants[1].firstName
+                        : chatRoom.participants[0].firstName
                     }
                     lastSenderName={
                       chatRoom.participants[0]._id === loggedUser?.user?._id
-                        ? chatRoom.participants[1].firstName
+                        ? 'You'
                         : chatRoom.participants[0].firstName
                     }
                     info={
@@ -124,8 +134,7 @@ function Inbox({ loggedUser, chatRooms, updateChatRooms }) {
                   >
                     <Avatar
                       src={
-                        chatRoom.messages.length.senderId ===
-                        loggedUser?.user?._id
+                        chatRoom.participants[0]._id === loggedUser?.user?._id
                           ? chatRoom.participants[1].coverImageUrl
                             ? chatRoom.participants[1].coverImageUrl
                             : ChatImage
@@ -203,7 +212,6 @@ function Inbox({ loggedUser, chatRooms, updateChatRooms }) {
                         position: 'last'
                       }}
                     >
-                      {console.log('image')}
                       <Avatar
                         src={
                           message.senderId === loggedUser?.user?._id
