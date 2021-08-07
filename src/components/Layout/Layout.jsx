@@ -334,7 +334,7 @@ function ResponsiveDrawer(props) {
             primary={
               props.brand && props.brand.brandName
                 ? props.brand.brandName
-                : props.user.user.firstName
+                : props.user &&props.user.user &&props.user.user.firstName &&  props.user.user.firstName
             }
           />
         </ListItem>
@@ -717,7 +717,7 @@ function ResponsiveDrawer(props) {
                 >
                   <img
                     src={
-                      props.user.user.coverImageUrl
+                     props.user.user.coverImageUrl &&  props.user.user.coverImageUrl
                         ? props.user.user.coverImageUrl
                         : User
                     }
