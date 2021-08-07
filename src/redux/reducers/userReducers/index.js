@@ -8,8 +8,10 @@ import {
   UPDATE_CHALLENGES,
   UPDATE_LIVE_CLASSES,
   UPDATE_VIDEOS,
-  UPDATE_CLASSROOMS
-} from "../../../Constants/Constants";
+  UPDATE_CLASSROOMS,
+  UPDATE_BRAND_COLOR,
+  UPDATE_CHAT_ROOM
+} from '../../../Constants/Constants'
 
 const initialState = {
   auth: true,
@@ -21,34 +23,40 @@ const initialState = {
   challenges: [],
   liveClasses: [],
   videos: [],
-  classrooms: []
-};
+  classrooms: [],
+  brandColor: '#429FBA',
+  chatRooms: []
+}
 
 const userReducer = (state = initialState, action) => {
   switch (action.type) {
     case LOGIN_SUCCESS:
-      return { ...state, user: action.payload, auth: true };
+      return { ...state, user: action.payload, auth: true }
     case UPDATE_USER:
-      return { ...state, user: action.payload };
+      return { ...state, user: action.payload }
     case UPDATE_BRAND:
-      return { ...state, brand: action.payload };
+      return { ...state, brand: action.payload }
     case UPDATE_NOTIFICATIONS_SETTINGS:
-      return { ...state, notificationsSetting: action.payload };
+      return { ...state, notificationsSetting: action.payload }
     case UPDATE_LANDING_PAGE:
-      return { ...state, landingPage: action.payload };
+      return { ...state, landingPage: action.payload }
     case UPDATE_LINKS:
-      return { ...state, links: action.payload };
+      return { ...state, links: action.payload }
     case UPDATE_CHALLENGES:
-      return { ...state, challenges: action.payload };
+      return { ...state, challenges: action.payload }
     case UPDATE_LIVE_CLASSES:
-      return { ...state, liveClasses: action.payload };
+      return { ...state, liveClasses: action.payload }
     case UPDATE_VIDEOS:
-      return { ...state, videos: action.payload };
+      return { ...state, videos: action.payload }
     case UPDATE_CLASSROOMS:
-      return { ...state, classrooms: action.payload };
+      return { ...state, classrooms: action.payload }
+    case UPDATE_BRAND_COLOR:
+      return { ...state, brandColor: action.payload }
+    case UPDATE_CHAT_ROOM:
+      return { ...state, chatRooms: action.payload }
     default:
-      return state;
+      return state
   }
-};
+}
 
-export default userReducer;
+export default userReducer

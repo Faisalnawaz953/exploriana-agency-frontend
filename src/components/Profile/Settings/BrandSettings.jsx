@@ -1,112 +1,118 @@
-import React from "react";
-import { Container, Row, Col, FormGroup, Label, Form } from "reactstrap";
-import ProfilePic from "../../../assets/images/Ellipse22.png";
-import Input from "../../ui-elements/Input";
-import DropDown from "../../ui-elements/DropDown";
-import Button from "../../ui-elements/Button";
-import BrandColorTheme from "../../ui-elements/BrandColorTheme";
-import { makeStyles, useTheme } from "@material-ui/core/styles";
-import { BottomNavigation } from "@material-ui/core";
-import EditImage from "../../ui-elements/EditImage";
-import { Formik } from "formik";
-import * as yup from "yup";
-import { useAlert } from "react-alert";
-import { addBrand, updateBrandImage } from "../../../dataServices/Services";
-import get from "lodash/get";
-import ApiLoader from "../../ui-elements/ApiLoader";
-import { getUserId, getBrand } from "../../../redux/selectors";
-import { updateBrand } from "../../../redux/actions/userActions/userActions";
-import { connect } from "react-redux";
+import React from 'react'
+import { Container, Row, Col, FormGroup, Label, Form } from 'reactstrap'
+import ProfilePic from '../../../assets/images/Ellipse22.png'
+import Input from '../../ui-elements/Input'
+import DropDown from '../../ui-elements/DropDown'
+import Button from '../../ui-elements/Button'
+import BrandColorTheme from '../../ui-elements/BrandColorTheme'
+import { makeStyles, useTheme } from '@material-ui/core/styles'
+import { BottomNavigation } from '@material-ui/core'
+import EditImage from '../../ui-elements/EditImage'
+import { Formik } from 'formik'
+import * as yup from 'yup'
+import { useAlert } from 'react-alert'
+import { addBrand, updateBrandImage } from '../../../dataServices/Services'
+import get from 'lodash/get'
+import ApiLoader from '../../ui-elements/ApiLoader'
+import { getUserId, getBrand } from '../../../redux/selectors'
+import {
+  updateBrand,
+  updateBrandColor
+} from '../../../redux/actions/userActions/userActions'
+import { connect } from 'react-redux'
 
 const schema = yup.object().shape({
-  brandName: yup.string().required("Brand Name is Required"),
-});
+  brandName: yup.string().required('Brand Name is Required')
+})
 
-const useStyles = makeStyles((theme) => ({
+const useStyles = makeStyles(theme => ({
   headText: {
-    fontStyle: "normal",
-    fontWeight: "600",
-    fontSize: "20px",
-    lineHeight: "30px",
+    fontStyle: 'normal',
+    fontWeight: '600',
+    fontSize: '20px',
+    lineHeight: '30px',
     /* identical to box height, or 150% */
 
-    letterSpacing: "0.6px",
+    letterSpacing: '0.6px',
 
-    color: "#2B2B2B",
-  },
-}));
-const BrandSettings = ({ brand, updateBrand }) => {
-  const classes = useStyles();
-  const alert = useAlert();
+    color: '#2B2B2B'
+  }
+}))
+const BrandSettings = ({ brand, updateBrand, updateColor }) => {
+  const classes = useStyles()
+  const alert = useAlert()
   const [currency, setCurrency] = React.useState(
-    brand && brand.currency ? brand.currency : "ind"
-  );
+    brand && brand.currency ? brand.currency : 'ind'
+  )
   const [colorCode, setColorCode] = React.useState(
-    brand && brand.colorCodeHex ? brand.colorCodeHex : "#F2453D"
-  );
+    brand && brand.colorCodeHex ? brand.colorCodeHex : '#F2453D'
+  )
   const [image, setImage] = React.useState(
-    brand && brand.brandLogoUrl ? brand.brandLogoUrl : ""
-  );
-  const [loading, setLoading] = React.useState(false);
+    brand && brand.brandLogoUrl ? brand.brandLogoUrl : ''
+  )
+  const [loading, setLoading] = React.useState(false)
   const option = [
-    { key: "option-1", value: "ind" },
-    { key: "option-2", value: "rs" },
-  ];
+    { key: 'option-1', value: 'ind' },
+    { key: 'option-2', value: 'rs' }
+  ]
+  console.log(localStorage.getItem('BrandColor'))
 
-  const uploadBrandImage = async (e) => {
-    console.log(URL.createObjectURL(e.target.files[0]));
-    setImage(URL.createObjectURL(e.target.files[0]));
+  const uploadBrandImage = async e => {
+    console.log(URL.createObjectURL(e.target.files[0]))
+    setImage(URL.createObjectURL(e.target.files[0]))
     let blobImage = await fetch(URL.createObjectURL(e.target.files[0])).then(
-      (r) => r.blob()
-    );
+      r => r.blob()
+    )
 
-    const formData = new FormData();
+    const formData = new FormData()
 
-    formData.append("image", blobImage);
+    formData.append('image', blobImage)
 
-    const res = await updateBrandImage(formData);
-    console.log(res);
-    const resCode = get(res, "status");
+    const res = await updateBrandImage(formData)
+    console.log(res)
+    const resCode = get(res, 'status')
     if (resCode !== 200) {
-      alert.error("Network Error Try Agian");
+      alert.error('Network Error Try Agian')
     }
     if (resCode === 200) {
-      updateBrand(res.data.brand);
-      alert.success("Brand Image Updated");
+      updateBrand(res.data.brand)
+      alert.success('Brand Image Updated')
     }
-  };
-  const submitHandler = async (values) => {
+  }
+  const submitHandler = async values => {
     //TODO
     // uploadImage()
-    setLoading(true);
+    setLoading(true)
     const data = {
       brandName: values.brandName,
       colorCodeHex: colorCode,
-      currency: currency,
-    };
+      currency: currency
+    }
     //TODO
     // uploadImage()
 
-    const res = await addBrand(data);
-    console.log(res);
+    const res = await addBrand(data)
+    console.log(res)
 
-    const resCode = get(res, "status");
+    const resCode = get(res, 'status')
     if (resCode !== 200) {
-      setLoading(false);
+      setLoading(false)
 
-      alert.error("Network Error Try Agian");
+      alert.error('Network Error Try Agian')
     }
     if (resCode === 200) {
-      updateBrand(res.data.brand);
-      setLoading(false);
+      localStorage.setItem('BrandColor', colorCode)
+      updateColor(colorCode)
+      updateBrand(res.data.brand)
+      setLoading(false)
 
-      alert.success("Brand Changes Saved SuccessFully");
+      alert.success('Brand Changes Saved SuccessFully')
     }
-  };
+  }
 
   return (
     <>
-      <Container className="text-center">
+      <Container className='text-center'>
         <Form>
           <Row>
             <Col md={{ size: 12 }}>
@@ -123,7 +129,7 @@ const BrandSettings = ({ brand, updateBrand }) => {
 
       <Formik
         initialValues={{
-          brandName: brand && brand.brandName ? brand.brandName : "",
+          brandName: brand && brand.brandName ? brand.brandName : ''
         }}
         validationSchema={schema}
         onSubmit={submitHandler}
@@ -135,62 +141,62 @@ const BrandSettings = ({ brand, updateBrand }) => {
           errors,
           values,
           touched,
-          handleSubmit,
+          handleSubmit
         }) => (
           <Container>
             <Form>
               <Row>
                 {loading ? (
                   <Col
-                    md={{ size: "8", offset: 2 }}
-                    style={{ height: "400px" }}
-                    className="d-flex align-items-center justify-content-center"
+                    md={{ size: '8', offset: 2 }}
+                    style={{ height: '400px' }}
+                    className='d-flex align-items-center justify-content-center'
                   >
                     <ApiLoader />
                   </Col>
                 ) : (
                   <>
-                    <Col md={{ size: "7", offset: 3 }}>
+                    <Col md={{ size: '7', offset: 3 }}>
                       <FormGroup>
                         <Input
-                          type="text"
-                          label="Brand Name"
-                          placeholder="John"
-                          height={"50px"}
+                          type='text'
+                          label='Brand Name'
+                          placeholder='John'
+                          height={'50px'}
                           value={values.brandName}
-                          onBlur={handleBlur("brandName")}
-                          onChange={handleChange("brandName")}
+                          onBlur={handleBlur('brandName')}
+                          onChange={handleChange('brandName')}
                           touched={touched.brandName}
                           errors={errors.brandName}
                         />
                       </FormGroup>
                     </Col>
-                    <Col md={{ size: "7", offset: 3 }}>
+                    <Col md={{ size: '7', offset: 3 }}>
                       <FormGroup>
                         <DropDown
-                          type="select"
+                          type='select'
                           options={option}
-                          label="Currency"
-                          height={"50px"}
+                          label='Currency'
+                          height={'50px'}
                           value={currency}
                           setValue={setCurrency}
                         />
                       </FormGroup>
                     </Col>
-                    <Col md={{ size: "8", offset: 3 }}>
+                    <Col md={{ size: '8', offset: 3 }}>
                       <BrandColorTheme
                         brandColor={colorCode}
-                        setBrandColor={(val) => setColorCode(val)}
+                        setBrandColor={val => setColorCode(val)}
                       />
                     </Col>
                   </>
                 )}
 
-                <Col md={{ size: 7, offset: 3 }} className="text-center">
+                <Col md={{ size: 7, offset: 3 }} className='text-center'>
                   <Button
-                    text="Save Changes"
-                    width="100%"
-                    height="2.5rem"
+                    text='Save Changes'
+                    width='100%'
+                    height='2.5rem'
                     onClick={handleSubmit}
                   />
                 </Col>
@@ -200,20 +206,23 @@ const BrandSettings = ({ brand, updateBrand }) => {
         )}
       </Formik>
     </>
-  );
-};
+  )
+}
 
-const mapStateToProps = (state) => {
+const mapStateToProps = state => {
   return {
-    brand: getBrand(state),
-  };
-};
-const matchDispatchToProps = (dispatch) => {
+    brand: getBrand(state)
+  }
+}
+const matchDispatchToProps = dispatch => {
   return {
-    updateBrand: (brand) => {
-      dispatch(updateBrand(brand));
+    updateBrand: brand => {
+      dispatch(updateBrand(brand))
     },
-  };
-};
+    updateColor: color => {
+      dispatch(updateBrandColor(color))
+    }
+  }
+}
 
-export default connect(mapStateToProps, matchDispatchToProps)(BrandSettings);
+export default connect(mapStateToProps, matchDispatchToProps)(BrandSettings)

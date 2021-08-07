@@ -1,45 +1,53 @@
-import "../../css/switch.css";
-import React from "react";
-import Switch from "@material-ui/core/Switch";
-import { withStyles } from "@material-ui/core/styles";
-import { purple } from "@material-ui/core/colors";
-import FormGroup from "@material-ui/core/FormGroup";
-import FormControlLabel from "@material-ui/core/FormControlLabel";
-import Grid from "@material-ui/core/Grid";
-import Typography from "@material-ui/core/Typography";
+import '../../css/switch.css'
+import React from 'react'
+import Switch from '@material-ui/core/Switch'
+import { withStyles } from '@material-ui/core/styles'
+import { purple } from '@material-ui/core/colors'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import Grid from '@material-ui/core/Grid'
+import Typography from '@material-ui/core/Typography'
+import { connect } from 'react-redux'
+import { getBrandColor } from '../../redux/selectors'
 
-const SingleEmailNotification = ({ id, label, checked, setChecked }) => {
+const SingleEmailNotification = ({
+  id,
+  label,
+  checked,
+  setChecked,
+  brandColor
+}) => {
   const [state, setState] = React.useState({
     checkedA: true,
-    checkedB: true,
-  });
-  const handleChange = (event) => {
-    setState({ ...state, [event.target.name]: event.target.checked });
-  };
+    checkedB: true
+  })
+  const handleChange = event => {
+    setState({ ...state, [event.target.name]: event.target.checked })
+  }
   const MySwitch = withStyles({
     switchBase: {
-      color: "#B0B0B0",
+      color: '#B0B0B0',
 
-      "&$checked": {
-        color: "#429FBA",
+      '&$checked': {
+        color: brandColor
       },
-      "&$checked + $track": {
-        backgroundColor: "#dedede",
-      },
+      '&$checked + $track': {
+        backgroundColor: '#dedede'
+      }
     },
     checked: {},
     track: {
-      backgroundColor: "#dedede",
-    },
-  })(Switch);
+      backgroundColor: '#dedede'
+    }
+  })(Switch)
   return (
-    <div className="d-flex justify-content-between align-items-center border-bottom">
+    <div className='d-flex justify-content-between align-items-center border-bottom'>
       <div
         style={{
-          fontStyle: "normal",
-          fontWeight: "normal",
-          fontSize: "14px",
-          letterSpacing: "0.2px",
+          fontStyle: 'normal',
+          fontWeight: 'normal',
+          fontSize: '14px',
+          letterSpacing: '0.2px'
         }}
       >
         {label}
@@ -50,12 +58,18 @@ const SingleEmailNotification = ({ id, label, checked, setChecked }) => {
           <MySwitch
             checked={checked}
             onChange={() => setChecked(!checked)}
-            name="label"
+            name='label'
           />
         }
       />
     </div>
-  );
-};
+  )
+}
 
-export default SingleEmailNotification;
+const mapStateToProps = state => {
+  return {
+    brandColor: getBrandColor(state)
+  }
+}
+
+export default connect(mapStateToProps, null)(SingleEmailNotification)

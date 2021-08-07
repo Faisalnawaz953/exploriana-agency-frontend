@@ -1,33 +1,33 @@
-import React from "react";
-import { Container, Row, Col, CustomInput, FormGroup } from "reactstrap";
-import Input from "./Input";
-import "../../assets/css/login.css";
-import "../../assets/css/button.css";
-import CloseIcon from "@material-ui/icons/Close";
-import { makeStyles } from "@material-ui/core/styles";
-import Accordion from "@material-ui/core/Accordion";
-import AccordionSummary from "@material-ui/core/AccordionSummary";
-import AccordionDetails from "@material-ui/core/AccordionDetails";
-import Typography from "@material-ui/core/Typography";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
-import Button from "../ui-elements/Button";
-import { getClassrooms } from "../../redux/selectors";
-import { connect } from "react-redux";
-import { isEmpty, uniq } from "lodash";
-import CustomCheckBox from "../ui-elements/CustomCheckBox";
+import React from 'react'
+import { Container, Row, Col, CustomInput, FormGroup } from 'reactstrap'
+import Input from './Input'
+import '../../assets/css/login.css'
+import '../../assets/css/button.css'
+import CloseIcon from '@material-ui/icons/Close'
+import { makeStyles } from '@material-ui/core/styles'
+import Accordion from '@material-ui/core/Accordion'
+import AccordionSummary from '@material-ui/core/AccordionSummary'
+import AccordionDetails from '@material-ui/core/AccordionDetails'
+import Typography from '@material-ui/core/Typography'
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
+import Button from '../ui-elements/Button'
+import { getClassrooms } from '../../redux/selectors'
+import { connect } from 'react-redux'
+import { isEmpty, uniq } from 'lodash'
+import CustomCheckBox from '../ui-elements/CustomCheckBox'
 
 const useStyles = makeStyles(theme => ({
   root: {
-    width: "100%",
-    border: "1px solid #E6E6E6",
-    boxSizing: "border-box",
-    borderRadius: "20px"
+    width: '100%',
+    border: '1px solid #E6E6E6',
+    boxSizing: 'border-box',
+    borderRadius: '20px'
   },
   heading: {
     fontSize: theme.typography.pxToRem(15),
     fontWeight: theme.typography.fontWeightRegular
   }
-}));
+}))
 
 const EditClassesPopup = ({
   toggle,
@@ -35,59 +35,59 @@ const EditClassesPopup = ({
   workoutClasses,
   setWorkoutClasses
 }) => {
-  const classes = useStyles();
-  const [categories, setCategories] = React.useState([]);
-  const [value, setValue] = React.useState([]);
+  const classes = useStyles()
+  const [categories, setCategories] = React.useState([])
+  const [value, setValue] = React.useState([])
 
   React.useEffect(() => {
-    let arr = [];
-    classrooms.forEach(val => arr.push(val.category));
-    let cl = [];
-    cl = classrooms.filter(val => workoutClasses.includes(val._id));
-    let sval = [];
-    cl.forEach(val => sval.push(val.title));
-    setValue(sval);
+    let arr = []
+    classrooms.forEach(val => arr.push(val.category))
+    let cl = []
+    cl = classrooms.filter(val => workoutClasses.includes(val._id))
+    let sval = []
+    cl.forEach(val => sval.push(val.title))
+    setValue(sval)
 
-    setCategories(uniq(arr));
-  }, [workoutClasses]);
+    setCategories(uniq(arr))
+  }, [workoutClasses])
 
   return (
-    <Container className="">
-      <Row className="d-flex justify-content-center mb-5">
-        <Col md="12" className="mt-3 ">
-          <form className=" bg-light p-3  rounded ">
-            <div className="d-flex justify-content-between">
+    <Container className=''>
+      <Row className='d-flex justify-content-center mb-5'>
+        <Col md='12' className='mt-3 '>
+          <form className=' bg-light p-3  rounded '>
+            <div className='d-flex justify-content-between'>
               <span
                 style={{
-                  fontWeight: "bold",
-                  fontSize: "16px",
-                  lineHeight: "32px",
+                  fontWeight: 'bold',
+                  fontSize: '16px',
+                  lineHeight: '32px',
 
-                  letterSpacing: "0.6px",
+                  letterSpacing: '0.6px',
 
-                  color: "#2B2B2B"
+                  color: '#2B2B2B'
                 }}
-                className="  "
+                className='  '
               >
-                {" "}
+                {' '}
                 Add Classes
               </span>
               <CloseIcon
-                fontSize="small"
+                fontSize='small'
                 onClick={toggle}
-                style={{ cursor: "pointer" }}
+                style={{ cursor: 'pointer' }}
               />
             </div>
-            <Input placeholder="Search Classes" height="50px" backgroundColor />
+            <Input placeholder='Search Classes' height='50px' backgroundColor />
             <div className={classes.root}>
               {isEmpty(categories)
-                ? "Add Classes tO add in workout"
+                ? 'Add Classes tO add in workout'
                 : categories.map((cat, i) => (
                     <Accordion key={i}>
                       <AccordionSummary
                         expandIcon={<ExpandMoreIcon />}
-                        aria-controls="panel1a-content"
-                        id="panel1a-header"
+                        aria-controls='panel1a-content'
+                        id='panel1a-header'
                       >
                         <Typography className={classes.heading}>
                           {cat}
@@ -97,7 +97,7 @@ const EditClassesPopup = ({
                         <FormGroup>
                           <div>
                             {classrooms.map((classroom, i) => {
-                              if (classroom.category !== cat) return;
+                              if (classroom.category !== cat) return
                               return (
                                 <CustomCheckBox
                                   key={i}
@@ -110,7 +110,7 @@ const EditClassesPopup = ({
                                   setValue={setValue}
                                   indexing
                                 />
-                              );
+                              )
                             })}
                           </div>
                         </FormGroup>
@@ -118,19 +118,19 @@ const EditClassesPopup = ({
                     </Accordion>
                   ))}
             </div>
-            <div className="text-center">
-              <Button text="Add" width="100%" height="3rem" />
+            <div className='text-center'>
+              <Button text='Add' width='100%' height='2.5rem' />
             </div>
           </form>
         </Col>
       </Row>
     </Container>
-  );
-};
+  )
+}
 const mapStateToProps = state => {
   return {
     classrooms: getClassrooms(state)
-  };
-};
+  }
+}
 
-export default connect(mapStateToProps, null)(EditClassesPopup);
+export default connect(mapStateToProps, null)(EditClassesPopup)

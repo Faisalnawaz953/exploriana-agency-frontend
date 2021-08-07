@@ -8,121 +8,142 @@ import {
   UPDATE_CHALLENGES,
   UPDATE_LIVE_CLASSES,
   UPDATE_VIDEOS,
-  UPDATE_CLASSROOMS
-} from "../../../Constants/Constants";
+  UPDATE_CLASSROOMS,
+  UPDATE_BRAND_COLOR,
+  UPDATE_CHAT_ROOM
+} from '../../../Constants/Constants'
 import {
   getBrandById,
   getNotificationSettingsById,
   getLandingPageById,
   getUserClassRooms,
   getUserVideos
-} from "../../../dataServices/Services";
-import get from "lodash/get";
+} from '../../../dataServices/Services'
+import get from 'lodash/get'
+import { getAllChatRoomsByUserId } from '../../../dataServices/ChatService'
 
 export const updateLinks = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_LINKS, payload });
-  };
-};
+    dispatch({ type: UPDATE_LINKS, payload })
+  }
+}
 export const updateLanding = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_LANDING_PAGE, payload });
-  };
-};
+    dispatch({ type: UPDATE_LANDING_PAGE, payload })
+  }
+}
 export const updateNotificationSettings = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_NOTIFICATIONS_SETTINGS, payload });
-  };
-};
+    dispatch({ type: UPDATE_NOTIFICATIONS_SETTINGS, payload })
+  }
+}
 export const updateBrand = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_BRAND, payload });
-  };
-};
+    dispatch({ type: UPDATE_BRAND, payload })
+  }
+}
 export const loginUser = payload => {
   return dispatch => {
-    dispatch({ type: LOGIN_SUCCESS, payload });
-  };
-};
+    dispatch({ type: LOGIN_SUCCESS, payload })
+  }
+}
 
 export const updateChallenges = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_CHALLENGES, payload });
-  };
-};
+    dispatch({ type: UPDATE_CHALLENGES, payload })
+  }
+}
 export const updateLiveClasses = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_LIVE_CLASSES, payload });
-  };
-};
+    dispatch({ type: UPDATE_LIVE_CLASSES, payload })
+  }
+}
 export const updateVideos = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_VIDEOS, payload });
-  };
-};
+    dispatch({ type: UPDATE_VIDEOS, payload })
+  }
+}
 export const updateClassrooms = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_CLASSROOMS, payload });
-  };
-};
+    dispatch({ type: UPDATE_CLASSROOMS, payload })
+  }
+}
+
+export const updateBrandColor = payload => {
+  return dispatch => {
+    dispatch({ type: UPDATE_BRAND_COLOR, payload })
+  }
+}
+
+export const updateChatRooms = payload => {
+  return dispatch => {
+    dispatch({ type: UPDATE_CHAT_ROOM, payload })
+  }
+}
 export const login = payload => {
   return async dispatch => {
     // console.log(payload);
-    //Videos api
-    const videores = await getUserVideos();
 
-    const videoresCode = get(videores, "status");
+    //Videos api
+    const videores = await getUserVideos()
+
+    const videoresCode = get(videores, 'status')
 
     if (videoresCode === 200) {
-      dispatch(updateVideos(videores.data.videos));
+      dispatch(updateVideos(videores.data.videos))
     } else {
-      dispatch(updateVideos([]));
+      dispatch(updateVideos([]))
     }
     // get ClassRoom api
-    const classres = await getUserClassRooms();
+    const classres = await getUserClassRooms()
 
-    const classresCode = get(classres, "status");
-    console.log("classes", classres);
+    const classresCode = get(classres, 'status')
+    console.log('classes', classres)
 
     if (classresCode === 200) {
-      dispatch(updateClassrooms(classres.data.classrooms));
+      dispatch(updateClassrooms(classres.data.classrooms))
     } else {
-      dispatch(updateClassrooms([]));
+      dispatch(updateClassrooms([]))
     }
     //landing page api
-    const landingres = await getLandingPageById(payload._id);
+    const landingres = await getLandingPageById(payload._id)
 
-    const landingresCode = get(landingres, "status");
+    const landingresCode = get(landingres, 'status')
     if (landingresCode === 200) {
-      dispatch(updateLanding(landingres.data.landing));
+      dispatch(updateLanding(landingres.data.landing))
     } else {
-      dispatch(updateLanding({}));
+      dispatch(updateLanding({}))
     }
 
     //notification setting api
-    const notificationres = await getNotificationSettingsById(payload._id);
+    const notificationres = await getNotificationSettingsById(payload._id)
 
-    const notificationresCode = get(notificationres, "status");
+    const notificationresCode = get(notificationres, 'status')
     if (notificationresCode === 200) {
-      dispatch(updateNotificationSettings(notificationres.data.settings));
+      dispatch(updateNotificationSettings(notificationres.data.settings))
     } else {
-      dispatch(updateNotificationSettings({}));
+      dispatch(updateNotificationSettings({}))
     }
 
     // Brand api
-    const brandres = await getBrandById(payload._id);
+    const brandres = await getBrandById(payload._id)
 
-    const brandresCode = get(brandres, "status");
+    const brandresCode = get(brandres, 'status')
     if (brandresCode === 200) {
-      dispatch(updateBrand(brandres.data.brand));
+      console.log(brandres.data.brand)
+      if (brandres.data.brand) {
+        localStorage.setItem('BrandColor', brandres.data.brand.colorCodeHex)
+        dispatch(updateBrandColor(brandres.data.brand.colorCodeHex))
+        dispatch(updateBrand(brandres.data.brand))
+      }
     } else {
-      dispatch(updateBrand({}));
+      dispatch(updateBrand({}))
     }
-    dispatch(loginUser(payload));
-  };
-};
+    dispatch(loginUser(payload))
+  }
+}
 export const updateUser = payload => {
   return dispatch => {
-    dispatch({ type: UPDATE_USER, payload });
-  };
-};
+    dispatch({ type: UPDATE_USER, payload })
+  }
+}
