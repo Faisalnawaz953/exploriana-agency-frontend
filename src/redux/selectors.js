@@ -9,3 +9,4 @@ export const getLiveClasses = state => state.user.liveClasses
 export const getVideos = state => state.user.videos
 export const getClassrooms = state => state.user.classrooms
 export const getBrandColor = state => state.user.brandColor || '#429FBA'
+export const getAllNotifications = state => state.user.notifications

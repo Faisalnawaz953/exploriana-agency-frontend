@@ -13,20 +13,26 @@ import { updateFirebaseToken } from '../../dataServices/Services'
 
 const Home = ({ auth }) => {
   const alert = useAlert()
-  requestFirebaseNotificationPermission()
-    .then(async firebaseToken => {
-      // eslint-disable-next-line no-console
-      console.log(firebaseToken)
-      // setDeviceToken(firebaseToken);
-      let body = {
-        deviceToken: firebaseToken
-      }
-      const res = await updateFirebaseToken(body)
-    })
-    .catch(err => {
-      console.log('Error ===========> ', err)
-      return err
-    })
+  const editFirebaseToken = () => {
+    requestFirebaseNotificationPermission()
+      .then(async firebaseToken => {
+        // eslint-disable-next-line no-console
+        console.log(firebaseToken)
+        // setDeviceToken(firebaseToken);
+        let body = {
+          deviceToken: firebaseToken
+        }
+        const res = await updateFirebaseToken(body)
+        console.log(res)
+      })
+      .catch(err => {
+        console.log('Error ===========> ', err)
+        return err
+      })
+  }
+  React.useEffect(() => {
+    editFirebaseToken()
+  }, [])
   return (
     <Row className='w-100  align-items-center justify-content-center '>
       <Col sm={12} md={12} lg={8} xl={6} className={'pt-4'}>

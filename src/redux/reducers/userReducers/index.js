@@ -10,7 +10,8 @@ import {
   UPDATE_VIDEOS,
   UPDATE_CLASSROOMS,
   UPDATE_BRAND_COLOR,
-  UPDATE_CHAT_ROOM
+  UPDATE_CHAT_ROOM,
+  UPDATE_NOTIFICATIONS
 } from '../../../Constants/Constants'
 
 const initialState = {
@@ -25,7 +26,8 @@ const initialState = {
   videos: [],
   classrooms: [],
   brandColor: '#429FBA',
-  chatRooms: []
+  chatRooms: [],
+  notifications: []
 }
 
 const userReducer = (state = initialState, action) => {
@@ -54,6 +56,8 @@ const userReducer = (state = initialState, action) => {
       return { ...state, brandColor: action.payload }
     case UPDATE_CHAT_ROOM:
       return { ...state, chatRooms: action.payload }
+    case UPDATE_NOTIFICATIONS:
+      return { ...state, notifications: action.payload }
     default:
       return state
   }

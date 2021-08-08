@@ -59,10 +59,19 @@ import SearchBar from '../ui-elements/TopSearchBar'
 import { positions, Provider } from 'react-alert'
 import AlertTemplate from 'react-alert-template-basic'
 import { connect } from 'react-redux'
-import { getBrand } from '../../redux/selectors'
+import { getAllNotifications, getBrand } from '../../redux/selectors'
 import { messaging } from '../../firebase'
-import { createNotification } from '../../dataServices/Services'
-
+import {
+  createNotification,
+  getUserNotifications
+} from '../../dataServices/Services'
+import useSound from 'use-sound'
+import notification from '../../sounds/notification.wav'
+import {
+  updateChatRooms,
+  updateNotifications
+} from '../../redux/actions/userActions/userActions'
+import { getAllChatRoomsByUserId } from '../../dataServices/ChatService'
 const options = {
   timeout: 5000,
   position: positions.TOP_RIGHT,
@@ -222,23 +231,44 @@ function ResponsiveDrawer(props) {
     '/upload-videos'
   ]
   const history = useHistory()
+  const [play] = useSound(notification)
+
   const { window } = props
   const [brandColor, setBrandColor] = React.useState('')
   const classes = useStyles(brandColor)()
   const theme = useTheme()
   const [mobileOpen, setMobileOpen] = React.useState(false)
 
+  const getNotifications = async () => {
+    const res = await getUserNotifications()
+    if (res.data.success) {
+      props.updateNotifications(res.data.notifications)
+    }
+  }
+
+  const getChatRooms = async () => {
+    const res = await getAllChatRoomsByUserId(props?.user?.user?._id)
+    if (res.success) {
+      console.log('chays', res.chatRooms)
+      props.updateChatRooms(res.chatRooms)
+    }
+  }
   messaging.onMessage(async mes => {
+    play()
     console.log('Mesage recieved ===> ', mes)
     const notification = {
-      title: mes.title,
-      description: mes.body
+      title: mes.notification.title,
+      description: mes.notification.body
     }
-    const res = createNotification(notification)
+    const res = await createNotification(notification)
     console.log(res)
+    getNotifications()
+    getChatRooms()
   })
+  // useEffect(() => {
+  //   getNotifications()
+  // }, [])
   useEffect(() => {
-    console.log(props.brandColor)
     setBrandColor(props.brandColor)
   }, [props])
 
@@ -718,7 +748,7 @@ function ResponsiveDrawer(props) {
                   }}
                   ref={notificationRef}
                 >
-                  <EmailPopup />
+                  <EmailPopup notifications={props.notifications} />
                 </div>
                 <IconButton
                   edge='end'
@@ -811,8 +841,19 @@ ResponsiveDrawer.propTypes = {
 const mapStateToProps = state => {
   return {
     user: state.user,
-    brand: getBrand(state)
+    brand: getBrand(state),
+    notifications: getAllNotifications(state)
+  }
+}
+const matchDispatchToProps = dispatch => {
+  return {
+    updateNotifications: notifications => {
+      dispatch(updateNotifications(notifications))
+    },
+    updateChatRooms: chatRooms => {
+      dispatch(updateChatRooms(chatRooms))
+    }
   }
 }
 
-export default connect(mapStateToProps, null)(ResponsiveDrawer)
+export default connect(mapStateToProps, matchDispatchToProps)(ResponsiveDrawer)

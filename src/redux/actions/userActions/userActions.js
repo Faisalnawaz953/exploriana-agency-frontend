@@ -10,7 +10,8 @@ import {
   UPDATE_VIDEOS,
   UPDATE_CLASSROOMS,
   UPDATE_BRAND_COLOR,
-  UPDATE_CHAT_ROOM
+  UPDATE_CHAT_ROOM,
+  UPDATE_NOTIFICATIONS
 } from '../../../Constants/Constants'
 import {
   getBrandById,
@@ -24,6 +25,11 @@ import get from 'lodash/get'
 export const updateLinks = payload => {
   return dispatch => {
     dispatch({ type: UPDATE_LINKS, payload })
+  }
+}
+export const updateNotifications = payload => {
+  return dispatch => {
+    dispatch({ type: UPDATE_NOTIFICATIONS, payload })
   }
 }
 export const updateLanding = payload => {

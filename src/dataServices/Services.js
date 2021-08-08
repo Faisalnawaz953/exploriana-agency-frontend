@@ -349,3 +349,10 @@ export const createNotification = async notification => {
     return NETWORK_ERROR
   }
 }
+export const getUserNotifications = async () => {
+  try {
+    return await axios.get(`${BASE_URL}notifications/user`, config)
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}

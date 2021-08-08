@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from 'react'
 import { Row, Col } from 'reactstrap'
 import InboxHeader from '../../components/ui-elements/InboxHeader'
@@ -91,6 +92,12 @@ function Inbox({ loggedUser, chatRooms, updateChatRooms }) {
     } else {
       alert('Error sending message')
     }
+  }
+
+  const showUserImage = participants => {
+    let part = participants.filter(part => part._id !== loggedUser?.user?._id)
+    console.log('usersssss', part[0]?.coverImageUrl)
+    return part[0]?.coverImageUrl ? part[0]?.coverImageUrl : ChatImage
   }
 
   React.useEffect(() => {
@@ -215,12 +222,10 @@ function Inbox({ loggedUser, chatRooms, updateChatRooms }) {
                       <Avatar
                         src={
                           message.senderId === loggedUser?.user?._id
-                            ? selectedChatRoom.participants[1].coverImageUrl
-                              ? selectedChatRoom.participants[1].coverImageUrl
+                            ? loggedUser?.user?.coverImageUrl
+                              ? loggedUser?.user?.coverImageUrl
                               : ChatImage
-                            : selectedChatRoom.participants[0].coverImageUrl
-                            ? selectedChatRoom.participants[0].coverImageUrl
-                            : ChatImage
+                            : showUserImage(selectedChatRoom.participants)
                         }
                         name={
                           selectedChatRoom.participants[0]._id ===
