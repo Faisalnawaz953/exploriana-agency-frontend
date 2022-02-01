@@ -69,7 +69,7 @@ const RouteConfig = ({
   return (
     <Route
       {...rest}
-      render={props => {
+      render={(props) => {
         const token = localStorage.getItem('token')
         // console.log("token", token);
 
@@ -102,7 +102,7 @@ const RouteConfig = ({
   )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     auth: getUserAuth(state),
     brandColor: getBrandColor(state)
@@ -148,7 +148,7 @@ export default function Router() {
       <AppRoute path='/landing-page' component={lndingPage} />
       <AppRoute path='/inbox' component={Inbox} />
       <AppRoute path='/add-link' component={AddLink} />
-      <AppRoute path='/add-trainer-info' component={AddTrainerInfo} />
+      <AppRoute path='/add-user-info' component={AddTrainerInfo} />
       <AppRoute path='/trainer-info' component={TrainerInfo} />
       <AppRoute path='/reviews' component={Reviews} />
       <AppRoute path='/members' exact component={Members} />
@@ -158,17 +158,17 @@ export default function Router() {
       <AppRoute path='/upload-classes' component={UploadClasses} />
       <AppRoute path='/videos' component={Videos} />
       <AppRoute path='/upload-videos' component={UploadVideos} />
-      <AppRoute path='/challenges' component={Challenges} />
-      <AppRoute path='/upload-challenges' component={UploadChallenges} />
-      <AppRoute path='/upload-live-class' component={UploadLiveClass} />
+      <AppRoute path='/posts' component={Challenges} />
+      <AppRoute path='/upload-post' component={UploadChallenges} />
+      <AppRoute path='/upload-trip' component={UploadLiveClass} />
       <AppRoute path='/live-in-person-class' component={LiveInPersonClass} />
       <AppRoute path='/all-modal' component={AllModals} />
       <AppRoute path='/link' component={Link} />
-      <AppRoute path='/live' component={Live} />
+      <AppRoute path='/trips' component={Live} />
       <AppRoute exact path='/' component={Home} />
       <AppRoute path='/edit-link/:id' component={EditLink} />
       <AppRoute path='/edit-challenge/:id' component={EditChallenge} />
-      <AppRoute path='/edit-live-class/:id' component={EditLiveClass} />
+      <AppRoute path='/edit-trip/:id' component={EditLiveClass} />
       <AppRoute path='/edit-video/:id' component={EditVideo} />
       <AppRoute path='/edit-class/:id' component={EditClass} />
       <AppRoute path='/stripe-connect' component={StripeConnected} />

@@ -8,7 +8,7 @@ import { makeStyles } from '@material-ui/core/styles'
 import { getBrandColor } from '../../redux/selectors'
 import { connect } from 'react-redux'
 
-const useStyles = brandColor =>
+const useStyles = (brandColor) =>
   makeStyles({
     uploadFile: {
       // borderRadius: '16px',
@@ -32,28 +32,15 @@ const ImageUpload = ({
   return (
     <>
       <Label>
-        {' '}
         <b>{text}</b>
       </Label>
-      {/* <div className="imageupload    mt-3">
-        <div className=" p-3 d-flex align-items-center flex-column ">
-          <p className="uploadTopText">
-            Drag your video,{" "}
-            <span style={{ fontWeight: "bold", color: brandColor }}>
-              click to upload
-            </span>
-          </p>
-          <p>
-            If no image is provided, the first frame of the video will be used.
-          </p>
-        </div>
-      </div> */}
+
       {loadingFile ? (
         <FileLoader />
       ) : video ? (
         <Dropzone
           maxFiles={1}
-          onDrop={async acceptedFiles => {
+          onDrop={async (acceptedFiles) => {
             setSelectedFiles(acceptedFiles)
           }}
         >
@@ -85,7 +72,7 @@ const ImageUpload = ({
       ) : (
         <Dropzone
           maxFiles={1}
-          onDrop={acceptedFiles => {
+          onDrop={(acceptedFiles) => {
             setSelectedFiles(acceptedFiles)
           }}
         >
@@ -119,7 +106,7 @@ const ImageUpload = ({
   )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     brandColor: getBrandColor(state)
   }

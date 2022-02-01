@@ -1,116 +1,99 @@
-import React from "react";
-import AccountCircleIcon from "@material-ui/icons/AccountCircle";
-import PeopleAltIcon from "@material-ui/icons/PeopleAlt";
-import LibraryAddIcon from "@material-ui/icons/LibraryAdd";
-import WifiIcon from "@material-ui/icons/Wifi";
-import FlagIcon from "@material-ui/icons/Flag";
-import LinkIcon from "@material-ui/icons/Link";
-import HeadsetIcon from "@material-ui/icons/Headset";
-import SettingsIcon from "@material-ui/icons/Settings";
-import PostAddIcon from "@material-ui/icons/PostAdd";
-import PaymentIcon from "@material-ui/icons/Payment";
-import CheckBoxIcon from "@material-ui/icons/CheckBox";
-import StarIcon from "@material-ui/icons/Star";
-import HomeIcon from "@material-ui/icons/Home";
-import InsertInvitationIcon from "@material-ui/icons/InsertInvitation";
+import React from 'react'
+import AccountCircleIcon from '@material-ui/icons/AccountCircle'
+import PeopleAltIcon from '@material-ui/icons/PeopleAlt'
+import LibraryAddIcon from '@material-ui/icons/LibraryAdd'
+import WifiIcon from '@material-ui/icons/Wifi'
+import FlagIcon from '@material-ui/icons/Flag'
+import LinkIcon from '@material-ui/icons/Link'
+import HeadsetIcon from '@material-ui/icons/Headset'
+import SettingsIcon from '@material-ui/icons/Settings'
+import PostAddIcon from '@material-ui/icons/PostAdd'
+import PaymentIcon from '@material-ui/icons/Payment'
+import CheckBoxIcon from '@material-ui/icons/CheckBox'
+import StarIcon from '@material-ui/icons/Star'
+import HomeIcon from '@material-ui/icons/Home'
+import InsertInvitationIcon from '@material-ui/icons/InsertInvitation'
 
 export const sideBarData = [
   {
-    icon: <HomeIcon style={{ color: "#7A7D7D" }} />,
-    text: "Home",
+    icon: <HomeIcon style={{ color: '#7A7D7D' }} />,
+    text: 'Home',
     sublist: false,
     sublistData: [],
-    link: "/"
+    link: '/'
   },
   {
-    icon: <AccountCircleIcon style={{ color: "#7A7D7D" }} />,
-    text: "Profile",
+    icon: <AccountCircleIcon style={{ color: '#7A7D7D' }} />,
+    text: 'Profile',
     sublist: true,
     sublistData: [
       {
-        title: "Settings",
-        icon: <SettingsIcon style={{ color: "#7A7D7D" }} />,
-        link: "/profile"
+        title: 'Settings',
+        icon: <SettingsIcon style={{ color: '#7A7D7D' }} />,
+        link: '/profile'
+      },
+      // {
+      //   title: "Membership",
+      //   icon: <PostAddIcon style={{ color: "#7A7D7D" }} />,
+      //   link: "/membership"
+      // },
+      {
+        title: 'Payment',
+        icon: <PaymentIcon style={{ color: '#7A7D7D' }} />,
+        link: '/payment'
+      },
+      // {
+      //   title: 'Subscription',
+      //   icon: <CheckBoxIcon style={{ color: '#7A7D7D' }} />,
+      //   link: '/subscription'
+      // },
+      {
+        title: 'LandingPage',
+        icon: <InsertInvitationIcon style={{ color: '#7A7D7D' }} />,
+        link: '/landing-page'
       },
       {
-        title: "Membership",
-        icon: <PostAddIcon style={{ color: "#7A7D7D" }} />,
-        link: "/membership"
-      },
-      {
-        title: "Payment",
-        icon: <PaymentIcon style={{ color: "#7A7D7D" }} />,
-        link: "/payment"
-      },
-      {
-        title: "Subscription",
-        icon: <CheckBoxIcon style={{ color: "#7A7D7D" }} />,
-        link: "/subscription"
-      },
-      {
-        title: "LandingPage",
-        icon: <InsertInvitationIcon style={{ color: "#7A7D7D" }} />,
-        link: "/landing-page"
-      },
-      {
-        title: "Reviews",
-        icon: <StarIcon style={{ color: "#7A7D7D" }} />,
-        link: "/reviews"
+        title: 'Reviews',
+        icon: <StarIcon style={{ color: '#7A7D7D' }} />,
+        link: '/reviews'
       }
     ],
-    link: "/profile"
+    link: '/profile'
   },
   {
-    icon: <PeopleAltIcon style={{ color: "#7A7D7D" }} />,
-    text: "Members",
+    icon: <PeopleAltIcon style={{ color: '#7A7D7D' }} />,
+    text: 'Members',
     sublist: false,
     sublistData: [],
-    link: "/members"
+    link: '/members'
   },
+
   {
-    icon: <LibraryAddIcon style={{ color: "#7A7D7D" }} />,
-    text: "Library",
-    sublist: true,
-    sublistData: [
-      {
-        title: "Classes",
-        icon: <StarIcon style={{ color: "#7A7D7D" }} />,
-        link: "/classes"
-      },
-      {
-        title: "Videos",
-        icon: <StarIcon style={{ color: "#7A7D7D" }} />,
-        link: "/videos"
-      }
-    ],
-    link: "/classes"
-  },
-  {
-    icon: <WifiIcon style={{ color: "#7A7D7D" }} />,
-    text: "Live",
+    icon: <WifiIcon style={{ color: '#7A7D7D' }} />,
+    text: 'Trips',
     sublist: false,
     sublistData: [],
-    link: "/live"
+    link: '/trips'
   },
   {
-    icon: <FlagIcon style={{ color: "#7A7D7D" }} />,
-    text: "Challenges",
+    icon: <FlagIcon style={{ color: '#7A7D7D' }} />,
+    text: 'Posts',
     sublist: false,
     sublistData: [],
-    link: "/challenges"
+    link: '/posts'
   },
   {
-    icon: <LinkIcon style={{ color: "#7A7D7D" }} />,
-    text: "Link",
+    icon: <LinkIcon style={{ color: '#7A7D7D' }} />,
+    text: 'License',
     sublist: false,
     sublistData: [],
-    link: "/link"
+    link: '/license'
   },
   {
-    icon: <HeadsetIcon style={{ color: "#7A7D7D" }} />,
-    text: "Support",
+    icon: <HeadsetIcon style={{ color: '#7A7D7D' }} />,
+    text: 'Support',
     sublist: false,
     sublistData: [],
-    link: "/support"
+    link: '/support'
   }
-];
+]

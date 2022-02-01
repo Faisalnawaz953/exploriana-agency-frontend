@@ -26,7 +26,7 @@ import { formatBytes } from '../../../config/GlobalFunctions'
 import UploadedVideo from '../../ui-elements/UploadedVideo'
 import { BRAND_COLOR } from '../../../Constants/Constants'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   headText: {
     fontStyle: 'normal',
     fontWeight: '600',
@@ -52,40 +52,41 @@ const schema = yup.object().shape({
 })
 
 const AccountSettings = ({ user, updateUser }) => {
+  console.log(user.user)
   const classes = useStyles()
   const alert = useAlert()
   const [image, setImage] = React.useState(
-    user.user.coverImageUrl ? user.user.coverImageUrl : ''
+    user?.user?.coverImageUrl ? user?.user?.coverImageUrl : ''
   )
   const [videoSize, setVideoSize] = React.useState(
-    user.user.videoDetails && user.user.videoDetails.size
+    user?.user?.videoDetails && user?.user?.videoDetails.size
   )
   const [videoName, setVideoName] = React.useState(
-    user.user.videoDetails && user.user.videoDetails.name
+    user?.user?.videoDetails && user?.user?.videoDetails.name
   )
   const [weightUnit, setWeightUnit] = React.useState(
-    user.user.weightUnit ? user.user.weightUnit : 'KG'
+    user?.user?.weightUnit ? user?.user?.weightUnit : 'KG'
   )
   const [heightUnit, setHeightUnit] = React.useState(
-    user.user.heightUnit ? user.user.heightUnit : 'CM'
+    user?.user?.heightUnit ? user?.user?.heightUnit : 'CM'
   )
   const [gender, setGender] = React.useState('Male')
   const [dob, setDob] = React.useState(
-    user.user.dateOfBirth ? user.user.dateOfBirth : ''
+    user?.user?.dateOfBirth ? user?.user?.dateOfBirth : ''
   )
   const [loading, setLoading] = React.useState(false)
-  const [file, setFile] = React.useState(user.user && user.user.videos)
+  const [file, setFile] = React.useState(user?.user && user?.user?.videos)
 
   const option = [
-    { key: 'option-1', value: 'Male' },
-    { key: 'option-2', value: 'Female' }
+    { key: 'Male', value: 'Male' },
+    { key: 'Female', value: 'Female' }
   ]
 
-  const uploadProfileImage = async e => {
+  const uploadProfileImage = async (e) => {
     console.log(URL.createObjectURL(e.target.files[0]))
     setImage(URL.createObjectURL(e.target.files[0]))
     let blobImage = await fetch(URL.createObjectURL(e.target.files[0])).then(
-      r => r.blob()
+      (r) => r.blob()
     )
 
     const formData = new FormData()
@@ -103,18 +104,18 @@ const AccountSettings = ({ user, updateUser }) => {
       alert.success('Profile Image Updated')
     }
   }
-  const videosUpload = async acceptedFiles => {
+  const videosUpload = async (acceptedFiles) => {
     const size = formatBytes(acceptedFiles[0].size, 2)
     setVideoSize(size)
     setVideoName(acceptedFiles[0].name)
 
     let url = URL.createObjectURL(acceptedFiles[0])
-    let blob = await fetch(url).then(r => r.blob())
+    let blob = await fetch(url).then((r) => r.blob())
 
     setFile(blob)
   }
 
-  const submitHandler = async values => {
+  const submitHandler = async (values) => {
     setLoading(true)
     const videoDetails = {
       name: videoName,
@@ -164,7 +165,7 @@ const AccountSettings = ({ user, updateUser }) => {
               <EditImage
                 path={image}
                 setPath={setImage}
-                upload={e => uploadProfileImage(e)}
+                upload={(e) => uploadProfileImage(e)}
               />
             </Col>
           </Row>
@@ -172,10 +173,10 @@ const AccountSettings = ({ user, updateUser }) => {
       </Container>
       <Formik
         initialValues={{
-          firstName: user.user.firstName,
-          lastName: user.user.lastName,
-          about: user.user.about,
-          email: user.user.email
+          firstName: user?.user?.firstName,
+          lastName: user?.user?.lastName,
+          about: user?.user?.about,
+          email: user?.user?.email
         }}
         validationSchema={schema}
         onSubmit={submitHandler}
@@ -301,41 +302,6 @@ const AccountSettings = ({ user, updateUser }) => {
                         />
                       )} */}
                     </Col>
-                    <Col className='mt-3' md={{ size: 8, offset: 2 }}>
-                      <label className='h5'>Units</label>
-                      <Row>
-                        <Col>
-                          {' '}
-                          <label>Weight</label>
-                          <br />
-                          <RadioButton
-                            label='KG'
-                            value={weightUnit}
-                            setValue={setWeightUnit}
-                          />
-                          <RadioButton
-                            label='LBS'
-                            value={weightUnit}
-                            setValue={setWeightUnit}
-                          />
-                        </Col>
-                        <Col>
-                          {' '}
-                          <label>Height</label>
-                          <br />
-                          <RadioButton
-                            label='CM'
-                            value={heightUnit}
-                            setValue={setHeightUnit}
-                          />
-                          <RadioButton
-                            label='FT & IN'
-                            value={heightUnit}
-                            setValue={setHeightUnit}
-                          />
-                        </Col>
-                      </Row>
-                    </Col>
                   </>
                 )}
                 <Col md={{ size: 8, offset: 2 }} className='text-center'>
@@ -343,7 +309,7 @@ const AccountSettings = ({ user, updateUser }) => {
                     text='SAVE CHANGES'
                     width='100%'
                     height='2.5rem'
-                    onClick={e => {
+                    onClick={(e) => {
                       console.log('click')
                       handleSubmit(e)
                     }}
@@ -358,14 +324,14 @@ const AccountSettings = ({ user, updateUser }) => {
     </>
   )
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     user: state.user
   }
 }
-const matchDispatchToProps = dispatch => {
+const matchDispatchToProps = (dispatch) => {
   return {
-    updateUser: user => {
+    updateUser: (user) => {
       dispatch(updateUser(user))
     }
   }

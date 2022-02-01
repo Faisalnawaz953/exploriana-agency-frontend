@@ -15,7 +15,7 @@ const Home = ({ auth }) => {
   const alert = useAlert()
   const editFirebaseToken = () => {
     requestFirebaseNotificationPermission()
-      .then(async firebaseToken => {
+      .then(async (firebaseToken) => {
         // eslint-disable-next-line no-console
         console.log(firebaseToken)
         // setDeviceToken(firebaseToken);
@@ -25,7 +25,7 @@ const Home = ({ auth }) => {
         const res = await updateFirebaseToken(body)
         console.log(res)
       })
-      .catch(err => {
+      .catch((err) => {
         console.log('Error ===========> ', err)
         return err
       })
@@ -44,8 +44,7 @@ const Home = ({ auth }) => {
             <p className={classes.headText}>Your Studio </p>
             <p>
               <a href='#' style={{ color: '#429FBA', lineHeight: '25px' }}>
-                {' '}
-                https://www.moove.fit/brandname
+                https://www.exploriana.com/brandname
               </a>
             </p>
           </div>
@@ -89,7 +88,7 @@ const Home = ({ auth }) => {
     </Row>
   )
 }
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     auth: getUserAuth(state)
   }

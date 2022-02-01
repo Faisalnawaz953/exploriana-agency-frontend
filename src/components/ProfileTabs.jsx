@@ -48,7 +48,7 @@ function a11yProps(index) {
   }
 }
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     backgroundColor: theme.palette.background.paper
@@ -109,7 +109,7 @@ export default function ScrollableTabsButtonAuto() {
                 color: value === 3 ? BRAND_COLOR : '',
                 fontWeight: value === 3 ? '600' : ''
               }}
-              label='Add Trainers'
+              label='Add Users'
               {...a11yProps(3)}
             />
           </Tabs>

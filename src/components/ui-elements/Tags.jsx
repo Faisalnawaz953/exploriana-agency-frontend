@@ -7,7 +7,7 @@ import Input from '../ui-elements/Input'
 import { getBrandColor } from '../../redux/selectors'
 import { connect } from 'react-redux'
 
-const useStyles = makeStyles(theme => ({
+const useStyles = makeStyles((theme) => ({
   root: {
     width: '100%',
     maxWidth: 360,
@@ -28,7 +28,8 @@ function Tags({
   setSelectedTags,
   setTags,
   newTag,
-  brandColor
+  brandColor,
+  selected
 }) {
   const classes = useStyles()
   const [showInput, setShowInput] = React.useState(false)
@@ -43,8 +44,11 @@ function Tags({
               key={i}
               style={{
                 backgroundColor:
-                  selectedTags && selectedTags.includes(val) && brandColor,
-                color: selectedTags && selectedTags.includes(val) && 'white'
+                  ((selectedTags && selectedTags.includes(val)) || selected) &&
+                  brandColor,
+                color:
+                  ((selectedTags && selectedTags.includes(val)) || selected) &&
+                  'white'
               }}
               className={classes.chip}
               onClick={() => {
@@ -56,7 +60,6 @@ function Tags({
                     setSelectedTags(tagArray)
                   }
                 } else {
-                  if (!isEmpty(selectedTags)) return
                   let tagArray = [...selectedTags]
                   tagArray.push(val)
                   setSelectedTags(tagArray)
@@ -87,7 +90,7 @@ function Tags({
             placeholder='Enter New Category Name'
             backgroundColor
             value={category}
-            onChange={e => setCategory(e.target.value)}
+            onChange={(e) => setCategory(e.target.value)}
           />
           <div style={{ marginTop: '-30px' }}>
             <Button
@@ -111,7 +114,7 @@ function Tags({
   )
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     brandColor: getBrandColor(state)
   }

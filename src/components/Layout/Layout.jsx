@@ -82,8 +82,8 @@ const options = {
 }
 const drawerWidth = 247
 
-const useStyles = brandColor =>
-  makeStyles(theme => ({
+const useStyles = (brandColor) =>
+  makeStyles((theme) => ({
     root: {
       display: 'flex'
     },
@@ -253,7 +253,7 @@ function ResponsiveDrawer(props) {
       props.updateChatRooms(res.chatRooms)
     }
   }
-  messaging.onMessage(async mes => {
+  messaging.onMessage(async (mes) => {
     play()
     console.log('Mesage recieved ===> ', mes)
     const notification = {
@@ -282,7 +282,7 @@ function ResponsiveDrawer(props) {
   const isMenuOpen = Boolean(anchorEl)
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl)
   const [openClasses, setOpenClasses] = React.useState(false)
-  const handleProfileMenuOpen = event => {
+  const handleProfileMenuOpen = (event) => {
     setAnchorEl(event.currentTarget)
   }
 
@@ -295,7 +295,7 @@ function ResponsiveDrawer(props) {
     handleMobileMenuClose()
   }
 
-  const handleMobileMenuOpen = event => {
+  const handleMobileMenuOpen = (event) => {
     setMobileMoreAnchorEl(event.currentTarget)
   }
   const handleClick = () => {
@@ -386,7 +386,7 @@ function ResponsiveDrawer(props) {
       <List>
         {sideBarData.map((list, index) => (
           <div
-            onClick={e => {
+            onClick={(e) => {
               e.preventDefault()
               if (list.sublist) {
                 if (list.text === 'Profile') {
@@ -407,7 +407,7 @@ function ResponsiveDrawer(props) {
                   location.pathname === list.link ||
                   (list.sublist &&
                     list.sublistData
-                      .map(val => val.link)
+                      .map((val) => val.link)
                       .includes(location.pathname))
                     ? classes.activeiconCircle
                     : classes.iconCircle
@@ -419,7 +419,7 @@ function ResponsiveDrawer(props) {
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
@@ -432,7 +432,7 @@ function ResponsiveDrawer(props) {
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
@@ -445,7 +445,7 @@ function ResponsiveDrawer(props) {
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
@@ -458,46 +458,46 @@ function ResponsiveDrawer(props) {
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
                     }
                   />
                 )}
-                {list.text === 'Live' && (
+                {list.text === 'Trips' && (
                   <WifiIcon
                     className={
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
                     }
                   />
                 )}
-                {list.text === 'Challenges' && (
+                {list.text === 'Posts' && (
                   <FlagIcon
                     className={
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
                     }
                   />
                 )}
-                {list.text === 'Link' && (
+                {list.text === 'License' && (
                   <LinkIcon
                     className={
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
@@ -510,7 +510,7 @@ function ResponsiveDrawer(props) {
                       location.pathname === list.link ||
                       (list.sublist &&
                         list.sublistData
-                          .map(val => val.link)
+                          .map((val) => val.link)
                           .includes(location.pathname))
                         ? classes.activeIcon
                         : classes.icon
@@ -524,7 +524,7 @@ function ResponsiveDrawer(props) {
                   location.pathname === list.link ||
                   (list.sublist &&
                     list.sublistData
-                      .map(val => val.link)
+                      .map((val) => val.link)
                       .includes(location.pathname))
                     ? classes.activelistText
                     : classes.listText
@@ -556,7 +556,7 @@ function ResponsiveDrawer(props) {
                   {list.sublistData.map((sblist, i) => (
                     <ListItem
                       button
-                      onClick={e => {
+                      onClick={(e) => {
                         e.preventDefault()
                         e.stopPropagation()
 
@@ -760,9 +760,9 @@ function ResponsiveDrawer(props) {
                 >
                   <img
                     src={
-                      props.user.user.coverImageUrl &&
-                      props.user.user.coverImageUrl
-                        ? props.user.user.coverImageUrl
+                      props?.user?.user?.coverImageUrl &&
+                      props?.user?.user?.coverImageUrl
+                        ? props?.user?.user?.coverImageUrl
                         : User
                     }
                     style={{
@@ -838,19 +838,19 @@ ResponsiveDrawer.propTypes = {
   window: PropTypes.func
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     user: state.user,
     brand: getBrand(state),
     notifications: getAllNotifications(state)
   }
 }
-const matchDispatchToProps = dispatch => {
+const matchDispatchToProps = (dispatch) => {
   return {
-    updateNotifications: notifications => {
+    updateNotifications: (notifications) => {
       dispatch(updateNotifications(notifications))
     },
-    updateChatRooms: chatRooms => {
+    updateChatRooms: (chatRooms) => {
       dispatch(updateChatRooms(chatRooms))
     }
   }
