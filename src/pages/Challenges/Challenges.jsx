@@ -1,26 +1,26 @@
-import React from 'react'
-import { Container, Row, Col } from 'reactstrap'
+import React from "react"
+import { Container, Row, Col } from "reactstrap"
 
-import ProfilePic from '../../assets/images/Rectangle 1350.png'
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore'
-import MoreVertIcon from '@material-ui/icons/MoreVert'
-import IconButton from '../../components/ui-elements/IconButton'
+import ProfilePic from "../../assets/images/Rectangle 1350.png"
+import ExpandMoreIcon from "@material-ui/icons/ExpandMore"
+import MoreVertIcon from "@material-ui/icons/MoreVert"
+import IconButton from "../../components/ui-elements/IconButton"
 
-import { useHistory } from 'react-router-dom'
-import '../../css/Classes.css'
+import { useHistory } from "react-router-dom"
+import "../../css/Classes.css"
 import {
   deleteUserChallenge,
   getUserChallenges
-} from '../../dataServices/Services'
-import { connect } from 'react-redux'
-import { updateChallenges } from '../../redux/actions/userActions/userActions'
-import { getChallenges } from '../../redux/selectors'
-import { get, isEmpty } from 'lodash'
-import { handleEditPopUp } from '../../config/GlobalFunctions'
-import EditPopUp from '../../components/ui-elements/EditPopUp'
-import { formatDate } from '../../config/GlobalFunctions'
-import ApiLoader from '../../components/ui-elements/ApiLoader'
-import { useAlert } from 'react-alert'
+} from "../../dataServices/Services"
+import { connect } from "react-redux"
+import { updateChallenges } from "../../redux/actions/userActions/userActions"
+import { getChallenges } from "../../redux/selectors"
+import { get, isEmpty } from "lodash"
+import { handleEditPopUp } from "../../config/GlobalFunctions"
+import EditPopUp from "../../components/ui-elements/EditPopUp"
+import { formatDate } from "../../config/GlobalFunctions"
+import ApiLoader from "../../components/ui-elements/ApiLoader"
+import { useAlert } from "react-alert"
 
 const Challenges = ({ challenges, updateChallenges }) => {
   const history = useHistory()
@@ -30,29 +30,30 @@ const Challenges = ({ challenges, updateChallenges }) => {
   const loadChallenges = async () => {
     const res = await getUserChallenges()
 
-    const resCode = get(res, 'status')
-    console.log('', res)
+    const resCode = get(res, "status")
+    console.log("", res)
 
     if (resCode === 200) {
+      console.log("challenges", res.data.challenges)
       updateChallenges(res.data.challenges)
     } else {
-      alert.error('Error Loading Challenges.')
+      alert.error("Error Loading Challenges.")
     }
   }
   const deleteChallenge = async (id) => {
     setLoading(true)
     const res = await deleteUserChallenge(id)
 
-    const resCode = get(res, 'status')
-    console.log('linkss', res)
+    const resCode = get(res, "status")
+    console.log("linkss", res)
 
     if (resCode === 200) {
-      alert.error('Challenge Deleted SuccessFully')
+      alert.error("Post Deleted SuccessFully")
       setLoading(false)
       loadChallenges()
     } else {
       setLoading(false)
-      alert.error('Error Deleting Challenge')
+      alert.error("Error Deleting Challenge")
     }
   }
   React.useEffect(() => {
@@ -60,58 +61,55 @@ const Challenges = ({ challenges, updateChallenges }) => {
   }, [])
   return (
     <>
-      <Container className='bg-white '>
+      <Container className="bg-white ">
         <Row>
-          <div className='mt-3 classess text-lg-left  text-md-left text-sm-center text-center'>
-            Posts {isEmpty(challenges) ? '(0)' : `(${challenges.length})`}
+          <div className="mt-3 classess text-lg-left  text-md-left text-sm-center text-center">
+            Posts {isEmpty(challenges) ? "(0)" : `(${challenges.length})`}
           </div>
 
-          <div className='ml-auto '>
+          <div className="ml-auto ">
             <Row>
               <IconButton
-                title='Upload '
+                title="Upload "
                 onClick={() => {
-                  history.push('/upload-post')
+                  history.push("/upload-post")
                 }}
               />
             </Row>
           </div>
         </Row>
       </Container>
-      <Col lg='12' md='12' sm='12' xs='12' className='table_overflow'>
-        <table className='custom_table  '>
+      <Col lg="12" md="12" sm="12" xs="12" className="table_overflow">
+        <table className="custom_table  ">
           <thead>
             <th>
-              name
+              Title
               <ExpandMoreIcon />
             </th>
             <th>
-              Status <ExpandMoreIcon />
+              Description <ExpandMoreIcon />
             </th>
             <th>
-              Start <ExpandMoreIcon />
+              Image <ExpandMoreIcon />
             </th>
             <th>
-              End <ExpandMoreIcon />
+              Date <ExpandMoreIcon />
             </th>
             <th>
-              Participants <ExpandMoreIcon />
-            </th>
-            <th>
-              Rating <ExpandMoreIcon />
+              Actions <ExpandMoreIcon />
             </th>
           </thead>
           <tbody>
             {isEmpty(challenges) && (
-              <tr className='h4 text-muted pt-5 bg-white '>
-                <td colSpan={6} className='text-center '>
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
                   No Posts Added Yet.
                 </td>
               </tr>
             )}
             {loading ? (
-              <tr className='h4 text-muted pt-5 bg-white '>
-                <td colSpan={6} className='text-center '>
+              <tr className="h4 text-muted pt-5 bg-white ">
+                <td colSpan={6} className="text-center ">
                   <ApiLoader />
                 </td>
               </tr>
@@ -122,20 +120,30 @@ const Challenges = ({ challenges, updateChallenges }) => {
                   <td>
                     <td>{challenge.title}</td>
                   </td>
-                  <td>Started</td>
-                  <td>{formatDate(challenge.startDate)}</td>
-                  <td>{formatDate(challenge.endDate)}</td>
-                  <td>50</td>
-                  <td>4.5</td>
-                  <td style={{ position: 'relative' }}>
+                  <td>{challenge.description}</td>
+                  <td>
+                    <img
+                      src={challenge?.coverImage}
+                      alt="post"
+                      style={{
+                        width: 70,
+                        height: 70,
+                        borderRadius: 12,
+                        objectFit: "cover"
+                      }}
+                    />
+                  </td>
+                  <td>{formatDate(challenge.createdAt)}</td>
+
+                  <td style={{ position: "relative" }}>
                     <MoreVertIcon
-                      style={{ cursor: 'pointer' }}
+                      style={{ cursor: "pointer" }}
                       onClick={() => handleEditPopUp(editRef, i, challenges)}
                     />
                     <div
                       style={{
-                        display: 'none',
-                        position: 'absolute',
+                        display: "none",
+                        position: "absolute",
                         top: 20,
                         right: 75,
                         zIndex: 9
@@ -144,7 +152,7 @@ const Challenges = ({ challenges, updateChallenges }) => {
                     >
                       <EditPopUp
                         onEdit={() =>
-                          history.push(`/edit-challenge/${challenge._id}`)
+                          history.push(`/edit-post/${challenge._id}`)
                         }
                         onDelete={() => deleteChallenge(challenge._id)}
                       />

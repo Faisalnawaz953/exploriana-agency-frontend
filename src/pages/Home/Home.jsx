@@ -1,17 +1,20 @@
-import React from 'react'
-import { Row, Col } from 'reactstrap'
-import * as classes from '../../css/Home.module.css'
-import { useAlert } from 'react-alert'
-import { connect } from 'react-redux'
-import { getUserAuth } from '../../redux/selectors'
-import { getAllChatRoomsByUserId } from '../../dataServices/ChatService'
+import React from "react"
+import { Row, Col } from "reactstrap"
+import * as classes from "../../css/Home.module.css"
+import { useAlert } from "react-alert"
+import { connect } from "react-redux"
+import { getSubUser, getUserAuth } from "../../redux/selectors"
+import { getAllChatRoomsByUserId } from "../../dataServices/ChatService"
 import {
   requestFirebaseNotificationPermission,
   messaging
-} from '../../firebase'
-import { updateFirebaseToken } from '../../dataServices/Services'
+} from "../../firebase"
+import {
+  updateFirebaseToken,
+  updateSubUserFirebaseToken
+} from "../../dataServices/Services"
 
-const Home = ({ auth }) => {
+const Home = ({ auth, subUser }) => {
   const alert = useAlert()
   const editFirebaseToken = () => {
     requestFirebaseNotificationPermission()
@@ -19,14 +22,24 @@ const Home = ({ auth }) => {
         // eslint-disable-next-line no-console
         console.log(firebaseToken)
         // setDeviceToken(firebaseToken);
-        let body = {
-          deviceToken: firebaseToken
+        console.log(subUser)
+        if (localStorage.getItem("userType") === "user") {
+          let body = {
+            deviceToken: firebaseToken,
+            id: subUser?._id
+          }
+          const res = await updateSubUserFirebaseToken(body)
+          console.log(res)
+        } else {
+          let body = {
+            deviceToken: firebaseToken
+          }
+          const res = await updateFirebaseToken(body)
+          console.log(res)
         }
-        const res = await updateFirebaseToken(body)
-        console.log(res)
       })
       .catch((err) => {
-        console.log('Error ===========> ', err)
+        console.log("Error ===========> ", err)
         return err
       })
   }
@@ -34,8 +47,8 @@ const Home = ({ auth }) => {
     editFirebaseToken()
   }, [])
   return (
-    <Row className='w-100  align-items-center justify-content-center '>
-      <Col sm={12} md={12} lg={8} xl={6} className={'pt-4'}>
+    <Row className="w-100  align-items-center justify-content-center ">
+      <Col sm={12} md={12} lg={8} xl={6} className={"pt-4"}>
         <div
           className={`p-3  d-flex justify-content-center flex-column w-100 ${classes.parent}`}
         >
@@ -43,12 +56,12 @@ const Home = ({ auth }) => {
           <div>
             <p className={classes.headText}>Your Studio </p>
             <p>
-              <a href='#' style={{ color: '#429FBA', lineHeight: '25px' }}>
+              <a href="#" style={{ color: "#429FBA", lineHeight: "25px" }}>
                 https://www.exploriana.com/brandname
               </a>
             </p>
           </div>
-          <Row className='d-flex w-100 align-items-center'>
+          <Row className="d-flex w-100 align-items-center">
             <Col md={6}>
               <p className={classes.headText}>Complete profile</p>
               <p className={classes.text}>Edit profile</p>
@@ -64,25 +77,15 @@ const Home = ({ auth }) => {
           </div>
           <div>
             <p className={classes.headText}>Add first on demand activity</p>
-            <div className='d-flex'>
-              <p className={classes.text}>Add class</p>
-              <p className={`${classes.text} pl-5`}>Add video</p>
+            <div className="d-flex">
+              <p className={classes.text}>Add LandingPage</p>
+              <p className={`${classes.text} pl-5`}>Add Trailer</p>
             </div>
           </div>
           <div>
-            <p className={classes.headText}>Schedule class</p>
-            <p className={classes.text}>Add class</p>
-          </div>{' '}
-          <Row className='d-flex w-100 align-items-center'>
-            <Col md={6}>
-              <p className={classes.headText}>Create membership</p>
-              <p className={classes.text}>Add membership</p>
-            </Col>
-            <Col md={6}>
-              <p className={classes.headText}>Your Website</p>
-              <p className={classes.text}>Set up your website</p>
-            </Col>
-          </Row>
+            <p className={classes.headText}>Add Tours</p>
+            <p className={classes.text}>Add Post</p>
+          </div>{" "}
         </div>
       </Col>
     </Row>
@@ -90,7 +93,8 @@ const Home = ({ auth }) => {
 }
 const mapStateToProps = (state) => {
   return {
-    auth: getUserAuth(state)
+    auth: getUserAuth(state),
+    subUser: getSubUser(state)
   }
 }
 

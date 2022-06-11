@@ -1,33 +1,51 @@
-import React from "react";
-import { Container, Row, Col } from "reactstrap";
-import { addPaymentMethod } from "../../../dataServices/Services";
-import { get } from "lodash";
-import { useAlert } from "react-alert";
-import Loader from "react-loader-spinner";
-import { connect } from "react-redux";
-import Button from "../../ui-elements/Button";
+import React from "react"
+import { Container, Row, Col } from "reactstrap"
+import { addPaymentMethod, getSingleUser } from "../../../dataServices/Services"
+import { get } from "lodash"
+import { useAlert } from "react-alert"
+import Loader from "react-loader-spinner"
+import { connect } from "react-redux"
+import Button from "../../ui-elements/Button"
+import { updateUser } from "../../../redux/actions/userActions/userActions"
 const Payment = ({ user }) => {
-  const alert = useAlert();
+  const alert = useAlert()
   const styles = {
     margin: "0 auto",
     marginTop: "10%"
-  };
-  const [loading, setLoading] = React.useState(false);
+  }
+  const [loading, setLoading] = React.useState(false)
 
   const connectStripe = async () => {
-    setLoading(true);
-    const res = await addPaymentMethod();
-    const resCode = get(res, "status");
+    setLoading(true)
+    const res = await addPaymentMethod()
+    const resCode = get(res, "status")
 
     if (resCode === 200) {
       // setLoading(false);
-      window.location = res.data.url;
+      window.location = res.data.url
     }
     if (resCode !== 200) {
-      setLoading(false);
-      alert("NETWORK_ERROR.TRY AGAIN.");
+      setLoading(false)
+      alert("NETWORK_ERROR.TRY AGAIN.")
     }
-  };
+  }
+
+  const getUser = async () => {
+    const res = await getSingleUser(user?.user?._id)
+    const resCode = get(res, "status")
+
+    if (resCode === 200) {
+      updateUser(res?.data?.user)
+    }
+    if (resCode !== 200) {
+      setLoading(false)
+      alert("NETWORK_ERROR.TRY AGAIN.")
+    }
+  }
+
+  React.useEffect(() => {
+    getUser()
+  }, [])
   return (
     <Container style={styles}>
       <Row>
@@ -66,13 +84,20 @@ const Payment = ({ user }) => {
         )}
       </Row>
     </Container>
-  );
-};
+  )
+}
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
     user: state.user
-  };
-};
+  }
+}
+const matchDispatchToProps = (dispatch) => {
+  return {
+    updateUser: (user) => {
+      dispatch(updateUser(user))
+    }
+  }
+}
 
-export default connect(mapStateToProps, null)(Payment);
+export default connect(mapStateToProps, matchDispatchToProps)(Payment)

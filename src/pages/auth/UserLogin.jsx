@@ -10,18 +10,20 @@ import * as yup from "yup"
 import { useAlert } from "react-alert"
 import ApiLoader from "../../components/ui-elements/ApiLoader"
 import get from "lodash/get"
-import { authService } from "../../dataServices/Services"
+import { loginAsUser } from "../../dataServices/Services"
 import { connect } from "react-redux"
 import { getUserAuth } from "../../redux/selectors"
+import { updateSubUser } from "../../redux/actions/userActions/userActions"
 
 const loginSchema = yup.object().shape({
   email: yup
     .string()
     .email("Please Enter Valid Email")
-    .required("Email is required")
+    .required("Email is required"),
+  password: yup.string().required("Password is required")
 })
 
-const Login = () => {
+const UserLogin = ({ updateUser }) => {
   const history = useHistory()
   const alert = useAlert()
   const [loading, setLoading] = React.useState(false)
@@ -29,8 +31,8 @@ const Login = () => {
   const onSubmit = async (values) => {
     setLoading(true)
     const email = values.email
-    const res = await authService(email)
-    console.log(res)
+    const password = values.password
+    const res = await loginAsUser(email, password)
 
     const resCode = get(res, "status")
     if (resCode !== 200) {
@@ -45,15 +47,17 @@ const Login = () => {
         return
       }
       setLoading(false)
+
       localStorage.setItem("token", res.data.token)
-      alert.success("Login Link Sent")
-      localStorage.setItem("userType", "admin")
-      history.push("/login-success")
+      localStorage.setItem("userType", "user")
+      updateUser(res?.data?.trainer)
+
+      history.push(`/auth?token=${res.data.token}`)
     }
   }
   return (
     <Formik
-      initialValues={{ email: "" }}
+      initialValues={{ email: "", password: "" }}
       validationSchema={loginSchema}
       onSubmit={onSubmit}
     >
@@ -72,7 +76,7 @@ const Login = () => {
               <Col lg="5" md="7" sm="9" xs="11" className="mt-3 ">
                 {/* <ApiLoader /> */}
                 <form className=" bg-white p-5  ">
-                  <h2 className="text-center my-3">Admin SignIn</h2>
+                  <h2 className="text-center my-3">User SignIn</h2>
                   {loading ? (
                     <ApiLoader />
                   ) : (
@@ -86,32 +90,30 @@ const Login = () => {
                         touched={touched.email}
                         errors={errors.email}
                       />
+                      <Input
+                        type={"password"}
+                        label="Your Password"
+                        placeholder="Enter Your Password"
+                        value={values.password}
+                        onBlur={handleBlur("password")}
+                        onChange={handleChange("password")}
+                        touched={touched.password}
+                        errors={errors.password}
+                      />
 
-                      <FormGroup>
-                        <CustomInput
-                          className="mt-5"
-                          type="checkbox"
-                          id="exampleCustomCheckbox"
-                          label="Keep  Me Logged In"
-                        />
-                      </FormGroup>
                       <p className="text-center mt-3">
-                        <Link to="/user-login"> Sign in as User</Link>
+                        <Link to="/login"> Sign in as Admin</Link>
                       </p>
                     </>
                   )}
                   <div className="text-center">
                     <Button
-                      text={loading ? "Sending..." : "Send Me a Login Link"}
+                      text={loading ? "Sending..." : "Log In"}
                       onClick={handleSubmit}
                       width="100%"
                       height="2.5rem"
                     />
                   </div>
-
-                  <p className="text-center mt-3">
-                    Dont have an account? <Link to="/register">Sign Up</Link>
-                  </p>
                 </form>
               </Col>
             </Row>
@@ -127,4 +129,11 @@ const mapStateToProps = (state) => {
     auth: getUserAuth(state)
   }
 }
-export default connect(mapStateToProps, null)(Login)
+const matchDispatchToProps = (dispatch) => {
+  return {
+    updateUser: (user) => {
+      dispatch(updateSubUser(user))
+    }
+  }
+}
+export default connect(mapStateToProps, matchDispatchToProps)(UserLogin)

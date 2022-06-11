@@ -11,8 +11,10 @@ import {
   UPDATE_CLASSROOMS,
   UPDATE_BRAND_COLOR,
   UPDATE_CHAT_ROOM,
-  UPDATE_NOTIFICATIONS
-} from '../../../Constants/Constants'
+  UPDATE_NOTIFICATIONS,
+  UPDATE_TRAINERS,
+  UPDATE_SUB_USER
+} from "../../../Constants/Constants"
 
 const initialState = {
   auth: true,
@@ -25,9 +27,11 @@ const initialState = {
   liveClasses: [],
   videos: [],
   classrooms: [],
-  brandColor: '#429FBA',
+  brandColor: "#429FBA",
   chatRooms: [],
-  notifications: []
+  notifications: [],
+  trainers: [],
+  subUser: {}
 }
 
 const userReducer = (state = initialState, action) => {
@@ -58,6 +62,10 @@ const userReducer = (state = initialState, action) => {
       return { ...state, chatRooms: action.payload }
     case UPDATE_NOTIFICATIONS:
       return { ...state, notifications: action.payload }
+    case UPDATE_TRAINERS:
+      return { ...state, trainers: action.payload }
+    case UPDATE_SUB_USER:
+      return { ...state, subUser: action.payload }
     default:
       return state
   }

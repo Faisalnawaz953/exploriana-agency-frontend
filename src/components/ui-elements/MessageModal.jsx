@@ -1,82 +1,84 @@
-import React from 'react'
-import { Container, Row, Col, CustomInput, FormGroup } from 'reactstrap'
-import Input from './Input'
-import '../../assets/css/login.css'
-import '../../assets/css/button.css'
-import Button from './Button'
-import CloseIcon from '@material-ui/icons/Close'
+import React from "react"
+import { Container, Row, Col, CustomInput, FormGroup } from "reactstrap"
+import Input from "./Input"
+import "../../assets/css/login.css"
+import "../../assets/css/button.css"
+import Button from "./Button"
+import CloseIcon from "@material-ui/icons/Close"
 import {
   createChatRoom,
   sendMessageInChatRoom
-} from '../../dataServices/ChatService'
+} from "../../dataServices/ChatService"
+import { useAlert } from "react-alert"
 
 export default function MessageModal({ onClose, sender, receiver }) {
-  const [message, setMessage] = React.useState('')
+  const [message, setMessage] = React.useState("")
+  const alert = useAlert()
 
-  const sendMessageHandler = async text => {
-    console.log('text :', text)
+  const sendMessageHandler = async (text) => {
+    console.log("text :", text)
     const participants = [sender, receiver]
     const res = await createChatRoom(participants)
-    console.log('createroom :', res)
+    console.log("createroom :", res)
     if (res.success && res.chatRoom) {
       const messageRes = await sendMessageInChatRoom(
         res.chatRoom?._id,
         message,
         sender?._id
       )
-      console.log('message res :', messageRes)
+      console.log("message res :", messageRes)
       if (messageRes.success) {
-        setMessage('')
+        setMessage("")
         onClose()
-        alert('Message sent successfully')
+        alert.success("Message sent successfully")
       } else {
-        alert('Error sending message')
+        alert.error("Error sending message")
       }
     }
   }
   return (
     <Container>
-      <Row className='d-flex justify-content-center mb-5 '>
-        <Col md='12' className='mt-2 '>
-          <form className=' bg-light p-4 rounded '>
-            <div className='d-flex justify-content-between'>
+      <Row className="d-flex justify-content-center mb-5 ">
+        <Col md="12" className="mt-2 ">
+          <form className=" bg-light p-4 rounded ">
+            <div className="d-flex justify-content-between">
               <span
                 style={{
-                  fontWeight: 'bold',
-                  fontSize: '22px',
-                  lineHeight: '32px',
+                  fontWeight: "bold",
+                  fontSize: "22px",
+                  lineHeight: "32px",
 
-                  letterSpacing: '0.6px',
+                  letterSpacing: "0.6px",
 
-                  color: '#2B2B2B'
+                  color: "#2B2B2B"
                 }}
-                className='  '
+                className="  "
               >
-                {' '}
+                {" "}
                 Create Message
               </span>
               <CloseIcon onClick={onClose} />
             </div>
             <Input
               backgroundColor
-              label='Who'
+              label="Who"
               value={receiver?.email}
-              placeholder='Name'
+              placeholder="Name"
             />
             <Input
-              type='textarea'
-              label='Message'
-              placeholder='Details about your membership '
+              type="textarea"
+              label="Message"
+              placeholder="Details about your membership "
               backgroundColor
               value={message}
-              onChange={e => setMessage(e.target.value)}
+              onChange={(e) => setMessage(e.target.value)}
             />
 
-            <div className='text-center'>
+            <div className="text-center">
               <Button
-                text='Send'
-                width='100%'
-                height='2.5rem'
+                text="Send"
+                width="100%"
+                height="2.5rem"
                 onClick={sendMessageHandler}
               />
             </div>

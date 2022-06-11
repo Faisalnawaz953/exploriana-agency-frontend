@@ -1,13 +1,20 @@
-import axios from 'axios'
-import { BASE_URL, NETWORK_ERROR } from '../Constants/Constants'
+import axios from "axios"
+import { BASE_URL, NETWORK_ERROR } from "../Constants/Constants"
 
-const token = localStorage.getItem('token')
+const token = localStorage.getItem("token")
 const config = {
   headers: { Authorization: `Bearer ${token}` }
 }
-export const authService = async email => {
+export const authService = async (email) => {
   try {
     return await axios.post(`${BASE_URL}users/login`, { email })
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
+export const loginAsUser = async (email, password) => {
+  try {
+    return await axios.post(`${BASE_URL}users/user-login`, { email, password })
   } catch (error) {
     return NETWORK_ERROR
   }
@@ -20,7 +27,7 @@ export const getAllUsers = async () => {
   }
 }
 
-export const updateFirebaseToken = async body => {
+export const updateFirebaseToken = async (body) => {
   try {
     return await axios.post(
       `${BASE_URL}users/update-device-token`,
@@ -31,8 +38,19 @@ export const updateFirebaseToken = async body => {
     return NETWORK_ERROR
   }
 }
+export const updateSubUserFirebaseToken = async (body) => {
+  try {
+    return await axios.post(
+      `${BASE_URL}users/sub-user/update-device-token`,
+      body,
+      config
+    )
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
 
-export const getSingleUser = async uid => {
+export const getSingleUser = async (uid) => {
   try {
     return await axios.get(`${BASE_URL}users/${uid}`, config)
   } catch (error) {
@@ -40,28 +58,28 @@ export const getSingleUser = async uid => {
   }
 }
 
-export const register = async email => {
+export const register = async (email) => {
   try {
     return await axios.post(`${BASE_URL}users/register`, { email })
   } catch (error) {
     return NETWORK_ERROR
   }
 }
-export const uploadImage = async formData => {
+export const uploadImage = async (formData) => {
   try {
     return await axios({
-      method: 'post',
+      method: "post",
       url: `${BASE_URL}users/upload-image`,
       data: formData,
       headers: {
-        'Content-Type': `multipart/form-data`
+        "Content-Type": `multipart/form-data`
       }
     })
   } catch (error) {
     return NETWORK_ERROR
   }
 }
-export const registerProfile = async data => {
+export const registerProfile = async (data) => {
   try {
     return await axios.post(`${BASE_URL}users/register-profile`, data, config)
   } catch (error) {
@@ -69,14 +87,14 @@ export const registerProfile = async data => {
   }
 }
 
-export const updateProfile = async data => {
+export const updateProfile = async (data) => {
   try {
     return await axios.post(`${BASE_URL}users/profile`, data, config)
   } catch (error) {
     return NETWORK_ERROR
   }
 }
-export const updateProfileImage = async data => {
+export const updateProfileImage = async (data) => {
   try {
     return await axios.post(
       `${BASE_URL}users/upload-profile-image`,
@@ -87,7 +105,7 @@ export const updateProfileImage = async data => {
     return NETWORK_ERROR
   }
 }
-export const updateBrandImage = async data => {
+export const updateBrandImage = async (data) => {
   try {
     return await axios.post(`${BASE_URL}users/upload-brand-image`, data, config)
   } catch (error) {
@@ -95,7 +113,7 @@ export const updateBrandImage = async data => {
   }
 }
 
-export const addBrand = async data => {
+export const addBrand = async (data) => {
   try {
     return await axios.post(`${BASE_URL}users/brand`, data, config)
   } catch (error) {
@@ -103,7 +121,7 @@ export const addBrand = async data => {
   }
 }
 
-export const addChallange = async data => {
+export const addChallange = async (data) => {
   try {
     return await axios.post(`${BASE_URL}challenges/create`, data, config)
   } catch (error) {
@@ -124,7 +142,7 @@ export const updateUserChallenge = async (id, data) => {
     return NETWORK_ERROR
   }
 }
-export const deleteUserChallenge = async id => {
+export const deleteUserChallenge = async (id) => {
   try {
     return await axios.delete(`${BASE_URL}challenges/remove/${id}`, config)
   } catch (error) {
@@ -132,7 +150,7 @@ export const deleteUserChallenge = async id => {
   }
 }
 
-export const addPaymentMethod = async id => {
+export const addPaymentMethod = async (id) => {
   try {
     return await axios.get(`${BASE_URL}stripe/authorize`, config)
   } catch (error) {
@@ -140,7 +158,7 @@ export const addPaymentMethod = async id => {
   }
 }
 
-export const addTrainer = async data => {
+export const addTrainer = async (data) => {
   try {
     return await axios.post(`${BASE_URL}trainers/create`, data, config)
   } catch (error) {
@@ -148,7 +166,15 @@ export const addTrainer = async data => {
   }
 }
 
-export const updateTrainerImage = async data => {
+export const getTrainers = async () => {
+  try {
+    return await axios.get(`${BASE_URL}trainers/`, config)
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
+
+export const updateTrainerImage = async (data) => {
   try {
     return await axios.post(
       `${BASE_URL}users/upload-trainer-image`,
@@ -159,14 +185,14 @@ export const updateTrainerImage = async data => {
     return NETWORK_ERROR
   }
 }
-export const updateImage = async data => {
+export const updateImage = async (data) => {
   try {
     return await axios.post(`${BASE_URL}users/upload-image`, data, config)
   } catch (error) {
     return NETWORK_ERROR
   }
 }
-export const updateNotificationSettings = async data => {
+export const updateNotificationSettings = async (data) => {
   try {
     return await axios.post(
       `${BASE_URL}users/notifications-settings`,
@@ -177,7 +203,7 @@ export const updateNotificationSettings = async data => {
     return NETWORK_ERROR
   }
 }
-export const getBrandById = async userId => {
+export const getBrandById = async (userId) => {
   try {
     return await axios.get(
       `${BASE_URL}users/brand/user/${userId}`,
@@ -188,7 +214,7 @@ export const getBrandById = async userId => {
     return NETWORK_ERROR
   }
 }
-export const getNotificationSettingsById = async userId => {
+export const getNotificationSettingsById = async (userId) => {
   try {
     return await axios.get(
       `${BASE_URL}users/notification-settings/${userId}`,
@@ -199,14 +225,14 @@ export const getNotificationSettingsById = async userId => {
     return NETWORK_ERROR
   }
 }
-export const updateLandingPage = async data => {
+export const updateLandingPage = async (data) => {
   try {
     return await axios.post(`${BASE_URL}landings/add`, data, config)
   } catch (error) {
     return NETWORK_ERROR
   }
 }
-export const getLandingPageById = async userId => {
+export const getLandingPageById = async (userId) => {
   try {
     return await axios.get(
       `${BASE_URL}landings/user/${userId}`,
@@ -217,7 +243,7 @@ export const getLandingPageById = async userId => {
     return NETWORK_ERROR
   }
 }
-export const addClassRoom = async data => {
+export const addClassRoom = async (data) => {
   try {
     return await axios.post(`${BASE_URL}classrooms/create`, data, config)
   } catch (error) {
@@ -238,7 +264,7 @@ export const updateUserClassRoom = async (id, data) => {
     return NETWORK_ERROR
   }
 }
-export const deleteUserClassRoom = async id => {
+export const deleteUserClassRoom = async (id) => {
   try {
     return await axios.delete(`${BASE_URL}classrooms/remove/${id}`, config)
   } catch (error) {
@@ -246,7 +272,7 @@ export const deleteUserClassRoom = async id => {
   }
 }
 
-export const addVideo = async data => {
+export const addVideo = async (data) => {
   try {
     return await axios.post(`${BASE_URL}videos/create`, data, config)
   } catch (error) {
@@ -267,7 +293,7 @@ export const updateUserVideo = async (id, data) => {
     return NETWORK_ERROR
   }
 }
-export const deleteUserVideo = async id => {
+export const deleteUserVideo = async (id) => {
   try {
     return await axios.delete(`${BASE_URL}videos/remove/${id}`, config)
   } catch (error) {
@@ -282,7 +308,7 @@ export const getUserLiveClasses = async () => {
     return NETWORK_ERROR
   }
 }
-export const addLiveClass = async data => {
+export const addLiveClass = async (data) => {
   try {
     return await axios.post(`${BASE_URL}live-classroom/create`, data, config)
   } catch (error) {
@@ -301,7 +327,7 @@ export const updateUserLiveClass = async (id, data) => {
     return NETWORK_ERROR
   }
 }
-export const deleteUserLiveClass = async id => {
+export const deleteUserLiveClass = async (id) => {
   try {
     return await axios.delete(`${BASE_URL}live-classroom/remove/${id}`, config)
   } catch (error) {
@@ -309,7 +335,7 @@ export const deleteUserLiveClass = async id => {
   }
 }
 
-export const addLink = async data => {
+export const addLink = async (data) => {
   try {
     return await axios.post(`${BASE_URL}link/create`, data, config)
   } catch (error) {
@@ -330,7 +356,7 @@ export const updateUserLink = async (linkId, data) => {
     return NETWORK_ERROR
   }
 }
-export const deleteUserLink = async linkId => {
+export const deleteUserLink = async (linkId) => {
   try {
     return await axios.delete(`${BASE_URL}link/remove/${linkId}`, config)
   } catch (error) {
@@ -338,7 +364,7 @@ export const deleteUserLink = async linkId => {
   }
 }
 
-export const createNotification = async notification => {
+export const createNotification = async (notification) => {
   try {
     return await axios.post(
       `${BASE_URL}notifications/create`,
@@ -352,6 +378,21 @@ export const createNotification = async notification => {
 export const getUserNotifications = async () => {
   try {
     return await axios.get(`${BASE_URL}notifications/user`, config)
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
+export const deleteSingleTrainer = async (id) => {
+  try {
+    return await axios.delete(`${BASE_URL}trainers/remove/${id}`, config)
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
+
+export const updateTrainer = async (id, data) => {
+  try {
+    return await axios.patch(`${BASE_URL}trainers/update/${id}`, data, config)
   } catch (error) {
     return NETWORK_ERROR
   }

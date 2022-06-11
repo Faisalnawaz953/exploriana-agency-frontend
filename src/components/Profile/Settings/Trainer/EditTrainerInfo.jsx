@@ -14,9 +14,15 @@ import * as yup from "yup"
 import { useAlert } from "react-alert"
 import ApiLoader from "../../../ui-elements/ApiLoader"
 import get from "lodash/get"
-import { addTrainer, updateImage } from "../../../../dataServices/Services"
-
+import {
+  addTrainer,
+  updateImage,
+  updateTrainer
+} from "../../../../dataServices/Services"
 import { formatBytes } from "../../../../config/GlobalFunctions"
+import { getAllTrainers } from "../../../../redux/selectors"
+import { connect } from "react-redux"
+import { useParams } from "react-router-dom"
 
 const addTrainerSchema = yup.object().shape({
   firstName: yup.string().required("First Name is required."),
@@ -41,61 +47,38 @@ const useStyles = makeStyles((theme) => ({
   }
 }))
 
-const AddTrainerInfo = () => {
+const EditTrainerInfo = ({ trainers }) => {
   const classes = useStyles()
   const history = useHistory()
-  const [files, setFiles] = React.useState([])
+
   const [loading, setLoading] = React.useState(false)
-  const [image, setImage] = React.useState()
+
   const alert = useAlert()
-  const [blobImage, setBlobImage] = React.useState()
-  const [videoName, setVideoName] = React.useState("")
-  const [videoSize, setVideoSize] = React.useState("")
 
-  const videosUpload = async (acceptedFiles) => {
-    const size = formatBytes(acceptedFiles[0].size, 2)
-    setVideoSize(size)
-    setVideoName(acceptedFiles[0].name)
-    let url = URL.createObjectURL(acceptedFiles[0])
-    let blob = await fetch(url).then((r) => r.blob())
-    let file = [...files]
-    file.push(blob)
-    setFiles(file)
+  const { id } = useParams()
+  const [trainer, setTrainer] = React.useState()
+  const getTrainer = () => {
+    let singleTrainer = trainers.filter((liveClass) => liveClass._id === id)
+    setTrainer(singleTrainer[0])
   }
 
-  const uploadTrainerImage = async (e) => {
-    console.log(URL.createObjectURL(e.target.files[0]))
-    setImage(URL.createObjectURL(e.target.files[0]))
-    let blobimage = await fetch(URL.createObjectURL(e.target.files[0])).then(
-      (r) => r.blob()
-    )
-    const formData = new FormData()
+  React.useEffect(() => {
+    getTrainer()
+  }, [])
 
-    formData.append("image", blobimage)
-
-    const res = await updateImage(formData)
-    console.log(res)
-    const resCode = get(res, "status")
-    if (resCode !== 200) {
-      alert.error("Network Error Try Agian")
-    }
-    if (resCode === 200) {
-      setBlobImage(res.data.imageUrl)
-      alert.success("Trainer Image Added")
-    }
-  }
-  const uploadTrainer = async (values) => {
+  const editTrainer = async (values) => {
     setLoading(true)
-    const formData = new FormData()
 
-    formData.append("firstName", values.firstName)
-    formData.append("lastName", values.lastName)
-    formData.append("email", values.email)
-    formData.append("about", values.about)
-    formData.append("password", values.instagram)
-
-    const res = await addTrainer(formData)
+    const data = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      email: values.email,
+      about: values.about,
+      password: values.instagram
+    }
+    const res = await updateTrainer(id, data)
     console.log(res)
+
     const resCode = get(res, "status")
     if (resCode !== 200) {
       setLoading(false)
@@ -103,33 +86,22 @@ const AddTrainerInfo = () => {
     }
     if (resCode === 200) {
       setLoading(false)
-      values.email = ""
-
-      values.about = ""
-      values.instagram = ""
-      values.about = ""
-
-      values.firstName = ""
-      values.lastName = ""
-      setFiles([])
-      setImage("")
-      setBlobImage("")
-      alert.success("User Added SuccessFully")
+      alert.success("Trainer Updated Successfully.")
     }
   }
+
   return (
     <Formik
       initialValues={{
-        firstName: "",
-        lastName: "",
-        email: "",
-        about: "",
-        facebook: "",
-        twitter: "",
-        instagram: ""
+        firstName: trainer?.firstName,
+        lastName: trainer?.lastName,
+        email: trainer?.email,
+        about: trainer?.about,
+        instagram: trainer?.password
       }}
+      enableReinitialize
       validationSchema={addTrainerSchema}
-      onSubmit={uploadTrainer}
+      onSubmit={editTrainer}
     >
       {(props) => {
         const {
@@ -150,12 +122,12 @@ const AddTrainerInfo = () => {
             <Container>
               <Row className="text-center">
                 <Col md={{ size: 12 }}>
-                  <div className={classes.headText}>Add New Users</div>
-                  <EditImage
+                  <div className={classes.headText}>Edit User</div>
+                  {/* <EditImage
                     path={image}
                     setPath={setImage}
                     upload={(e) => uploadTrainerImage(e)}
-                  />
+                  /> */}
                 </Col>
               </Row>
             </Container>
@@ -252,12 +224,9 @@ const AddTrainerInfo = () => {
                     </>
                   )}
                   <Col md={{ size: 8, offset: 2 }} className="text-center">
-                    {/* <Col md={{ size: 12 }}>
-                <TrainerReviews />
-              </Col> */}
                     <Button
                       onClick={handleSubmit}
-                      text="Add"
+                      text="Update"
                       width="100%"
                       height="2.5rem"
                     />
@@ -271,5 +240,10 @@ const AddTrainerInfo = () => {
     </Formik>
   )
 }
+const mapStateToProps = (state) => {
+  return {
+    trainers: getAllTrainers(state)
+  }
+}
 
-export default AddTrainerInfo
+export default connect(mapStateToProps, null)(EditTrainerInfo)
