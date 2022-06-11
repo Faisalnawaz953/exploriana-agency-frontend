@@ -1,5 +1,5 @@
-export const BASE_URL = "http://localhost:5000/api/"
-// export const BASE_URL = 'https://exploriana-backend.herokuapp.com/api/'
+// export const BASE_URL = "http://localhost:5000/api/"
+export const BASE_URL = "https://packgo.herokuapp.com/api/"
 export const NETWORK_ERROR = "NETWORK_ERROR"
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS"
 export const UPDATE_USER = "UPDATE_USER"
