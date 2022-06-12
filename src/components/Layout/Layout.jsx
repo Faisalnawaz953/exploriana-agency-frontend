@@ -282,7 +282,7 @@ function ResponsiveDrawer(props) {
       props.updateChatRooms(res.chatRooms)
     }
   }
-  messaging.onMessage(async (mes) => {
+  messaging?.onMessage(async (mes) => {
     play()
     console.log("Mesage recieved ===> ", mes)
     const notification = {
