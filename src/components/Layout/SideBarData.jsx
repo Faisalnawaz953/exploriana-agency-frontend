@@ -103,10 +103,10 @@ export const sideBarUserData = [
 
   {
     icon: <PeopleAltIcon style={{ color: "#7A7D7D" }} />,
-    text: "Members",
+    text: "Guides",
     sublist: false,
     sublistData: [],
-    link: "/members"
+    link: "/guide"
   },
 
   {
