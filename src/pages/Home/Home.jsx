@@ -17,33 +17,31 @@ import {
 const Home = ({ auth, subUser }) => {
   const alert = useAlert()
   const editFirebaseToken = () => {
-    if (messaging) {
-      requestFirebaseNotificationPermission()
-        .then(async (firebaseToken) => {
-          // eslint-disable-next-line no-console
-          console.log(firebaseToken)
-          // setDeviceToken(firebaseToken);
-          console.log(subUser)
-          if (localStorage.getItem("userType") === "user") {
-            let body = {
-              deviceToken: firebaseToken,
-              id: subUser?._id
-            }
-            const res = await updateSubUserFirebaseToken(body)
-            console.log(res)
-          } else {
-            let body = {
-              deviceToken: firebaseToken
-            }
-            const res = await updateFirebaseToken(body)
-            console.log(res)
+    requestFirebaseNotificationPermission()
+      .then(async (firebaseToken) => {
+        // eslint-disable-next-line no-console
+        console.log(firebaseToken)
+        // setDeviceToken(firebaseToken);
+        console.log(subUser)
+        if (localStorage.getItem("userType") === "user") {
+          let body = {
+            deviceToken: firebaseToken,
+            id: subUser?._id
           }
-        })
-        .catch((err) => {
-          console.log("Error ===========> ", err)
-          return err
-        })
-    }
+          const res = await updateSubUserFirebaseToken(body)
+          console.log(res)
+        } else {
+          let body = {
+            deviceToken: firebaseToken
+          }
+          const res = await updateFirebaseToken(body)
+          console.log(res)
+        }
+      })
+      .catch((err) => {
+        console.log("Error ===========> ", err)
+        return err
+      })
   }
   React.useEffect(() => {
     editFirebaseToken()
