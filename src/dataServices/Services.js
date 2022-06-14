@@ -397,3 +397,18 @@ export const updateTrainer = async (id, data) => {
     return NETWORK_ERROR
   }
 }
+
+export const getBookings = async (cid) => {
+  try {
+    return await axios.get(`${BASE_URL}booking/company/${cid}`, config)
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}
+export const updateStatus = async (cid, data) => {
+  try {
+    return await axios.post(`${BASE_URL}booking/${cid}`, data, config)
+  } catch (error) {
+    return NETWORK_ERROR
+  }
+}

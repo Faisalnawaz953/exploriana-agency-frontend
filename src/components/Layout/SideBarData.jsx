@@ -82,6 +82,13 @@ export const sideBarData = [
     sublistData: [],
     link: "/posts"
   },
+  {
+    icon: <CheckBoxIcon style={{ color: "#7A7D7D" }} />,
+    text: "Bookings",
+    sublist: false,
+    sublistData: [],
+    link: "/bookings"
+  },
 
   {
     icon: <HeadsetIcon style={{ color: "#7A7D7D" }} />,
@@ -122,6 +129,13 @@ export const sideBarUserData = [
     sublist: false,
     sublistData: [],
     link: "/posts"
+  },
+  {
+    icon: <CheckBoxIcon style={{ color: "#7A7D7D" }} />,
+    text: "Bookings",
+    sublist: false,
+    sublistData: [],
+    link: "/bookings"
   },
 
   {

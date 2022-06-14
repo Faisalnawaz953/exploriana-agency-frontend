@@ -46,6 +46,7 @@ const LiveInPersonClass = lazy(() => import("./pages/Link/LiveInPersonClass"))
 const AllModals = lazy(() => import("./components/ui-elements/AllModals"))
 const Link = lazy(() => import("./pages/Link/Link"))
 const Live = lazy(() => import("./pages/Live/Live"))
+const Booking = lazy(() => import("./pages/Booking"))
 const Members = lazy(() => import("./pages/Members/Members"))
 const TrainerInfo = lazy(() =>
   import("./components/Profile/Settings/Trainer/TrainerInfo")
@@ -178,6 +179,7 @@ export default function Router() {
       <AppRoute path="/stripe-connect" component={StripeConnected} />
       <AppRoute path="/edit-user/:id" component={EditTrainerInfo} />
       <AppRoute path="/support" component={Support} />
+      <AppRoute path="/bookings" component={Booking} />
     </Switch>
   )
 }

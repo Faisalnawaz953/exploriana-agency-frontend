@@ -496,6 +496,19 @@ function ResponsiveDrawer(props) {
                     }
                   />
                 )}
+                {list.text === "Bookings" && (
+                  <WifiIcon
+                    className={
+                      location.pathname === list.link ||
+                      (list.sublist &&
+                        list.sublistData
+                          .map((val) => val.link)
+                          .includes(location.pathname))
+                        ? classes.activeIcon
+                        : classes.icon
+                    }
+                  />
+                )}
                 {list.text === "Trips" && (
                   <WifiIcon
                     className={
@@ -624,7 +637,7 @@ function ResponsiveDrawer(props) {
                             }
                           />
                         )}
-                        {sblist.title === "Subscription" && (
+                        {sblist.title === "Bookings" && (
                           <CheckBoxIcon
                             className={
                               location.pathname === sblist.link
